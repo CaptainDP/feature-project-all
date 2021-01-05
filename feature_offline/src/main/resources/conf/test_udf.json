@@ -1,0 +1,99 @@
+{
+  "taichi": "../taichi.json",
+  "annotation": {
+    "author": "captain_cc_2008@163.com",
+    "date": "2019年1月31日",
+    "func": "Test the ReverseUDF function and display it at the console"
+  },
+  "sparkConf": [
+    {
+      "spark.driver.memory": "1g"
+    },
+    {
+      "spark.executor.cores": "4"
+    },
+    {
+      "spark.executor.instances": "2"
+    },
+    {
+      "spark.executor.memory": "1g"
+    },
+    {
+      "spark.yarn.executor.memoryOverhead": "1g"
+    },
+    {
+      "conf spark.default.parallelism": "50"
+    },
+    {
+      "conf spark.sql.shuffle.partitions": "10"
+    },
+    {
+      "spark.cores.max": "20"
+    }
+  ],
+  "common": [
+    {
+      "BASE_FILE_NAME": "user_info"
+    },
+    {
+      "SOURCE_FILE_PATH": "${CDP_HOME}/data"
+    },
+    {
+      "TARGET_FILE_PATH": "${CDP_HOME}/output"
+    }
+  ],
+  "process": [
+    {
+      "clazz": "${TextLoad}",
+      "annotation": "1.Load data from text file and register as a temporary in-memory table TMP_TBL_01 for subsequent processing",
+      "filePath": "${SOURCE_FILE_PATH}/",
+      "fileName": "${BASE_FILE_NAME}.txt",
+      "split": "\\|",
+      "tableName": "TMP_TBL_01",
+      "partitionNum": "1",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "STRING",
+          "desc": "用户编号"
+        },
+        {
+          "name": "user_name",
+          "type": "STRING",
+          "desc": "用户姓名"
+        },
+        {
+          "name": "user_age",
+          "type": "STRING",
+          "desc": "用户年龄"
+        }
+      ]
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "annotation": "2.Register the ReverseUDF function",
+      "sql": "create temporary function ReverseUDF as 'com.captain.bigdata.taichi.demo.udf.ReverseUDF'"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "show": "true",
+      "annotation": "3.Test the ReverseUDF function and display it at the console",
+      "tableName": "TMP_TBL_02",
+      "sql": "select user_id,user_name,user_age,ReverseUDF(user_name) as reverse_user_name from TMP_TBL_01"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "annotation": "4.Register the UserAnalyzeUDF function",
+      "sql": "create temporary function UserAnalyzeUDF as 'com.captain.bigdata.taichi.demo.udf.UserAnalyzeUDF'"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "show": "true",
+      "annotation": "5.Test the UserAnalyzeUDF function and display it at the console",
+      "tableName": "TMP_TBL_03",
+      "sql": "select user_id,user_name,user_age,user_sex,user_age_group from TMP_TBL_01 LATERAL VIEW UserAnalyzeUDF(user_id,user_age) as user_sex,user_age_group"
+    }
+  ]
+}

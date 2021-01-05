@@ -1,0 +1,61 @@
+{
+  "taichi": "../taichi.json",
+  "annotation": {
+    "author": "captain_cc_2008@163.com",
+    "date": "2019年1月31日",
+    "func": "Test the UserAnalyze rdd function and display it at the console"
+  },
+  "sparkConf": [
+    {
+      "spark.driver.memory": "1g"
+    },
+    {
+      "spark.executor.cores": "4"
+    },
+    {
+      "spark.executor.instances": "20"
+    },
+    {
+      "spark.executor.memory": "4g"
+    },
+    {
+      "spark.yarn.executor.memoryOverhead": "1g"
+    },
+    {
+      "conf spark.default.parallelism": "100"
+    },
+    {
+      "conf spark.sql.shuffle.partitions": "30"
+    },
+    {
+      "spark.cores.max": "20"
+    }
+  ],
+  "common": [
+    {
+      "BASE_FILE_NAME": "user_info"
+    },
+    {
+      "SOURCE_FILE_PATH": "${CDP_HOME}/data"
+    },
+    {
+      "TARGET_FILE_PATH": "${CDP_HOME}/output"
+    }
+  ],
+  "process": [
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "1.更加用的ctr过滤用户特征数据",
+      "tableName": "TMP_TBL_01",
+      "sql": "select msg,dt,get_json_object(msg, '$.device_id') as device_id from cmp_tmp.cmp_tmp_rcm_rank_all_msg_shucang_v2 a join dm_rca_user_ctr b on a.device_id = b.device_id and a.dt = b.dt where a.dt='${BASE_DATE_10}' and b.ctr > 0.01 "
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "2.插入数据到hive表",
+      "tableName": "TMP_TBL_02",
+      "sql": "insert into dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user select msg,dt from TMP_TBL_01"
+    }
+  ]
+}

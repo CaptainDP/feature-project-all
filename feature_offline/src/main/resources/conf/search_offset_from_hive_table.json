@@ -1,0 +1,48 @@
+{
+  "taichi": "../taichi.json",
+  "annotation": {
+    "author": "captain_cc_2008@163.com",
+    "date": "2019年1月31日",
+    "func": "Test the UserAnalyze rdd function and display it at the console"
+  },
+  "sparkConf": [
+    {
+      "spark.driver.memory": "1g"
+    },
+    {
+      "spark.executor.cores": "4"
+    },
+    {
+      "spark.executor.instances": "20"
+    },
+    {
+      "spark.executor.memory": "4g"
+    },
+    {
+      "spark.yarn.executor.memoryOverhead": "1g"
+    },
+    {
+      "conf spark.default.parallelism": "100"
+    },
+    {
+      "conf spark.sql.shuffle.partitions": "10"
+    },
+    {
+      "spark.cores.max": "20"
+    }
+  ],
+  "process": [
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "1.计算每天用户对应CTR",
+      "tableName": "TMP_TBL_01",
+      "sql": "select 1"
+    },
+    {
+      "clazz": "com.captain.bigdata.taichi.rdds.SearchOffsetFeatureRDD",
+      "flag": "true",
+      "annotation":"search offset rdd"
+    }
+  ]
+}

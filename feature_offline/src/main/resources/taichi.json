@@ -1,0 +1,61 @@
+{
+  "annotation": {
+    "author": "captain_cc_2008@163.com",
+    "date": "2017年1月31日",
+    "func": "通用配置"
+  },
+  "dateType": [
+    {
+      "BASE_DATE": "yyyyMMdd"
+    },
+    {
+      "BASE_DATE_10": "yyyy-MM-dd"
+    },
+    {
+      "BASE_DATE_5D": "yyyyMMdd(-5D)"
+    },
+    {
+      "BASE_DATE_1M": "yyyyMMdd(-1M)"
+    }
+  ],
+  "base": [
+    {
+      "CDP_HOME": "./target/classes"
+    }
+  ],
+  "clazz": [
+    {
+      "TextLoad": "com.captain.bigdata.taichi.process.load.TextLoad"
+    },
+    {
+      "ParquetLoad": "com.captain.bigdata.taichi.process.load.ParquetLoad"
+    },
+    {
+      "OrcLoad": "com.captain.bigdata.taichi.process.load.OrcLoad"
+    },
+    {
+      "SqlTransfer": "com.captain.bigdata.taichi.process.transfer.SqlTransfer"
+    },
+    {
+      "HdfsCmd": "com.captain.bigdata.taichi.process.cmd.HdfsCmd"
+    },
+    {
+      "SysCmd": "com.captain.bigdata.taichi.process.cmd.SysCmd"
+    },
+    {
+      "TextSave": "com.captain.bigdata.taichi.process.save.TextSave"
+    },
+    {
+      "ParquetSave": "com.captain.bigdata.taichi.process.save.ParquetSave"
+    },
+    {
+      "OrcSave": "com.captain.bigdata.taichi.process.save.OrcSave"
+    },
+    {
+      "CustomProcess": "com.captain.bigdata.taichi.process.custom.CustomProcess"
+    },
+    {
+      "StressProcessSimpleGet": "com.captain.bigdata.taichi.process.stress.StressProcessSimpleGet"
+    }
+  ]
+}

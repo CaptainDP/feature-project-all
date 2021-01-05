@@ -1,0 +1,121 @@
+{
+  "taichi": "../taichi.json",
+  "annotation": {
+    "author": "captain_cc_2008@163.com",
+    "date": "2017年1月31日",
+    "func": "Read the text file data, display it, and write to the target directory in text, parquet, orc, etc"
+  },
+  "sparkConf": [
+    {
+      "spark.driver.memory": "1g"
+    },
+    {
+      "spark.executor.cores": "4"
+    },
+    {
+      "spark.executor.instances": "2"
+    },
+    {
+      "spark.executor.memory": "1g"
+    },
+    {
+      "spark.yarn.executor.memoryOverhead": "1g"
+    },
+    {
+      "conf spark.default.parallelism": "50"
+    },
+    {
+      "conf spark.sql.shuffle.partitions": "10"
+    },
+    {
+      "spark.cores.max": "20"
+    }
+  ],
+  "common": [
+    {
+      "BASE_FILE_NAME": "user_info"
+    },
+    {
+      "SOURCE_FILE_PATH": "${CDP_HOME}/data"
+    },
+    {
+      "TARGET_FILE_PATH": "${CDP_HOME}/output"
+    }
+  ],
+  "process": [
+    {
+      "clazz": "${TextLoad}",
+      "annotation": "1.Load data from text file and register as a temporary in-memory table TMP_TBL_01 for subsequent processing",
+      "filePath": "${SOURCE_FILE_PATH}/",
+      "fileName": "${BASE_FILE_NAME}.txt",
+      "split": "\\|",
+      "tableName": "TMP_TBL_01",
+      "partitionNum": "1",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "STRING",
+          "desc": "用户编号"
+        },
+        {
+          "name": "user_name",
+          "type": "STRING",
+          "desc": "用户姓名"
+        },
+        {
+          "name": "user_age",
+          "type": "STRING",
+          "desc": "用户年龄"
+        }
+      ]
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "show": "true",
+      "annotation": "2.Show the query result data and register as a temporary in-memory table TMP_TBL_02 for subsequent processing",
+      "tableName": "TMP_TBL_02",
+      "sql": "select user_id,user_name,user_age from TMP_TBL_01"
+    },
+    {
+      "clazz": "${HdfsCmd}",
+      "flag": "true",
+      "annotation": "3.Clear the target directory in preparation for subsequent writes",
+      "cmd": "rm ${TARGET_FILE_PATH}"
+    },
+    {
+      "clazz": "${TextSave}",
+      "flag": "true",
+      "filePath": "${TARGET_FILE_PATH}/text/${BASE_DATE}/",
+      "fileName": "${BASE_FILE_NAME}_text",
+      "annotation": "4.Writes the query result data as text to the file, specifying the delimiter #",
+      "tableName": "TMP_TBL_03",
+      "split": "#",
+      "sql": "select user_id,user_name,user_age from TMP_TBL_02"
+    },
+    {
+      "clazz": "${ParquetSave}",
+      "flag": "true",
+      "filePath": "${TARGET_FILE_PATH}/parquet/${BASE_DATE}/",
+      "fileName": "${BASE_FILE_NAME}_parquet",
+      "annotation": "5.Writes the query result data as parquet to the file, specifying the delimiter #",
+      "tableName": "TMP_TBL_04",
+      "sql": "select user_id,user_name,user_age from TMP_TBL_02"
+    },
+    {
+      "clazz": "${OrcSave}",
+      "flag": "true",
+      "filePath": "${TARGET_FILE_PATH}/orc/${BASE_DATE}/",
+      "fileName": "${BASE_FILE_NAME}_orc",
+      "annotation": "6.Writes the query result data as orc to the file, specifying the delimiter #",
+      "tableName": "TMP_TBL_05",
+      "sql": "select * from TMP_TBL_02"
+    },
+    {
+      "clazz": "${SysCmd}",
+      "flag": "true",
+      "annotation": "7.Displays the generated directory file",
+      "cmd": "ls -l ${TARGET_FILE_PATH}"
+    }
+  ]
+}

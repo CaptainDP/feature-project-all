@@ -1,0 +1,61 @@
+{
+  "taichi": "../taichi.json",
+  "annotation": {
+    "author": "captain_cc_2008@163.com",
+    "date": "2019年1月31日",
+    "func": "Test the UserAnalyze rdd function and display it at the console"
+  },
+  "sparkConf": [
+    {
+      "spark.driver.memory": "1g"
+    },
+    {
+      "spark.executor.cores": "4"
+    },
+    {
+      "spark.executor.instances": "20"
+    },
+    {
+      "spark.executor.memory": "4g"
+    },
+    {
+      "spark.yarn.executor.memoryOverhead": "1g"
+    },
+    {
+      "conf spark.default.parallelism": "100"
+    },
+    {
+      "conf spark.sql.shuffle.partitions": "10"
+    },
+    {
+      "spark.cores.max": "20"
+    }
+  ],
+  "common": [
+    {
+      "BASE_FILE_NAME": "user_info"
+    },
+    {
+      "SOURCE_FILE_PATH": "${CDP_HOME}/data"
+    },
+    {
+      "TARGET_FILE_PATH": "${CDP_HOME}/output"
+    }
+  ],
+  "process": [
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "1.计算每天用户对应CTR",
+      "tableName": "TMP_TBL_01",
+      "sql": "select dt, device_id, sum(click_num) / sum(sight_show_num) as ctr, from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by device_id"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "2.插入数据到hive表",
+      "tableName": "TMP_TBL_02",
+      "sql": "insert into dm_rca.dm_rca_user_ctr select device_id,ctr,dt from TMP_TBL_01"
+    }
+  ]
+}

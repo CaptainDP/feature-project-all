@@ -26,31 +26,31 @@ public final class OffsetModel {
      * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
      */
     boolean containsTitleTermList(
-            String key);
+        java.lang.String key);
     /**
      * Use {@link #getTitleTermListMap()} instead.
      */
-    @Deprecated
-    java.util.Map<String, Integer>
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.Integer>
     getTitleTermList();
     /**
      * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
      */
-    java.util.Map<String, Integer>
+    java.util.Map<java.lang.String, java.lang.Integer>
     getTitleTermListMap();
     /**
      * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
      */
 
     int getTitleTermListOrDefault(
-            String key,
-            int defaultValue);
+        java.lang.String key,
+        int defaultValue);
     /**
      * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
      */
 
     int getTitleTermListOrThrow(
-            String key);
+        java.lang.String key);
 
     /**
      * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
@@ -60,31 +60,31 @@ public final class OffsetModel {
      * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
      */
     boolean containsStitleTermList(
-            String key);
+        java.lang.String key);
     /**
      * Use {@link #getStitleTermListMap()} instead.
      */
-    @Deprecated
-    java.util.Map<String, Integer>
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.Integer>
     getStitleTermList();
     /**
      * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
      */
-    java.util.Map<String, Integer>
+    java.util.Map<java.lang.String, java.lang.Integer>
     getStitleTermListMap();
     /**
      * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
      */
 
     int getStitleTermListOrDefault(
-            String key,
-            int defaultValue);
+        java.lang.String key,
+        int defaultValue);
     /**
      * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
      */
 
     int getStitleTermListOrThrow(
-            String key);
+        java.lang.String key);
 
     /**
      * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
@@ -94,31 +94,31 @@ public final class OffsetModel {
      * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
      */
     boolean containsAuthorTermList(
-            String key);
+        java.lang.String key);
     /**
      * Use {@link #getAuthorTermListMap()} instead.
      */
-    @Deprecated
-    java.util.Map<String, Integer>
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.Integer>
     getAuthorTermList();
     /**
      * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
      */
-    java.util.Map<String, Integer>
+    java.util.Map<java.lang.String, java.lang.Integer>
     getAuthorTermListMap();
     /**
      * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
      */
 
     int getAuthorTermListOrDefault(
-            String key,
-            int defaultValue);
+        java.lang.String key,
+        int defaultValue);
     /**
      * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
      */
 
     int getAuthorTermListOrThrow(
-            String key);
+        java.lang.String key);
 
     /**
      * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
@@ -128,31 +128,31 @@ public final class OffsetModel {
      * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
      */
     boolean containsContentTermList(
-            String key);
+        java.lang.String key);
     /**
      * Use {@link #getContentTermListMap()} instead.
      */
-    @Deprecated
-    java.util.Map<String, Integer>
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.Integer>
     getContentTermList();
     /**
      * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
      */
-    java.util.Map<String, Integer>
+    java.util.Map<java.lang.String, java.lang.Integer>
     getContentTermListMap();
     /**
      * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
      */
 
     int getContentTermListOrDefault(
-            String key,
-            int defaultValue);
+        java.lang.String key,
+        int defaultValue);
     /**
      * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
      */
 
     int getContentTermListOrThrow(
-            String key);
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code Offset}
@@ -169,7 +169,7 @@ public final class OffsetModel {
     private Offset() {
     }
 
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
@@ -180,7 +180,7 @@ public final class OffsetModel {
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
-        throw new NullPointerException();
+        throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
@@ -206,7 +206,7 @@ public final class OffsetModel {
                     TitleTermListDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000001;
               }
-              com.google.protobuf.MapEntry<String, Integer>
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
               titleTermList__ = input.readMessage(
                   TitleTermListDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               titleTermList_.getMutableMap().put(
@@ -219,7 +219,7 @@ public final class OffsetModel {
                     StitleTermListDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000002;
               }
-              com.google.protobuf.MapEntry<String, Integer>
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
               stitleTermList__ = input.readMessage(
                   StitleTermListDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               stitleTermList_.getMutableMap().put(
@@ -232,7 +232,7 @@ public final class OffsetModel {
                     AuthorTermListDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000004;
               }
-              com.google.protobuf.MapEntry<String, Integer>
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
               authorTermList__ = input.readMessage(
                   AuthorTermListDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               authorTermList_.getMutableMap().put(
@@ -245,7 +245,7 @@ public final class OffsetModel {
                     ContentTermListDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000008;
               }
-              com.google.protobuf.MapEntry<String, Integer>
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
               contentTermList__ = input.readMessage(
                   ContentTermListDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               contentTermList_.getMutableMap().put(
@@ -266,7 +266,7 @@ public final class OffsetModel {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return OffsetModel.internal_static_Offset_descriptor;
+      return com.autohome.models.OffsetModel.internal_static_Offset_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -288,26 +288,26 @@ public final class OffsetModel {
     }
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return OffsetModel.internal_static_Offset_fieldAccessorTable
+      return com.autohome.models.OffsetModel.internal_static_Offset_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              Offset.class, Builder.class);
+              com.autohome.models.OffsetModel.Offset.class, com.autohome.models.OffsetModel.Offset.Builder.class);
     }
 
     public static final int TITLETERMLIST_FIELD_NUMBER = 1;
     private static final class TitleTermListDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
-          String, Integer> defaultEntry =
+          java.lang.String, java.lang.Integer> defaultEntry =
               com.google.protobuf.MapEntry
-              .<String, Integer>newDefaultInstance(
-                  OffsetModel.internal_static_Offset_TitleTermListEntry_descriptor,
+              .<java.lang.String, java.lang.Integer>newDefaultInstance(
+                  com.autohome.models.OffsetModel.internal_static_Offset_TitleTermListEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.INT32,
                   0);
     }
     private com.google.protobuf.MapField<
-        String, Integer> titleTermList_;
-    private com.google.protobuf.MapField<String, Integer>
+        java.lang.String, java.lang.Integer> titleTermList_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
     internalGetTitleTermList() {
       if (titleTermList_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -324,22 +324,22 @@ public final class OffsetModel {
      */
 
     public boolean containsTitleTermList(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetTitleTermList().getMap().containsKey(key);
     }
     /**
      * Use {@link #getTitleTermListMap()} instead.
      */
-    @Deprecated
-    public java.util.Map<String, Integer> getTitleTermList() {
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.Integer> getTitleTermList() {
       return getTitleTermListMap();
     }
     /**
      * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
      */
 
-    public java.util.Map<String, Integer> getTitleTermListMap() {
+    public java.util.Map<java.lang.String, java.lang.Integer> getTitleTermListMap() {
       return internalGetTitleTermList().getMap();
     }
     /**
@@ -347,10 +347,10 @@ public final class OffsetModel {
      */
 
     public int getTitleTermListOrDefault(
-        String key,
+        java.lang.String key,
         int defaultValue) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetTitleTermList().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
@@ -359,12 +359,12 @@ public final class OffsetModel {
      */
 
     public int getTitleTermListOrThrow(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetTitleTermList().getMap();
       if (!map.containsKey(key)) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
     }
@@ -372,18 +372,18 @@ public final class OffsetModel {
     public static final int STITLETERMLIST_FIELD_NUMBER = 2;
     private static final class StitleTermListDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
-          String, Integer> defaultEntry =
+          java.lang.String, java.lang.Integer> defaultEntry =
               com.google.protobuf.MapEntry
-              .<String, Integer>newDefaultInstance(
-                  OffsetModel.internal_static_Offset_StitleTermListEntry_descriptor,
+              .<java.lang.String, java.lang.Integer>newDefaultInstance(
+                  com.autohome.models.OffsetModel.internal_static_Offset_StitleTermListEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.INT32,
                   0);
     }
     private com.google.protobuf.MapField<
-        String, Integer> stitleTermList_;
-    private com.google.protobuf.MapField<String, Integer>
+        java.lang.String, java.lang.Integer> stitleTermList_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
     internalGetStitleTermList() {
       if (stitleTermList_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -400,22 +400,22 @@ public final class OffsetModel {
      */
 
     public boolean containsStitleTermList(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetStitleTermList().getMap().containsKey(key);
     }
     /**
      * Use {@link #getStitleTermListMap()} instead.
      */
-    @Deprecated
-    public java.util.Map<String, Integer> getStitleTermList() {
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.Integer> getStitleTermList() {
       return getStitleTermListMap();
     }
     /**
      * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
      */
 
-    public java.util.Map<String, Integer> getStitleTermListMap() {
+    public java.util.Map<java.lang.String, java.lang.Integer> getStitleTermListMap() {
       return internalGetStitleTermList().getMap();
     }
     /**
@@ -423,10 +423,10 @@ public final class OffsetModel {
      */
 
     public int getStitleTermListOrDefault(
-        String key,
+        java.lang.String key,
         int defaultValue) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetStitleTermList().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
@@ -435,12 +435,12 @@ public final class OffsetModel {
      */
 
     public int getStitleTermListOrThrow(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetStitleTermList().getMap();
       if (!map.containsKey(key)) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
     }
@@ -448,18 +448,18 @@ public final class OffsetModel {
     public static final int AUTHORTERMLIST_FIELD_NUMBER = 3;
     private static final class AuthorTermListDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
-          String, Integer> defaultEntry =
+          java.lang.String, java.lang.Integer> defaultEntry =
               com.google.protobuf.MapEntry
-              .<String, Integer>newDefaultInstance(
-                  OffsetModel.internal_static_Offset_AuthorTermListEntry_descriptor,
+              .<java.lang.String, java.lang.Integer>newDefaultInstance(
+                  com.autohome.models.OffsetModel.internal_static_Offset_AuthorTermListEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.INT32,
                   0);
     }
     private com.google.protobuf.MapField<
-        String, Integer> authorTermList_;
-    private com.google.protobuf.MapField<String, Integer>
+        java.lang.String, java.lang.Integer> authorTermList_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
     internalGetAuthorTermList() {
       if (authorTermList_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -476,22 +476,22 @@ public final class OffsetModel {
      */
 
     public boolean containsAuthorTermList(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetAuthorTermList().getMap().containsKey(key);
     }
     /**
      * Use {@link #getAuthorTermListMap()} instead.
      */
-    @Deprecated
-    public java.util.Map<String, Integer> getAuthorTermList() {
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.Integer> getAuthorTermList() {
       return getAuthorTermListMap();
     }
     /**
      * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
      */
 
-    public java.util.Map<String, Integer> getAuthorTermListMap() {
+    public java.util.Map<java.lang.String, java.lang.Integer> getAuthorTermListMap() {
       return internalGetAuthorTermList().getMap();
     }
     /**
@@ -499,10 +499,10 @@ public final class OffsetModel {
      */
 
     public int getAuthorTermListOrDefault(
-        String key,
+        java.lang.String key,
         int defaultValue) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetAuthorTermList().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
@@ -511,12 +511,12 @@ public final class OffsetModel {
      */
 
     public int getAuthorTermListOrThrow(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetAuthorTermList().getMap();
       if (!map.containsKey(key)) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
     }
@@ -524,18 +524,18 @@ public final class OffsetModel {
     public static final int CONTENTTERMLIST_FIELD_NUMBER = 4;
     private static final class ContentTermListDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
-          String, Integer> defaultEntry =
+          java.lang.String, java.lang.Integer> defaultEntry =
               com.google.protobuf.MapEntry
-              .<String, Integer>newDefaultInstance(
-                  OffsetModel.internal_static_Offset_ContentTermListEntry_descriptor,
+              .<java.lang.String, java.lang.Integer>newDefaultInstance(
+                  com.autohome.models.OffsetModel.internal_static_Offset_ContentTermListEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.INT32,
                   0);
     }
     private com.google.protobuf.MapField<
-        String, Integer> contentTermList_;
-    private com.google.protobuf.MapField<String, Integer>
+        java.lang.String, java.lang.Integer> contentTermList_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
     internalGetContentTermList() {
       if (contentTermList_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -552,22 +552,22 @@ public final class OffsetModel {
      */
 
     public boolean containsContentTermList(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
       return internalGetContentTermList().getMap().containsKey(key);
     }
     /**
      * Use {@link #getContentTermListMap()} instead.
      */
-    @Deprecated
-    public java.util.Map<String, Integer> getContentTermList() {
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.Integer> getContentTermList() {
       return getContentTermListMap();
     }
     /**
      * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
      */
 
-    public java.util.Map<String, Integer> getContentTermListMap() {
+    public java.util.Map<java.lang.String, java.lang.Integer> getContentTermListMap() {
       return internalGetContentTermList().getMap();
     }
     /**
@@ -575,10 +575,10 @@ public final class OffsetModel {
      */
 
     public int getContentTermListOrDefault(
-        String key,
+        java.lang.String key,
         int defaultValue) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetContentTermList().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
@@ -587,12 +587,12 @@ public final class OffsetModel {
      */
 
     public int getContentTermListOrThrow(
-        String key) {
-      if (key == null) { throw new NullPointerException(); }
-      java.util.Map<String, Integer> map =
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.Integer> map =
           internalGetContentTermList().getMap();
       if (!map.containsKey(key)) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
     }
@@ -641,9 +641,9 @@ public final class OffsetModel {
       if (size != -1) return size;
 
       size = 0;
-      for (java.util.Map.Entry<String, Integer> entry
+      for (java.util.Map.Entry<java.lang.String, java.lang.Integer> entry
            : internalGetTitleTermList().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<String, Integer>
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
         titleTermList__ = TitleTermListDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
@@ -651,9 +651,9 @@ public final class OffsetModel {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(1, titleTermList__);
       }
-      for (java.util.Map.Entry<String, Integer> entry
+      for (java.util.Map.Entry<java.lang.String, java.lang.Integer> entry
            : internalGetStitleTermList().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<String, Integer>
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
         stitleTermList__ = StitleTermListDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
@@ -661,9 +661,9 @@ public final class OffsetModel {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(2, stitleTermList__);
       }
-      for (java.util.Map.Entry<String, Integer> entry
+      for (java.util.Map.Entry<java.lang.String, java.lang.Integer> entry
            : internalGetAuthorTermList().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<String, Integer>
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
         authorTermList__ = AuthorTermListDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
@@ -671,9 +671,9 @@ public final class OffsetModel {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(3, authorTermList__);
       }
-      for (java.util.Map.Entry<String, Integer> entry
+      for (java.util.Map.Entry<java.lang.String, java.lang.Integer> entry
            : internalGetContentTermList().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<String, Integer>
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.Integer>
         contentTermList__ = ContentTermListDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
@@ -686,15 +686,15 @@ public final class OffsetModel {
       return size;
     }
 
-    @Override
-    public boolean equals(final Object obj) {
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof Offset)) {
+      if (!(obj instanceof com.autohome.models.OffsetModel.Offset)) {
         return super.equals(obj);
       }
-      Offset other = (Offset) obj;
+      com.autohome.models.OffsetModel.Offset other = (com.autohome.models.OffsetModel.Offset) obj;
 
       boolean result = true;
       result = result && internalGetTitleTermList().equals(
@@ -709,7 +709,7 @@ public final class OffsetModel {
       return result;
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
       if (memoizedHashCode != 0) {
         return memoizedHashCode;
@@ -737,69 +737,69 @@ public final class OffsetModel {
       return hash;
     }
 
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Offset parseFrom(byte[] data)
+    public static com.autohome.models.OffsetModel.Offset parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Offset parseFrom(java.io.InputStream input)
+    public static com.autohome.models.OffsetModel.Offset parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Offset parseDelimitedFrom(java.io.InputStream input)
+    public static com.autohome.models.OffsetModel.Offset parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static Offset parseDelimitedFrom(
+    public static com.autohome.models.OffsetModel.Offset parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Offset parseFrom(
+    public static com.autohome.models.OffsetModel.Offset parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -811,7 +811,7 @@ public final class OffsetModel {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Offset prototype) {
+    public static Builder newBuilder(com.autohome.models.OffsetModel.Offset prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -819,7 +819,7 @@ public final class OffsetModel {
           ? new Builder() : new Builder().mergeFrom(this);
     }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
@@ -831,10 +831,10 @@ public final class OffsetModel {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:Offset)
-        OffsetOrBuilder {
+        com.autohome.models.OffsetModel.OffsetOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return OffsetModel.internal_static_Offset_descriptor;
+        return com.autohome.models.OffsetModel.internal_static_Offset_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -873,12 +873,12 @@ public final class OffsetModel {
       }
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return OffsetModel.internal_static_Offset_fieldAccessorTable
+        return com.autohome.models.OffsetModel.internal_static_Offset_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                Offset.class, Builder.class);
+                com.autohome.models.OffsetModel.Offset.class, com.autohome.models.OffsetModel.Offset.Builder.class);
       }
 
-      // Construct using com.autohome.model.OffsetModel.Offset.newBuilder()
+      // Construct using com.autohome.models.OffsetModel.Offset.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -904,23 +904,23 @@ public final class OffsetModel {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return OffsetModel.internal_static_Offset_descriptor;
+        return com.autohome.models.OffsetModel.internal_static_Offset_descriptor;
       }
 
-      public Offset getDefaultInstanceForType() {
-        return Offset.getDefaultInstance();
+      public com.autohome.models.OffsetModel.Offset getDefaultInstanceForType() {
+        return com.autohome.models.OffsetModel.Offset.getDefaultInstance();
       }
 
-      public Offset build() {
-        Offset result = buildPartial();
+      public com.autohome.models.OffsetModel.Offset build() {
+        com.autohome.models.OffsetModel.Offset result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public Offset buildPartial() {
-        Offset result = new Offset(this);
+      public com.autohome.models.OffsetModel.Offset buildPartial() {
+        com.autohome.models.OffsetModel.Offset result = new com.autohome.models.OffsetModel.Offset(this);
         int from_bitField0_ = bitField0_;
         result.titleTermList_ = internalGetTitleTermList();
         result.titleTermList_.makeImmutable();
@@ -939,7 +939,7 @@ public final class OffsetModel {
       }
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
+          java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
@@ -952,25 +952,25 @@ public final class OffsetModel {
       }
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
+          int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
+          java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof Offset) {
-          return mergeFrom((Offset)other);
+        if (other instanceof com.autohome.models.OffsetModel.Offset) {
+          return mergeFrom((com.autohome.models.OffsetModel.Offset)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(Offset other) {
-        if (other == Offset.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.autohome.models.OffsetModel.Offset other) {
+        if (other == com.autohome.models.OffsetModel.Offset.getDefaultInstance()) return this;
         internalGetMutableTitleTermList().mergeFrom(
             other.internalGetTitleTermList());
         internalGetMutableStitleTermList().mergeFrom(
@@ -992,11 +992,11 @@ public final class OffsetModel {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Offset parsedMessage = null;
+        com.autohome.models.OffsetModel.Offset parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (Offset) e.getUnfinishedMessage();
+          parsedMessage = (com.autohome.models.OffsetModel.Offset) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1008,8 +1008,8 @@ public final class OffsetModel {
       private int bitField0_;
 
       private com.google.protobuf.MapField<
-          String, Integer> titleTermList_;
-      private com.google.protobuf.MapField<String, Integer>
+          java.lang.String, java.lang.Integer> titleTermList_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetTitleTermList() {
         if (titleTermList_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -1017,7 +1017,7 @@ public final class OffsetModel {
         }
         return titleTermList_;
       }
-      private com.google.protobuf.MapField<String, Integer>
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetMutableTitleTermList() {
         onChanged();;
         if (titleTermList_ == null) {
@@ -1038,22 +1038,22 @@ public final class OffsetModel {
        */
 
       public boolean containsTitleTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         return internalGetTitleTermList().getMap().containsKey(key);
       }
       /**
        * Use {@link #getTitleTermListMap()} instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer> getTitleTermList() {
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer> getTitleTermList() {
         return getTitleTermListMap();
       }
       /**
        * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
        */
 
-      public java.util.Map<String, Integer> getTitleTermListMap() {
+      public java.util.Map<java.lang.String, java.lang.Integer> getTitleTermListMap() {
         return internalGetTitleTermList().getMap();
       }
       /**
@@ -1061,10 +1061,10 @@ public final class OffsetModel {
        */
 
       public int getTitleTermListOrDefault(
-          String key,
+          java.lang.String key,
           int defaultValue) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetTitleTermList().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
@@ -1073,12 +1073,12 @@ public final class OffsetModel {
        */
 
       public int getTitleTermListOrThrow(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetTitleTermList().getMap();
         if (!map.containsKey(key)) {
-          throw new IllegalArgumentException();
+          throw new java.lang.IllegalArgumentException();
         }
         return map.get(key);
       }
@@ -1093,8 +1093,8 @@ public final class OffsetModel {
        */
 
       public Builder removeTitleTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         internalGetMutableTitleTermList().getMutableMap()
             .remove(key);
         return this;
@@ -1102,8 +1102,8 @@ public final class OffsetModel {
       /**
        * Use alternate mutation accessors instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer>
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer>
       getMutableTitleTermList() {
         return internalGetMutableTitleTermList().getMutableMap();
       }
@@ -1111,9 +1111,9 @@ public final class OffsetModel {
        * <code>map&lt;string, int32&gt; titleTermList = 1;</code>
        */
       public Builder putTitleTermList(
-          String key,
+          java.lang.String key,
           int value) {
-        if (key == null) { throw new NullPointerException(); }
+        if (key == null) { throw new java.lang.NullPointerException(); }
         
         internalGetMutableTitleTermList().getMutableMap()
             .put(key, value);
@@ -1124,15 +1124,15 @@ public final class OffsetModel {
        */
 
       public Builder putAllTitleTermList(
-          java.util.Map<String, Integer> values) {
+          java.util.Map<java.lang.String, java.lang.Integer> values) {
         internalGetMutableTitleTermList().getMutableMap()
             .putAll(values);
         return this;
       }
 
       private com.google.protobuf.MapField<
-          String, Integer> stitleTermList_;
-      private com.google.protobuf.MapField<String, Integer>
+          java.lang.String, java.lang.Integer> stitleTermList_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetStitleTermList() {
         if (stitleTermList_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -1140,7 +1140,7 @@ public final class OffsetModel {
         }
         return stitleTermList_;
       }
-      private com.google.protobuf.MapField<String, Integer>
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetMutableStitleTermList() {
         onChanged();;
         if (stitleTermList_ == null) {
@@ -1161,22 +1161,22 @@ public final class OffsetModel {
        */
 
       public boolean containsStitleTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         return internalGetStitleTermList().getMap().containsKey(key);
       }
       /**
        * Use {@link #getStitleTermListMap()} instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer> getStitleTermList() {
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer> getStitleTermList() {
         return getStitleTermListMap();
       }
       /**
        * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
        */
 
-      public java.util.Map<String, Integer> getStitleTermListMap() {
+      public java.util.Map<java.lang.String, java.lang.Integer> getStitleTermListMap() {
         return internalGetStitleTermList().getMap();
       }
       /**
@@ -1184,10 +1184,10 @@ public final class OffsetModel {
        */
 
       public int getStitleTermListOrDefault(
-          String key,
+          java.lang.String key,
           int defaultValue) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetStitleTermList().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
@@ -1196,12 +1196,12 @@ public final class OffsetModel {
        */
 
       public int getStitleTermListOrThrow(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetStitleTermList().getMap();
         if (!map.containsKey(key)) {
-          throw new IllegalArgumentException();
+          throw new java.lang.IllegalArgumentException();
         }
         return map.get(key);
       }
@@ -1216,8 +1216,8 @@ public final class OffsetModel {
        */
 
       public Builder removeStitleTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         internalGetMutableStitleTermList().getMutableMap()
             .remove(key);
         return this;
@@ -1225,8 +1225,8 @@ public final class OffsetModel {
       /**
        * Use alternate mutation accessors instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer>
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer>
       getMutableStitleTermList() {
         return internalGetMutableStitleTermList().getMutableMap();
       }
@@ -1234,9 +1234,9 @@ public final class OffsetModel {
        * <code>map&lt;string, int32&gt; stitleTermList = 2;</code>
        */
       public Builder putStitleTermList(
-          String key,
+          java.lang.String key,
           int value) {
-        if (key == null) { throw new NullPointerException(); }
+        if (key == null) { throw new java.lang.NullPointerException(); }
         
         internalGetMutableStitleTermList().getMutableMap()
             .put(key, value);
@@ -1247,15 +1247,15 @@ public final class OffsetModel {
        */
 
       public Builder putAllStitleTermList(
-          java.util.Map<String, Integer> values) {
+          java.util.Map<java.lang.String, java.lang.Integer> values) {
         internalGetMutableStitleTermList().getMutableMap()
             .putAll(values);
         return this;
       }
 
       private com.google.protobuf.MapField<
-          String, Integer> authorTermList_;
-      private com.google.protobuf.MapField<String, Integer>
+          java.lang.String, java.lang.Integer> authorTermList_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetAuthorTermList() {
         if (authorTermList_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -1263,7 +1263,7 @@ public final class OffsetModel {
         }
         return authorTermList_;
       }
-      private com.google.protobuf.MapField<String, Integer>
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetMutableAuthorTermList() {
         onChanged();;
         if (authorTermList_ == null) {
@@ -1284,22 +1284,22 @@ public final class OffsetModel {
        */
 
       public boolean containsAuthorTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         return internalGetAuthorTermList().getMap().containsKey(key);
       }
       /**
        * Use {@link #getAuthorTermListMap()} instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer> getAuthorTermList() {
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer> getAuthorTermList() {
         return getAuthorTermListMap();
       }
       /**
        * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
        */
 
-      public java.util.Map<String, Integer> getAuthorTermListMap() {
+      public java.util.Map<java.lang.String, java.lang.Integer> getAuthorTermListMap() {
         return internalGetAuthorTermList().getMap();
       }
       /**
@@ -1307,10 +1307,10 @@ public final class OffsetModel {
        */
 
       public int getAuthorTermListOrDefault(
-          String key,
+          java.lang.String key,
           int defaultValue) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetAuthorTermList().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
@@ -1319,12 +1319,12 @@ public final class OffsetModel {
        */
 
       public int getAuthorTermListOrThrow(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetAuthorTermList().getMap();
         if (!map.containsKey(key)) {
-          throw new IllegalArgumentException();
+          throw new java.lang.IllegalArgumentException();
         }
         return map.get(key);
       }
@@ -1339,8 +1339,8 @@ public final class OffsetModel {
        */
 
       public Builder removeAuthorTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         internalGetMutableAuthorTermList().getMutableMap()
             .remove(key);
         return this;
@@ -1348,8 +1348,8 @@ public final class OffsetModel {
       /**
        * Use alternate mutation accessors instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer>
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer>
       getMutableAuthorTermList() {
         return internalGetMutableAuthorTermList().getMutableMap();
       }
@@ -1357,9 +1357,9 @@ public final class OffsetModel {
        * <code>map&lt;string, int32&gt; authorTermList = 3;</code>
        */
       public Builder putAuthorTermList(
-          String key,
+          java.lang.String key,
           int value) {
-        if (key == null) { throw new NullPointerException(); }
+        if (key == null) { throw new java.lang.NullPointerException(); }
         
         internalGetMutableAuthorTermList().getMutableMap()
             .put(key, value);
@@ -1370,15 +1370,15 @@ public final class OffsetModel {
        */
 
       public Builder putAllAuthorTermList(
-          java.util.Map<String, Integer> values) {
+          java.util.Map<java.lang.String, java.lang.Integer> values) {
         internalGetMutableAuthorTermList().getMutableMap()
             .putAll(values);
         return this;
       }
 
       private com.google.protobuf.MapField<
-          String, Integer> contentTermList_;
-      private com.google.protobuf.MapField<String, Integer>
+          java.lang.String, java.lang.Integer> contentTermList_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetContentTermList() {
         if (contentTermList_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -1386,7 +1386,7 @@ public final class OffsetModel {
         }
         return contentTermList_;
       }
-      private com.google.protobuf.MapField<String, Integer>
+      private com.google.protobuf.MapField<java.lang.String, java.lang.Integer>
       internalGetMutableContentTermList() {
         onChanged();;
         if (contentTermList_ == null) {
@@ -1407,22 +1407,22 @@ public final class OffsetModel {
        */
 
       public boolean containsContentTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         return internalGetContentTermList().getMap().containsKey(key);
       }
       /**
        * Use {@link #getContentTermListMap()} instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer> getContentTermList() {
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer> getContentTermList() {
         return getContentTermListMap();
       }
       /**
        * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
        */
 
-      public java.util.Map<String, Integer> getContentTermListMap() {
+      public java.util.Map<java.lang.String, java.lang.Integer> getContentTermListMap() {
         return internalGetContentTermList().getMap();
       }
       /**
@@ -1430,10 +1430,10 @@ public final class OffsetModel {
        */
 
       public int getContentTermListOrDefault(
-          String key,
+          java.lang.String key,
           int defaultValue) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetContentTermList().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
@@ -1442,12 +1442,12 @@ public final class OffsetModel {
        */
 
       public int getContentTermListOrThrow(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
-        java.util.Map<String, Integer> map =
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.Integer> map =
             internalGetContentTermList().getMap();
         if (!map.containsKey(key)) {
-          throw new IllegalArgumentException();
+          throw new java.lang.IllegalArgumentException();
         }
         return map.get(key);
       }
@@ -1462,8 +1462,8 @@ public final class OffsetModel {
        */
 
       public Builder removeContentTermList(
-          String key) {
-        if (key == null) { throw new NullPointerException(); }
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
         internalGetMutableContentTermList().getMutableMap()
             .remove(key);
         return this;
@@ -1471,8 +1471,8 @@ public final class OffsetModel {
       /**
        * Use alternate mutation accessors instead.
        */
-      @Deprecated
-      public java.util.Map<String, Integer>
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Integer>
       getMutableContentTermList() {
         return internalGetMutableContentTermList().getMutableMap();
       }
@@ -1480,9 +1480,9 @@ public final class OffsetModel {
        * <code>map&lt;string, int32&gt; contentTermList = 4;</code>
        */
       public Builder putContentTermList(
-          String key,
+          java.lang.String key,
           int value) {
-        if (key == null) { throw new NullPointerException(); }
+        if (key == null) { throw new java.lang.NullPointerException(); }
         
         internalGetMutableContentTermList().getMutableMap()
             .put(key, value);
@@ -1493,7 +1493,7 @@ public final class OffsetModel {
        */
 
       public Builder putAllContentTermList(
-          java.util.Map<String, Integer> values) {
+          java.util.Map<java.lang.String, java.lang.Integer> values) {
         internalGetMutableContentTermList().getMutableMap()
             .putAll(values);
         return this;
@@ -1513,12 +1513,12 @@ public final class OffsetModel {
     }
 
     // @@protoc_insertion_point(class_scope:Offset)
-    private static final Offset DEFAULT_INSTANCE;
+    private static final com.autohome.models.OffsetModel.Offset DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Offset();
+      DEFAULT_INSTANCE = new com.autohome.models.OffsetModel.Offset();
     }
 
-    public static Offset getDefaultInstance() {
+    public static com.autohome.models.OffsetModel.Offset getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1536,12 +1536,12 @@ public final class OffsetModel {
       return PARSER;
     }
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<Offset> getParserForType() {
       return PARSER;
     }
 
-    public Offset getDefaultInstanceForType() {
+    public com.autohome.models.OffsetModel.Offset getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1580,7 +1580,7 @@ public final class OffsetModel {
   private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    String[] descriptorData = {
+    java.lang.String[] descriptorData = {
       "\n\014offset.proto\"\270\003\n\006Offset\0221\n\rtitleTermLi" +
       "st\030\001 \003(\0132\032.Offset.TitleTermListEntry\0223\n\016" +
       "stitleTermList\030\002 \003(\0132\033.Offset.StitleTerm" +
@@ -1592,8 +1592,8 @@ public final class OffsetModel {
       "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\005:\0028\001\0325\n\023AuthorTerm" +
       "ListEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\005:\0028" +
       "\001\0326\n\024ContentTermListEntry\022\013\n\003key\030\001 \001(\t\022\r" +
-      "\n\005value\030\002 \001(\005:\0028\001B!\n\022com.autohome.modelB" +
-      "\013OffsetModelb\006proto3"
+      "\n\005value\030\002 \001(\005:\0028\001B\"\n\023com.autohome.models" +
+      "B\013OffsetModelb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1612,31 +1612,31 @@ public final class OffsetModel {
     internal_static_Offset_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Offset_descriptor,
-        new String[] { "TitleTermList", "StitleTermList", "AuthorTermList", "ContentTermList", });
+        new java.lang.String[] { "TitleTermList", "StitleTermList", "AuthorTermList", "ContentTermList", });
     internal_static_Offset_TitleTermListEntry_descriptor =
       internal_static_Offset_descriptor.getNestedTypes().get(0);
     internal_static_Offset_TitleTermListEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Offset_TitleTermListEntry_descriptor,
-        new String[] { "Key", "Value", });
+        new java.lang.String[] { "Key", "Value", });
     internal_static_Offset_StitleTermListEntry_descriptor =
       internal_static_Offset_descriptor.getNestedTypes().get(1);
     internal_static_Offset_StitleTermListEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Offset_StitleTermListEntry_descriptor,
-        new String[] { "Key", "Value", });
+        new java.lang.String[] { "Key", "Value", });
     internal_static_Offset_AuthorTermListEntry_descriptor =
       internal_static_Offset_descriptor.getNestedTypes().get(2);
     internal_static_Offset_AuthorTermListEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Offset_AuthorTermListEntry_descriptor,
-        new String[] { "Key", "Value", });
+        new java.lang.String[] { "Key", "Value", });
     internal_static_Offset_ContentTermListEntry_descriptor =
       internal_static_Offset_descriptor.getNestedTypes().get(3);
     internal_static_Offset_ContentTermListEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Offset_ContentTermListEntry_descriptor,
-        new String[] { "Key", "Value", });
+        new java.lang.String[] { "Key", "Value", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

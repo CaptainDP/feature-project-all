@@ -3,9 +3,8 @@ package com.autohome.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.autohome.beans.Segement;
-import com.autohome.models.OffsetModel;
 import okhttp3.*;
-
+import com.autohome.models.OffsetModel;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;

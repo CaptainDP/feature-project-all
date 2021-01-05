@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "com.autohome.models";
+option java_outer_classname = "OffsetModel";
+
+message Offset {
+    map<string, int32> titleTermList=1;
+    map<string, int32> stitleTermList=2;
+    map<string, int32> authorTermList=3;
+    map<string, int32> contentTermList=4;
+}

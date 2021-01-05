@@ -2,3 +2,10 @@
 test
 .gitignore
 .idea
+.iml
+feature_common/feature_common.iml
+feature_common/target/
+feature_offline/feature_offline.iml
+feature_offline/target/
+feature_project.iml
+feature_realtime/feature_realtime.iml

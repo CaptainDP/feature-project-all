@@ -57,6 +57,10 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
             result.setAuthor("");
             result.setContent(active.getContent());
             result.setItem_key(getItem_key(active.getBizType(),active.getBizId()));
+            result.setBiz_type(active.getBizType());
+            result.setBiz_id(active.getBizId());
+            result.setSearchUsed(active.getSearchUsed());
+            result.setJsonReserve(active.getJsonReserve());
         }else if(topic.equals(KafkaServers.lf_zhengpaiku_tb_car_pool_tidb.getRealName())){
             CarModel.Car car = CarModel.Car.parseFrom(bytes);
             result.setTitle(car.getTitle());
@@ -64,6 +68,10 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
             result.setAuthor("");
             result.setContent(car.getContent());
             result.setItem_key(getItem_key(car.getBizType(),car.getBizId()));
+            result.setBiz_type(car.getBizType());
+            result.setBiz_id(car.getBizId());
+            result.setSearchUsed(car.getSearchUsed());
+            result.setJsonReserve(car.getJsonReserve());
         }else if(topic.equals(KafkaServers.lf_zhengpaiku_tb_richmedia_pool_tidb.getRealName())){
             RichMediaModel.RichMedia richMedia = RichMediaModel.RichMedia.parseFrom(bytes);
             result.setTitle(richMedia.getTitle());
@@ -71,6 +79,10 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
             result.setAuthor(richMedia.getAuthor());
             result.setContent(richMedia.getContent());
             result.setItem_key(getItem_key(richMedia.getBizType(),richMedia.getBizId()));
+            result.setBiz_type(richMedia.getBizType());
+            result.setBiz_id(richMedia.getBizId());
+            result.setSearchUsed(richMedia.getSearchUsed());
+            result.setJsonReserve(richMedia.getJsonReserve());
         }else if(topic.equals(KafkaServers.lf_zhengpaiku_tb_user_pool_tidb.getRealName())){
             UserModel.User user = UserModel.User.parseFrom(bytes);
             result.setTitle(user.getTitle());
@@ -78,6 +90,10 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
             result.setAuthor(user.getAuthor());
             result.setContent(user.getContent());
             result.setItem_key(getItem_key(user.getBizType(),user.getBizId()));
+            result.setBiz_type(user.getBizType());
+            result.setBiz_id(user.getBizId());
+            result.setSearchUsed(user.getSearchUsed());
+            result.setJsonReserve(user.getJsonReserve());
         }else if(topic.equals(KafkaServers.lf_zhengpaiku_tb_topic_pool_tidb.getRealName())){
             TopicModel.Topic topicP = TopicModel.Topic.parseFrom(bytes);
             result.setTitle(topicP.getTitle());
@@ -85,6 +101,10 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
             result.setAuthor(topicP.getAuthor());
             result.setContent(topicP.getContent());
             result.setItem_key(getItem_key(topicP.getBizType(),topicP.getBizId()));
+            result.setBiz_type(topicP.getBizType());
+            result.setBiz_id(topicP.getBizId());
+            result.setSearchUsed(topicP.getSearchUsed());
+            result.setJsonReserve(topicP.getJsonReserve());
         }
         return result;
     }

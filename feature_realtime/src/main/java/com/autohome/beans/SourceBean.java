@@ -19,5 +19,9 @@ public class SourceBean implements Serializable {
     private String content;
     private long timestamp;
     private String topic;
+    private String biz_type;
+    private String biz_id;
+    private String searchUsed;
+    private String jsonReserve;
 
 }

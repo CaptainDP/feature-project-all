@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 public class SearchOffsetStreamJob {
 	private static Logger logger = LoggerFactory.getLogger("SearchOffsetStreamJob");
 
+	private static String jieSoServerFlag = "es";
+
 	public static void main(String[] args) throws Exception {
 		MultipleParameterTool params = MultipleParameterTool.fromArgs(args);
 
@@ -30,6 +32,11 @@ public class SearchOffsetStreamJob {
 		if(params.has("startTimeStamp")){
 			startTimeStamp = params.getLong("startTimeStamp");
 		}
+
+		if(params.has("jieSoServerFlag")){
+			jieSoServerFlag = params.get("jieSoServerFlag");
+		}
+
 
 		StreamExecutionEnvironment env = FlinkUtils.getOnlineStreamEnv(TimeCharacteristic.ProcessingTime);
 
@@ -64,7 +71,7 @@ public class SearchOffsetStreamJob {
 		env.addSource(pool_consumer)
 			.filter(new SearchDataFileter()).name("filter_search_data")
 			.map(new PB2JsonMap()).name("to_Field_bean")
-			.map(new PbHandlerMap()).name("query_term_offset")
+			.map(new PbHandlerMap(jieSoServerFlag)).name("query_term_offset")
 			.addSink(new RedisSink()).name("push_redis");
 	}
 

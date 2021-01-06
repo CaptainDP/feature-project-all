@@ -2,7 +2,7 @@ package taichi.rdds;
 
 import com.autohome.beans.Segement;
 import com.autohome.models.OffsetModel;
-import com.autohome.utils.ESHttpClientUtils;
+import com.autohome.utils.HttpClientUtils;
 import com.autohome.utils.RedisUtils;
 import com.captain.bigdata.taichi.process.transfer.SqlTransfer;
 import org.apache.spark.api.java.JavaRDD;
@@ -81,12 +81,12 @@ public class SearchOffsetFeatureRDD extends SqlTransfer {
         String stitle = row.getAs("stitle");
 
 
-        List<Segement> contentSegList = ESHttpClientUtils.post(content.length()>1000?content.substring(0,1000):content);
-        List<Segement> authorSegList = ESHttpClientUtils.post(author);
-        List<Segement> titleSegList = ESHttpClientUtils.post(title);
-        List<Segement> stitleSegList = ESHttpClientUtils.post(stitle);
+        List<Segement> contentSegList = HttpClientUtils.postES(content.length()>1000?content.substring(0,1000):content);
+        List<Segement> authorSegList = HttpClientUtils.postES(author);
+        List<Segement> titleSegList = HttpClientUtils.postES(title);
+        List<Segement> stitleSegList = HttpClientUtils.postES(stitle);
 
-        OffsetModel.Offset offset = ESHttpClientUtils.castPb(titleSegList, stitleSegList, authorSegList, contentSegList);
+        OffsetModel.Offset offset = HttpClientUtils.castPb(titleSegList, stitleSegList, authorSegList, contentSegList);
 
         return offset;
     }

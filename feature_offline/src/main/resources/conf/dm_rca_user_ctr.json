@@ -46,16 +46,24 @@
     {
       "clazz": "${SqlTransfer}",
       "flag": "true",
+      "annotation": "0.设置动态分区",
+      "tableName": "TMP_TBL_00",
+      "sql": "set hive.exec.dynamic.partition.mode=nonstrict"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
       "annotation": "1.计算每天用户对应CTR",
       "tableName": "TMP_TBL_01",
-      "sql": "select dt, device_id, sum(click_num) / sum(sight_show_num) as ctr, from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by device_id"
+      "partitionNum": "10",
+      "sql": "select dt, device_id, sum(click_num) / sum(sight_show_num) as ctr from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
     },
     {
       "clazz": "${SqlTransfer}",
       "flag": "true",
       "annotation": "2.插入数据到hive表",
       "tableName": "TMP_TBL_02",
-      "sql": "insert into dm_rca.dm_rca_user_ctr select device_id,ctr,dt from TMP_TBL_01"
+      "sql": "insert into table dm_rca.dm_rca_user_ctr PARTITION(dt)  select device_id,ctr,dt from TMP_TBL_01"
     }
   ]
 }

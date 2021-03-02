@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.autohome.beans.Segement;
 import okhttp3.*;
 import com.autohome.models.OffsetModel;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class HttpClientUtils {
     private static Logger logger = LoggerFactory.getLogger("SearchOffsetStreamJob");
-    static String jieba_so_cluster_url_es = "http://10.28.237.64/_analyze";
+    static String jieba_so_cluster_url_es = "http://10.27.100.13:9201/_analyze";
     static String jieba_so_cluster_url_qp = "http://10.244.3.150/qp_full/?q=%s&qptype=1";
     private static final MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
     private final static OkHttpClient client = new OkHttpClient.Builder()
@@ -36,6 +38,8 @@ public class HttpClientUtils {
      * @return
      */
     public static List<Segement> postQP(String content){
+        if(StringUtils.isBlank(content))
+            return new ArrayList<>();
 
         String url = String.format(jieba_so_cluster_url_qp, content);
         Request build = new Request.Builder()
@@ -49,6 +53,7 @@ public class HttpClientUtils {
 
             JSONObject responseJSON = JSONObject.parseObject(bodyContent);
 
+            logger.info("qp result:{}", responseJSON!=null?responseJSON.toJSONString():"");
             if(responseJSON==null)
                 return null;
             if(responseJSON.containsKey("simple_result")){
@@ -79,13 +84,16 @@ public class HttpClientUtils {
      * @return
      */
     public static List<Segement> postES(String content){
-
+        if(StringUtils.isBlank(content)) {
+            return new ArrayList<>();
+        }
         String req = String.format("{\"analyzer\": \"jieba_mix_word\",\"text\": [\"%s\"]}", content);
         RequestBody body = RequestBody.create(mediaType, req);
 
         Request build = new Request.Builder()
                 .url(jieba_so_cluster_url_es)
                 .post(body)
+                .addHeader("Authorization", "Basic aW5kZXhfZWxhc3RpYzppbmRleHNlcnZpY2Vwcm92aWRlcg==")
                 .build();
 
         try {
@@ -94,6 +102,11 @@ public class HttpClientUtils {
 
             JSONObject jsonObject = JSONObject.parseObject(bodyContent);
             JSONArray tokens = jsonObject.getJSONArray("tokens");
+
+
+            if(tokens==null)
+                return null;
+            //logger.info("qp result:{}", tokens!=null?tokens.toJSONString():"");
 
             List<Segement> collect = tokens.stream().map(x -> {
                 JSONObject item = (JSONObject) x;
@@ -113,24 +126,37 @@ public class HttpClientUtils {
         }
     }
 
-
     /**
      * 偏移量转pb
-     * @param title
-     * @param stitle
-     * @param author
-     * @param content
      * @return
      */
-    public static OffsetModel.Offset castPb(List<Segement> title, List<Segement> stitle, List<Segement> author, List<Segement> content){
+    public static OffsetModel.Offset createPB(List<Segement> authorSegList, List<Segement> contentSegList,List<Segement> stitleSegList,List<Segement> titleSegList){
+
         OffsetModel.Offset.Builder offset = OffsetModel.Offset.newBuilder();
 
-        title.stream().map(x -> offset.putTitleTermList(x.getToken(), (int) x.getStart_offset()));
-        stitle.stream().map(x -> offset.putStitleTermList(x.getToken(), (int) x.getStart_offset()));
-        author.stream().map(x -> offset.putAuthorTermList(x.getToken(), (int) x.getStart_offset()));
-        content.stream().map(x -> offset.putContentTermList(x.getToken(), (int) x.getStart_offset()));
+        if(titleSegList!=null) {
+            for (Segement seg : titleSegList) {
+                offset.putTitleTermList(seg.getToken(), (int) seg.getStart_offset());
+            }
+        }
+        if(stitleSegList!=null) {
+            for (Segement seg : stitleSegList) {
+                offset.putStitleTermList(seg.getToken(), (int) seg.getStart_offset());
+            }
+        }
+        if(authorSegList!=null) {
+            for (Segement seg : authorSegList) {
+                offset.putAuthorTermList(seg.getToken(), (int) seg.getStart_offset());
+            }
+        }
+        if(contentSegList!=null) {
+            for (Segement seg : contentSegList) {
+                offset.putContentTermList(seg.getToken(), (int) seg.getStart_offset());
+            }
+        }
 
         return offset.build();
-
     }
+
+
 }

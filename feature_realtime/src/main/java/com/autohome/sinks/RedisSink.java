@@ -2,6 +2,8 @@ package com.autohome.sinks;
 
 import com.alibaba.fastjson.JSONObject;
 import com.autohome.commons.Constant;
+import com.autohome.models.OffsetModel;
+import com.googlecode.protobuf.format.JsonFormat;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.slf4j.Logger;
@@ -42,10 +44,11 @@ public class RedisSink extends RichSinkFunction<JSONObject> {
         Jedis redis = null;
         try{
             redis = jedisPool.getResource();
-            String status = redis.set(value.getString("item_key").getBytes(), value.getBytes("offset"));
-            if(!"OK".equals(status))
-                logger.error("push:{} status:{}",value.getString("item_key"),status);
+            OffsetModel.Offset offset = (OffsetModel.Offset) value.get("offset");
+            String status = redis.set(value.getString("item_key").getBytes(), offset.toByteArray());
+            logger.info("push:{} status:{} length:{}", value.getString("item_key"), status, offset.toByteArray().length);
         }catch (Exception e){
+            logger.error("push redis failure", e);
         }finally {
             redis.close();
         }

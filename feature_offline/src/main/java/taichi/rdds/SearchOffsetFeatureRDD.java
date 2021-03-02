@@ -86,8 +86,7 @@ public class SearchOffsetFeatureRDD extends SqlTransfer {
         List<Segement> titleSegList = HttpClientUtils.postES(title);
         List<Segement> stitleSegList = HttpClientUtils.postES(stitle);
 
-        OffsetModel.Offset offset = HttpClientUtils.castPb(titleSegList, stitleSegList, authorSegList, contentSegList);
-
+        OffsetModel.Offset offset = HttpClientUtils.createPB(titleSegList, stitleSegList, authorSegList, contentSegList);
         return offset;
     }
 

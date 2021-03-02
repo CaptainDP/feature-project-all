@@ -13,7 +13,7 @@
       "spark.executor.cores": "4"
     },
     {
-      "spark.executor.instances": "20"
+      "spark.executor.instances": "100"
     },
     {
       "spark.executor.memory": "4g"
@@ -46,16 +46,44 @@
     {
       "clazz": "${SqlTransfer}",
       "flag": "true",
-      "annotation": "1.更加用的ctr过滤用户特征数据",
-      "tableName": "TMP_TBL_01",
-      "sql": "select msg,dt,get_json_object(msg, '$.device_id') as device_id from cmp_tmp.cmp_tmp_rcm_rank_all_msg_shucang_v2 a join dm_rca_user_ctr b on a.device_id = b.device_id and a.dt = b.dt where a.dt='${BASE_DATE_10}' and b.ctr > 0.01 "
+      "annotation": "0.设置动态分区",
+      "tableName": "TMP_TBL_00",
+      "sql": "set hive.exec.dynamic.partition.mode=nonstrict"
     },
     {
       "clazz": "${SqlTransfer}",
       "flag": "true",
-      "annotation": "2.插入数据到hive表",
+      "annotation": "1.将msg字段中deviceId提权出来",
+      "tableName": "TMP_TBL_01",
+      "sql": "select msg,dt,get_json_object(translate(msg,'\\;',''), '$.deviceId') as device_id, get_json_object(translate(msg,'\\;',''), '$.itemFeature.biz_id') as biz_id,get_json_object(translate(msg,'\\;',''), '$.itemFeature.biz_type') as biz_type,get_json_object(translate(msg,'\\;',''), '$.pvId') as pvId,get_json_object(translate(msg,'\\;',''), '$.posId') as posId,get_json_object(translate(msg,'\\;',''), '$.label') as label from dm_rca.dm_rca_rcm_rank_all_msg_shucang_v2 where dt='${BASE_DATE_10}'"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "2.对deviceId,biz_type,biz_id进行去重",
       "tableName": "TMP_TBL_02",
-      "sql": "insert into dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user select msg,dt from TMP_TBL_01"
+      "sql": "select * from (select msg,dt,device_id,biz_id,biz_type,pvId,posId,label,count(*) over(partition by dt,device_id,biz_id,biz_type order by pvId) count_num_rn from TMP_TBL_01) where count_num_rn=1"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "3.增加用的ctr过滤用户特征数据",
+      "tableName": "TMP_TBL_03",
+      "sql": "select a.dt,a.device_id,a.biz_type,a.biz_id from TMP_TBL_02 a join dm_rca.dm_rca_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where b.dt='${BASE_DATE_10}' and b.ctr > 0"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "4.对deviceId,biz_type,biz_id进行去重结果补充msg",
+      "tableName": "TMP_TBL_04",
+      "sql": "select a.dt,a.device_id,a.biz_type,a.biz_id,a.msg,a.pvId,a.posId,a.label from TMP_TBL_01 a join TMP_TBL_03 b on a.dt=b.dt and a.device_id=b.device_id and a.biz_type=b.biz_type and a.biz_id=b.biz_id"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "5.插入数据到hive表",
+      "tableName": "TMP_TBL_05",
+      "sql": "insert into table dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user PARTITION(dt) select msg,device_id,biz_type,biz_id,pvId,posId,label,dt from TMP_TBL_04"
     }
   ]
 }

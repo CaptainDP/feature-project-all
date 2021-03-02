@@ -54,4 +54,16 @@ public class Segement {
     public void setPosition(long position) {
         this.position = position;
     }
+
+
+    @Override
+    public String toString() {
+        return "Segement{" +
+                "token='" + token + '\'' +
+                ", type='" + type + '\'' +
+                ", start_offset=" + start_offset +
+                ", end_offset=" + end_offset +
+                ", position=" + position +
+                '}';
+    }
 }

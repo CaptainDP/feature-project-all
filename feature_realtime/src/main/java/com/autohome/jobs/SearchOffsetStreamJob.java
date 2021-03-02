@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.autohome.maps.PB2JsonMap;
 import com.autohome.maps.PbHandlerMap;
 import com.autohome.maps.SearchDataFileter;
+import com.autohome.models.*;
 import com.autohome.schemas.ResouecePoolPBScheme;
 import com.autohome.sinks.RedisSink;
 import com.autohome.sources.KafkaServers;
 import com.autohome.utils.FlinkUtils;
 import com.autohome.utils.KafkaManager;
+import com.twitter.chill.protobuf.ProtobufSerializer;
 import org.apache.flink.api.java.utils.MultipleParameterTool;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -37,8 +39,19 @@ public class SearchOffsetStreamJob {
 			jieSoServerFlag = params.get("jieSoServerFlag");
 		}
 
+		logger.info("jieSoServerFlag:{}", jieSoServerFlag);
 
 		StreamExecutionEnvironment env = FlinkUtils.getOnlineStreamEnv(TimeCharacteristic.ProcessingTime);
+
+		env.disableOperatorChaining();
+
+		env.getConfig().registerTypeWithKryoSerializer(CarModel.Car.class, ProtobufSerializer.class);
+		env.getConfig().registerTypeWithKryoSerializer(RichMediaModel.RichMedia.class, ProtobufSerializer.class);
+		env.getConfig().registerTypeWithKryoSerializer(ActiveModel.Active.class, ProtobufSerializer.class);
+		env.getConfig().registerTypeWithKryoSerializer(UserModel.User.class, ProtobufSerializer.class);
+		env.getConfig().registerTypeWithKryoSerializer(TopicModel.Topic.class, ProtobufSerializer.class);
+		env.getConfig().registerTypeWithKryoSerializer(OffsetModel.Offset.class, ProtobufSerializer.class);
+
 
 		//car
 		KafkaServers car_pool = KafkaServers.lf_zhengpaiku_tb_car_pool_tidb;
@@ -68,9 +81,9 @@ public class SearchOffsetStreamJob {
 			logger.info("设置从指定时间开始消费:{}",startTimeStamp);
 			pool_consumer.setStartFromTimestamp(startTimeStamp);
 		}
-		env.addSource(pool_consumer)
-			.filter(new SearchDataFileter()).name("filter_search_data")
+		env.addSource(pool_consumer).name(kafkaServer.getRealName())
 			.map(new PB2JsonMap()).name("to_Field_bean")
+			.filter(new SearchDataFileter()).name("filter_search_data")
 			.map(new PbHandlerMap(jieSoServerFlag)).name("query_term_offset")
 			.addSink(new RedisSink()).name("push_redis");
 	}

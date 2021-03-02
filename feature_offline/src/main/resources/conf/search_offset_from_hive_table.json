@@ -37,7 +37,7 @@
       "flag": "true",
       "annotation": "1.计算每天用户对应CTR",
       "tableName": "TMP_TBL_01",
-      "sql": "select 1"
+      "sql": "select 1*"
     },
     {
       "clazz": "com.captain.bigdata.taichi.rdds.SearchOffsetFeatureRDD",

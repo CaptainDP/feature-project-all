@@ -21,6 +21,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.test.skip>true</maven.test.skip>
+        <current.scope>provided</current.scope>
     </properties>
 
 
@@ -54,16 +55,21 @@
             <version>${flink.version}</version>
             <scope>${current.scope}</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-scala_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-            <scope>${current.scope}</scope>
+            <groupId>com.twitter</groupId>
+            <artifactId>chill-protobuf</artifactId>
+            <version>0.7.6</version>
+            <!-- exclusions for dependency conversion -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.esotericsoftware.kryo</groupId>
+                    <artifactId>kryo</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-json</artifactId>
+            <artifactId>flink-streaming-scala_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
             <scope>${current.scope}</scope>
         </dependency>
@@ -109,15 +115,16 @@
             <artifactId>guava</artifactId>
             <version>27.0-jre</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.autohome</groupId>
             <artifactId>auto_hbase</artifactId>
             <version>1.2.4</version>
-        </dependency>
+            <scope>${current.scope}</scope>
+        </dependency>-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
-            <version>2.7.2</version>
+            <version>3.1.0</version>
             <scope>${current.scope}</scope>
             <exclusions>
                 <exclusion>
@@ -126,6 +133,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

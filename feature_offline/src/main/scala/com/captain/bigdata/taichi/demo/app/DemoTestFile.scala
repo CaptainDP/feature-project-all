@@ -13,7 +13,7 @@ object DemoTestFile {
 
   def main(args: Array[String]): Unit = {
 
-    val args2 = Array[String]("-d", "20190101", "-cf", "./conf/test_file.json")
+    val args2 = Array[String]("-d", "20190101", "-cf", "./conf/test_file.json","-a","search_vearch_sync_zonghesousuo.json")
     TaichiApp.main(args2)
 
   }

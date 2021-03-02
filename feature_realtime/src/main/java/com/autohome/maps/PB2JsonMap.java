@@ -28,13 +28,14 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
 
     @Override
     public void open(Configuration parameters) throws Exception {
+        rTypeMap = RtypeTools.getRTypeData();
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 rTypeMap = RtypeTools.getRTypeData();
             }
-        }, 60, 60, TimeUnit.MINUTES);
+        }, 0, 60, TimeUnit.MINUTES);
 
 
     }
@@ -106,6 +107,7 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
             result.setSearchUsed(topicP.getSearchUsed());
             result.setJsonReserve(topicP.getJsonReserve());
         }
+
         return result;
     }
 
@@ -116,7 +118,10 @@ public class PB2JsonMap extends RichMapFunction<JSONObject,SourceBean> {
      * @return
      */
     public String getItem_key(String biz_type,String biz_id){
-        return rTypeMap.get(biz_type)+"-"+biz_id;
+        String rtype = rTypeMap.get(biz_type);
+        if(rtype == null)
+            throw new RuntimeException("get rtype result is null biz_type:"+biz_type);
+        return rtype+"-"+biz_id;
     }
 
     @Override

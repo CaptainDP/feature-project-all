@@ -15,9 +15,9 @@ public class Constant {
     public static final Integer REDIS_DB = 0;
 
     /* test redis*/
-    /*public static final String REDIS_HOST = "c_yml0cn9v.codis.lfpsg1.in.autohome.com.cn";
-    public static final Integer REDIS_PORT = 32030;
-    public static final String REDIS_PASSWD = "_I3673Oq4O6l1zOq";
+    /*public static final String REDIS_HOST = "10.28.249.169";
+    public static final Integer REDIS_PORT = 6379;
+    public static final String REDIS_PASSWD = "autohome.2020";
     public static final Integer REDIS_DB = 0;*/
 
     public static final String es_username = "index_elastic";

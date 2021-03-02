@@ -25,12 +25,13 @@ public class RtypeTools {
         PreparedStatement preparedStatement = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://dp-mw0-3306-db.lq.autohome.com.cn/bdp_recommend_operate", "bdp_recommend_operate_read", "BvO4dAOsZmdxjgQH");
+            connection = DriverManager.getConnection("jdbc:mysql://beidou_pingtai-mw0-3306s.mysql.db.corpautohome.com/bdp_recommend_operate", "bdp_recommend_operate_read", "BvO4dAOsZmdxjgQH");
             preparedStatement = connection.prepareStatement("select biz_type, code from r_type_mapping");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 rTypeInner.put(resultSet.getString("biz_type"), resultSet.getString("code"));
             }
+            logger.info("rtype size:{}", rTypeInner.size());
         }catch (SQLException e){
             logger.info("SQLException: {}", e);
         }catch (Exception ee){

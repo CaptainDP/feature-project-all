@@ -6,6 +6,8 @@ import com.autohome.beans.SourceBean;
 import com.autohome.models.OffsetModel;
 import com.autohome.utils.HttpClientUtils;
 import org.apache.flink.api.common.functions.RichMapFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
  **/
 
 public class PbHandlerMap extends RichMapFunction<SourceBean, JSONObject> {
+    private static Logger logger = LoggerFactory.getLogger("PbHandlerMap");
+
     String jieSoServerFlag;
     public PbHandlerMap(String jieSoServerFlag){
         this.jieSoServerFlag = jieSoServerFlag;
@@ -51,13 +55,8 @@ public class PbHandlerMap extends RichMapFunction<SourceBean, JSONObject> {
         List<Segement> contentSegList = HttpClientUtils.postQP(content);
         List<Segement> stitleSegList = HttpClientUtils.postQP(stitle);
         List<Segement> titleSegList = HttpClientUtils.postQP(title);
-
-        OffsetModel.Offset.Builder offset = OffsetModel.Offset.newBuilder();
-        titleSegList.stream().map(x -> offset.putTitleTermList(x.getToken(), (int) x.getStart_offset()));
-        stitleSegList.stream().map(x -> offset.putStitleTermList(x.getToken(), (int) x.getStart_offset()));
-        authorSegList.stream().map(x -> offset.putAuthorTermList(x.getToken(), (int) x.getStart_offset()));
-        contentSegList.stream().map(x -> offset.putContentTermList(x.getToken(), (int) x.getStart_offset()));
-        return offset.build();
+        OffsetModel.Offset pb = HttpClientUtils.createPB(authorSegList, contentSegList, stitleSegList, titleSegList);
+        return pb;
     }
 
     /***
@@ -73,13 +72,8 @@ public class PbHandlerMap extends RichMapFunction<SourceBean, JSONObject> {
         List<Segement> contentSegList = HttpClientUtils.postES(content);
         List<Segement> stitleSegList = HttpClientUtils.postES(stitle);
         List<Segement> titleSegList = HttpClientUtils.postES(title);
-
-        OffsetModel.Offset.Builder offset = OffsetModel.Offset.newBuilder();
-        titleSegList.stream().map(x -> offset.putTitleTermList(x.getToken(), (int) x.getStart_offset()));
-        stitleSegList.stream().map(x -> offset.putStitleTermList(x.getToken(), (int) x.getStart_offset()));
-        authorSegList.stream().map(x -> offset.putAuthorTermList(x.getToken(), (int) x.getStart_offset()));
-        contentSegList.stream().map(x -> offset.putContentTermList(x.getToken(), (int) x.getStart_offset()));
-        return offset.build();
+        OffsetModel.Offset pb = HttpClientUtils.createPB(authorSegList, contentSegList, stitleSegList, titleSegList);
+        return pb;
     }
 }
 

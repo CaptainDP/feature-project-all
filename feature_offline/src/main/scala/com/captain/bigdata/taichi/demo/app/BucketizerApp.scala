@@ -1,9 +1,11 @@
 package com.captain.bigdata.taichi.demo.app
 
 import java.io.File
+import java.util.Date
 
 import com.alibaba.fastjson.JSON
-import com.captain.bigdata.taichi.util.UrlUtil
+import com.captain.bigdata.taichi.util.{DateUtil, UrlUtil}
+import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.ml.feature.Bucketizer
 import org.apache.spark.sql.SparkSession
@@ -75,10 +77,16 @@ object BucketizerApp {
 
   def main(args: Array[String]): Unit = {
 
-    var dt = ""
-    if (args.length > 0) {
-      dt = args(0)
+    val options = new Options
+    options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    val parser = new BasicParser
+    val cmd = parser.parse(options, args)
+    //date
+    var dt = DateUtil.getDate(new Date(), "yyyy-MM-dd")
+    if (cmd.hasOption("d")) {
+      dt = cmd.getOptionValue("d")
     }
+
     //本地测试
     //    val train_data_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\data\\demo.csv"
     //    val result_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\data_out"
@@ -86,6 +94,7 @@ object BucketizerApp {
     //    val feature_fm_bucket_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\feature_fm_bucket.json"
     //线上环境
     val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/cmp_tmp_train_sample_all_shucang_v7_cdp_bucket/dt=" + dt
+    println("result_path:" + result_path)
     val basePath = new File("").getCanonicalPath
     println("basePath:" + basePath)
     val demo_path = UrlUtil.get("../../conf/conf/demo.csv", basePath).getPath
@@ -96,18 +105,10 @@ object BucketizerApp {
 
     val spark = SparkSession
       .builder
+      .enableHiveSupport
       .config(sparkConf)
       .getOrCreate()
 
-    //读入数据-此处可以改成sql
-    //    val dataFrame = spark.read.format("csv")
-    //      .option("delimiter", ",")
-    //      .option("header", "true")
-    //      .option("quote", "'")
-    //      .option("nullValue", "\\N")
-    //      .option("inferSchema", "true")
-    //      .load(train_data_path).toDF()
-    val dataFrame = spark.sql("select * from cmp_tmp.cmp_tmp_train_sample_all_shucang_v7 where dt = '" + dt + "'")
 
     //读取特征列转换后列配置
     val featuresList = firstLineList(demo_path)
@@ -118,8 +119,18 @@ object BucketizerApp {
     val featuresListOutput = featuresList.map(x => x + "_out")
     val featuresListOutputName = featuresListOutput.mkString(",")
 
-    //筛选需要的列
-    dataFrame.select(featuresList.mkString(","))
+    //读入数据-此处可以改成sql
+    //    val dataFrame = spark.read.format("csv")
+    //      .option("delimiter", ",")
+    //      .option("header", "true")
+    //      .option("quote", "'")
+    //      .option("nullValue", "\\N")
+    //      .option("inferSchema", "true")
+    //      .load(train_data_path).toDF()
+    val addList = Array("biz_id", "biz_type", "device_id")
+    val sql = "select " + (addList ++ featuresList).mkString(",") + " from cmp_tmp.cmp_tmp_train_sample_all_shucang_multi_v6_sample where dt = '" + dt + "'"
+    println("sql:" + sql)
+    val dataFrame = spark.sql(sql)
 
     //构造分桶器
     val bucketizer = new Bucketizer()
@@ -133,9 +144,11 @@ object BucketizerApp {
     println(s"Bucketizer output with [" +
       s"${bucketizer.getSplitsArray(0).length - 1}, " +
       s"${bucketizer.getSplitsArray(1).length - 1}] buckets for each input column")
-    bucketedData = bucketedData.select(featuresListOutput.head, featuresListOutput.tail: _*)
+    val featuresListOutputReal = addList ++ featuresListOutput
+    bucketedData = bucketedData.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
     bucketedData = bucketedData.select(featuresListOutputName.split(",").map(name => col(name).cast(IntegerType)): _*)
     bucketedData.write.option("header", "true").mode("overwrite").csv(result_path)
-
+    println("featuresListOutputReal:" + featuresListOutputReal)
+    spark.stop()
   }
 }

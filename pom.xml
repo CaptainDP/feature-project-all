@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.autohome</groupId>
-    <artifactId>feature_project</artifactId>
+    <artifactId>feature-project-all</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
 

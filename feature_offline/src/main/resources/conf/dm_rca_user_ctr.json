@@ -56,14 +56,30 @@
       "annotation": "1.计算每天用户对应CTR",
       "tableName": "TMP_TBL_01",
       "partitionNum": "10",
-      "sql": "select dt, device_id, sum(click_num) / sum(sight_show_num) as ctr from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
+      "sql": "select dt, device_id, sum(click_num) as click_num_sum, sum(sight_show_num) as sight_show_num_sum, sum(click_num) / sum(sight_show_num) as ctr from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "2.计算每天用户对应刷次",
+      "tableName": "TMP_TBL_02",
+      "partitionNum": "10",
+      "sql": "select dt, device_id, count(distinct pvid) as brush_num from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
+    },
+    {
+      "clazz": "${SqlTransfer}",
+      "flag": "true",
+      "annotation": "3.补全字段",
+      "tableName": "TMP_TBL_03",
+      "partitionNum": "10",
+      "sql": "select a.dt, a.device_id, click_num_sum, sight_show_num_sum, ctr, brush_num from TMP_TBL_01 a join TMP_TBL_02 b on a.dt = b.dt and a.device_id = b.device_id"
     },
     {
       "clazz": "${SqlTransfer}",
       "flag": "true",
       "annotation": "2.插入数据到hive表",
-      "tableName": "TMP_TBL_02",
-      "sql": "insert into table dm_rca.dm_rca_user_ctr PARTITION(dt)  select device_id,ctr,dt from TMP_TBL_01"
+      "tableName": "TMP_TBL_04",
+      "sql": "insert overwrite table dm_rca.dm_rca_user_ctr PARTITION(dt)  select device_id,ctr,click_num_sum as click_num,sight_show_num_sum as sight_show_num,brush_num,dt from TMP_TBL_03"
     }
   ]
 }

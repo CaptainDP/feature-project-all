@@ -69,7 +69,7 @@
       "flag": "true",
       "annotation": "3.增加用的ctr过滤用户特征数据",
       "tableName": "TMP_TBL_03",
-      "sql": "select a.dt,a.device_id,a.biz_type,a.biz_id from TMP_TBL_02 a join dm_rca.dm_rca_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where b.dt='${BASE_DATE_10}' and b.ctr > 0"
+      "sql": "select a.dt,a.device_id,a.biz_type,a.biz_id from TMP_TBL_02 a join dm_rca.dm_rca_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where b.dt='${BASE_DATE_10}' and b.ctr > 0 and b.click_num > 1"
     },
     {
       "clazz": "${SqlTransfer}",
@@ -83,7 +83,7 @@
       "flag": "true",
       "annotation": "5.插入数据到hive表",
       "tableName": "TMP_TBL_05",
-      "sql": "insert into table dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user PARTITION(dt) select msg,device_id,biz_type,biz_id,pvId,posId,label,dt from TMP_TBL_04"
+      "sql": "insert overwrite table dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user PARTITION(dt) select msg,device_id,biz_type,biz_id,pvId,posId,label,dt from TMP_TBL_04"
     }
   ]
 }

@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>feature_project</artifactId>
+        <artifactId>feature-project-all</artifactId>
         <groupId>com.autohome</groupId>
         <version>1.0</version>
     </parent>
@@ -23,6 +23,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.11</artifactId>
+            <version>2.3.0</version>
+            <scope>${pom.scope}</scope>
+        </dependency>
         <dependency>
             <groupId>com.autohome</groupId>
             <artifactId>feature_common</artifactId>

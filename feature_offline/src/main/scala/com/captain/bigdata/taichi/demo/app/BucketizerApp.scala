@@ -117,8 +117,10 @@ object BucketizerApp {
     val featureBucketList = getFeatureBucketList(featureBucketMap, featuresList)
 
     //指定输出列名
+    val addList = Array("biz_id", "biz_type", "device_id")
     val featuresListOutput = featuresList.map(x => x + "_out")
-    val featuresListOutputName = featuresListOutput.mkString(",")
+    val featuresListOutputReal = addList ++ featuresListOutput
+    val featuresListOutputName = featuresListOutputReal.mkString(",")
 
     //读入数据-此处可以改成sql
     //    val dataFrame = spark.read.format("csv")
@@ -129,7 +131,7 @@ object BucketizerApp {
     //      .option("inferSchema", "true")
     //      .load(train_data_path).toDF()
 
-    val addList = Array("biz_id", "biz_type", "device_id")
+
     val sql = "select " + (addList ++ featuresList).mkString(",") + " from cmp_tmp." + tableName + " where dt = '" + dt + "'"
     println("sql:" + sql)
     val dataFrame = spark.sql(sql)
@@ -146,7 +148,7 @@ object BucketizerApp {
     println(s"Bucketizer output with [" +
       s"${bucketizer.getSplitsArray(0).length - 1}, " +
       s"${bucketizer.getSplitsArray(1).length - 1}] buckets for each input column")
-    val featuresListOutputReal = addList ++ featuresListOutput
+
     bucketedData = bucketedData.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
     bucketedData = bucketedData.select(featuresListOutputName.split(",").map(name => col(name).cast(IntegerType)): _*)
     bucketedData.write.option("header", "true").mode("overwrite").csv(result_path)

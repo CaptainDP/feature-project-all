@@ -93,7 +93,8 @@ object BucketizerApp {
     //    val demo_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\demo.csv"
     //    val feature_fm_bucket_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\feature_fm_bucket.json"
     //线上环境
-    val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/cmp_tmp_train_sample_all_shucang_v7_cdp_bucket/dt=" + dt
+    val tableName = "cmp_tmp_train_sample_all_shucang_multi_v6_sample"
+    val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/" + tableName + "_cdp_bucket/dt=" + dt
     println("result_path:" + result_path)
     val basePath = new File("").getCanonicalPath
     println("basePath:" + basePath)
@@ -127,8 +128,9 @@ object BucketizerApp {
     //      .option("nullValue", "\\N")
     //      .option("inferSchema", "true")
     //      .load(train_data_path).toDF()
+
     val addList = Array("biz_id", "biz_type", "device_id")
-    val sql = "select " + (addList ++ featuresList).mkString(",") + " from cmp_tmp.cmp_tmp_train_sample_all_shucang_multi_v6_sample where dt = '" + dt + "'"
+    val sql = "select " + (addList ++ featuresList).mkString(",") + " from cmp_tmp." + tableName + " where dt = '" + dt + "'"
     println("sql:" + sql)
     val dataFrame = spark.sql(sql)
 

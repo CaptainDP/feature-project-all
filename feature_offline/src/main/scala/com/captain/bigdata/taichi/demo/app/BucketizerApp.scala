@@ -84,8 +84,8 @@ object BucketizerApp {
     //    val feature_fm_bucket_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\feature_fm_bucket.json"
     //线上环境
     val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/cmp_tmp_train_sample_all_shucang_v7_cdp_bucket/dt=" + dt
-    val demo_path = UrlUtil.get("../../conf/conf/demo.csv").getPath
-    val feature_fm_bucket_path = UrlUtil.get("../../conf/conf/feature_fm_bucket.json").getPath
+    val demo_path = UrlUtil.get("../../conf/conf/conf/demo.csv").getPath
+    val feature_fm_bucket_path = UrlUtil.get("../../conf/conf/conf/feature_fm_bucket.json").getPath
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)

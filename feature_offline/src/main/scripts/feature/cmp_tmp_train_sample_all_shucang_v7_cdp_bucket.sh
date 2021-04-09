@@ -34,7 +34,7 @@ filelist="$APP_HOME/conf/taichi.json,$APP_HOME/conf/log4j.properties,$APP_HOME/c
 
 export SPARK_CLASSPATH=$SPARK_CLASSPATH":$APP_HOME/conf:$APP_HOME/etc:$APP_HOME/libs/*"
 
-cls="com.captain.bigdata.taichi.demo.app.BucketizerApp$"
+cls="com.captain.bigdata.taichi.demo.app.BucketizerApp"
 jar="$APP_HOME/libs/$APP_JAR"
 
 cmd="spark-submit"

@@ -114,6 +114,9 @@ object BucketizerApp {
     val featuresListOutput = featuresList.map(x => x + "_out")
     val featuresListOutputName = featuresListOutput.mkString(",")
 
+    //筛选需要的列
+    dataFrame.select(featuresList.mkString(","))
+
     //构造分桶器
     val bucketizer = new Bucketizer()
       .setInputCols(featuresList)

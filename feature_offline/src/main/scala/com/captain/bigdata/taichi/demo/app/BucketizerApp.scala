@@ -1,5 +1,7 @@
 package com.captain.bigdata.taichi.demo.app
 
+import java.io.File
+
 import com.alibaba.fastjson.JSON
 import com.captain.bigdata.taichi.util.UrlUtil
 import org.apache.spark.SparkConf
@@ -84,8 +86,10 @@ object BucketizerApp {
     //    val feature_fm_bucket_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\feature_fm_bucket.json"
     //线上环境
     val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/cmp_tmp_train_sample_all_shucang_v7_cdp_bucket/dt=" + dt
-    val demo_path = UrlUtil.get("../../conf/conf/conf/demo.csv").getPath
-    val feature_fm_bucket_path = UrlUtil.get("../../conf/conf/conf/feature_fm_bucket.json").getPath
+    val basePath = new File("").getCanonicalPath
+    println("basePath:" + basePath)
+    val demo_path = UrlUtil.get("../../conf/conf/demo.csv", basePath).getPath
+    val feature_fm_bucket_path = UrlUtil.get("../../conf/conf/feature_fm_bucket.json", basePath).getPath
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)

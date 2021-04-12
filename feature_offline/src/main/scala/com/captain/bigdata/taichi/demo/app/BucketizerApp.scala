@@ -150,7 +150,14 @@ object BucketizerApp {
       s"${bucketizer.getSplitsArray(1).length - 1}] buckets for each input column")
 
     bucketedData = bucketedData.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
-    bucketedData = bucketedData.select(featuresListOutputName.split(",").map(name => col(name).cast(IntegerType)): _*)
+    val cols = bucketedData.columns.map(f => {
+      if (addList.contains(f)) {
+        col(f)
+      } else {
+        col(f).cast(IntegerType)
+      }
+    })
+    bucketedData = bucketedData.select(cols: _*)
     bucketedData.write.option("header", "true").mode("overwrite").csv(result_path)
     println("featuresListOutputReal:" + featuresListOutputReal)
     spark.stop()

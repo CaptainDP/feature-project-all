@@ -58,6 +58,7 @@ cmd="$cmd --conf spark.speculation=true"
 cmd="$cmd --name feature-offline-$conffile-$dt"
 cmd="$cmd --class $cls $jar"
 cmd="$cmd -d $dt"
+cmd="$cmd -p $APP_HOME"
 
 LOG_FILE=${conffile//\//_}_$dt
 logging "command to execute: $cmd"

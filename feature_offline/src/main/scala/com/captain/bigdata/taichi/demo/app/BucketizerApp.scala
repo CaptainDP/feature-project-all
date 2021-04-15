@@ -79,12 +79,17 @@ object BucketizerApp {
 
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    options.addOption("p", true, "path")
     val parser = new BasicParser
     val cmd = parser.parse(options, args)
     //date
     var dt = DateUtil.getDate(new Date(), "yyyy-MM-dd")
     if (cmd.hasOption("d")) {
       dt = cmd.getOptionValue("d")
+    }
+    var path = ""
+    if (cmd.hasOption("p")) {
+      path = cmd.getOptionValue("p")
     }
 
     //本地测试
@@ -96,10 +101,10 @@ object BucketizerApp {
     val tableName = "cmp_tmp_train_sample_all_shucang_multi_v6_sample"
     val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/" + tableName + "_cdp_bucket/dt=" + dt
     println("result_path:" + result_path)
-    val basePath = new File("").getCanonicalPath
+    val basePath = path
     println("basePath:" + basePath)
-    val demo_path = UrlUtil.get("../../conf/conf/demo.csv", basePath).getPath
-    val feature_fm_bucket_path = UrlUtil.get("../../conf/conf/feature_fm_bucket.json", basePath).getPath
+    val demo_path = UrlUtil.get("./conf/conf/demo.csv", basePath).getPath
+    val feature_fm_bucket_path = UrlUtil.get("./conf/conf/feature_fm_bucket.json", basePath).getPath
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)

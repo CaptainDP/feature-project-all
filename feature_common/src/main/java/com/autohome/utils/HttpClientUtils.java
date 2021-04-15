@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.autohome.beans.Segement;
 import okhttp3.*;
 import com.autohome.models.OffsetModel;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +31,26 @@ public class HttpClientUtils {
             .writeTimeout(5, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true).build();
 
+    public static boolean isBlank(String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if ((Character.isWhitespace(str.charAt(i)) == false)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * 请求qp分词接口
      * @param content
      * @return
      */
     public static List<Segement> postQP(String content){
-        if(StringUtils.isBlank(content))
+        if(isBlank(content))
             return new ArrayList<>();
 
         String url = String.format(jieba_so_cluster_url_qp, content);
@@ -84,7 +96,7 @@ public class HttpClientUtils {
      * @return
      */
     public static List<Segement> postES(String content){
-        if(StringUtils.isBlank(content)) {
+        if(isBlank(content)) {
             return new ArrayList<>();
         }
         String req = String.format("{\"analyzer\": \"jieba_mix_word\",\"text\": [\"%s\"]}", content);

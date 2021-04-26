@@ -155,6 +155,8 @@ object FeatureBucketRangeApp {
 
     var i = 0
     featuresList.foreach(x => {
+
+      val tmpMap = new JSONObject()
       i += 1
       val discretizer = new QuantileDiscretizer()
         .setHandleInvalid("skip")
@@ -163,8 +165,20 @@ object FeatureBucketRangeApp {
         .setNumBuckets(10)
       val result = discretizer.fit(dataFrame).getSplits.toBuffer
       result -= (Double.NegativeInfinity, Double.PositiveInfinity)
-      println("index:" + i + ", " + x + ":[" + result.toArray.mkString(",") + "]")
       bucketMap.put(x, result.toArray)
+      tmpMap.put(x, result.toArray)
+
+      val agg = dataFrame.select(min(x), avg(x), max(x))
+      val aggMap = new JSONObject()
+      agg.collect().toList.foreach(x => {
+        aggMap.put("min", x.get(0))
+        aggMap.put("avg", x.get(1))
+        aggMap.put("max", x.get(2))
+      })
+      bucketMap.put(x + "_agg", aggMap)
+      tmpMap.put(x + "_agg", aggMap)
+
+      println("index:" + i + "/" + featuresList.length + ", " + x + ":" + tmpMap.toString())
 
     })
 

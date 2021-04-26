@@ -42,13 +42,13 @@ cmd="$cmd --conf spark.sql.warehouse.dir=file://$(pwd)/sparksql/warehouse"
 cmd="$cmd --conf spark.app.name=feature-offline-$conffile-$dt"
 cmd="$cmd --conf spark.yarn.submit.waitAppCompletion=true"
 cmd="$cmd --files ${filelist}"
-cmd="$cmd --num-executors 2 --executor-cores 2 --executor-memory 1GB"
+cmd="$cmd --num-executors 20 --executor-cores 4 --executor-memory 10GB"
 
 cmd="$cmd --conf spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 cmd="$cmd --conf spark.executor.extraJavaOptions=-Dfile.encoding=utf-8"
 
-cmd="$cmd --master local[*]"
-#cmd="$cmd --master yarn"
+#cmd="$cmd --master local[*]"
+cmd="$cmd --master yarn"
 
 cmd="$cmd --deploy-mode client"
 #cmd="$cmd --deploy-mode cluster"

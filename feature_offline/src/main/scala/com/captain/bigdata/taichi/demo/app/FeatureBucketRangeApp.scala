@@ -143,6 +143,7 @@ object FeatureBucketRangeApp {
 
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
+    dataFrame.cache()
 
     //将空值转成0.0
     featuresList.foreach(x => {
@@ -152,7 +153,9 @@ object FeatureBucketRangeApp {
     //计算分桶
     val bucketMap = new JSONObject()
 
+    var i = 0
     featuresList.foreach(x => {
+      i += 1
       val discretizer = new QuantileDiscretizer()
         .setHandleInvalid("skip")
         .setInputCol(x)
@@ -160,6 +163,7 @@ object FeatureBucketRangeApp {
         .setNumBuckets(10)
       val result = discretizer.fit(dataFrame).getSplits.toBuffer
       result -= (Double.NegativeInfinity, Double.PositiveInfinity)
+      println("index:" + i + ", " + x + ":[" + result.toArray.mkString(",") + "]")
       bucketMap.put(x, result.toArray)
 
     })

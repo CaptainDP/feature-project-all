@@ -106,6 +106,7 @@ object FeatureBucketRangeApp {
     println("basePath:" + basePath)
     val demo_path = UrlUtil.get("./conf/conf/demo.csv", basePath).getPath
     val feature_fm_bucket_path = UrlUtil.get("./conf/conf/feature_fm_bucket.json", basePath).getPath
+    val startTime = DateUtil.getDateTime()
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
@@ -149,16 +150,15 @@ object FeatureBucketRangeApp {
     featuresList.foreach(x => {
       dataFrame = dataFrame.withColumn(x, when(col(x).isNull, defaultValue).when(col(x) === null, defaultValue).when(col(x) === "", defaultValue).when(upper(col(x)) === "NULL", defaultValue).otherwise(col(x)))
     })
-    dataFrame.cache()
+    dataFrame = dataFrame.cache()
 
     //计算分桶
     val bucketMap = new JSONObject()
+    val statMap = new JSONObject()
 
-    var i = 0
     featuresList.foreach(x => {
 
-      val tmpMap = new JSONObject()
-      i += 1
+      //计算分桶区间
       val discretizer = new QuantileDiscretizer()
         .setHandleInvalid("skip")
         .setInputCol(x)
@@ -167,26 +167,59 @@ object FeatureBucketRangeApp {
       val result = discretizer.fit(dataFrame).getSplits.toBuffer
       result -= (Double.NegativeInfinity, Double.PositiveInfinity)
       bucketMap.put(x, result.toArray)
-      tmpMap.put(x, result.toArray)
 
-      val agg = dataFrame.select(min(x), avg(x), max(x))
-      val aggMap = new JSONObject()
-      agg.collect().toList.foreach(x => {
-        aggMap.put("min", x.get(0))
-        aggMap.put("avg", x.get(1))
-        aggMap.put("max", x.get(2))
+      //计算统计指标：mean，stddev，min，max
+      val tmpMap = new JSONObject()
+      val describe = dataFrame.describe(x).collect()
+      describe.foreach(x => {
+        tmpMap.put(x.get(0) + "", x.get(1))
       })
-      bucketMap.put(x + "_agg", aggMap)
-      tmpMap.put(x + "_agg", aggMap)
 
-      println("index:" + i + "/" + featuresList.length + ", " + x + ":" + tmpMap.toString())
+      //计算分位数：25%，50%，75%
+      val list = Array(0.25, 0.5, 0.75)
+      val stat = dataFrame.stat.approxQuantile(x, list, 0.05)
+      for (i <- list.indices) {
+        tmpMap.put(list(i) + "", stat(i))
+      }
+
+      statMap.put(x + "_analysis", tmpMap)
 
     })
 
-    println("-----------------------------bucketJson---------------------------")
-    println(bucketMap.toString())
-    println("-----------------------------bucketJson---------------------------")
+    // 统计label正负样本数量
+    val summaryMap = new JSONObject()
+    val label = dataFrame.groupBy("id").count().sort(desc("id"))
+    val labelMap = new JSONObject()
+    var total = 0L
+    label.collect().foreach(x => {
+      labelMap.put(x.get(0) + "", x.get(1))
+      total += x.get(1).toString.toLong
+    })
+    summaryMap.put("label", labelMap)
+    summaryMap.put("total", total)
 
+    //统计每天数量量
+    val dtColumn = dataFrame.groupBy("dt").count().sort(asc("dt"))
+    val dtMap = new JSONObject()
+    dtColumn.collect().foreach(x => {
+      dtMap.put(x.get(0) + "", x.get(1))
+    })
+    summaryMap.put("dt", dtMap)
+
+    //记录日期区间
+    val endTime = DateUtil.getDateTime()
+    val costTime = DateUtil.getTimeDiff(startTime, endTime)
+    summaryMap.put("costTime(s)", costTime)
+    summaryMap.put("startDate", startDate)
+    summaryMap.put("endDate", endDate)
+
+    bucketMap.put("stat", statMap)
+    bucketMap.put("summary", summaryMap)
+
+    println(s"------------------bucketJson--------$startDate-------------------")
+    println(bucketMap.toString())
+    println(s"------------------bucketJson--------$endDate-------------------")
+    println("costTime(s):" + costTime)
 
     spark.stop()
   }

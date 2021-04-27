@@ -208,7 +208,7 @@ object FeatureBucketRangeApp {
 
     //记录日期区间
     val endTime = DateUtil.getDateTime()
-    val costTime = DateUtil.getTimeDiff(startTime, endTime)
+    val costTime = DateUtil.getTimeDiff(endTime, startTime)
     summaryMap.put("costTime(s)", costTime)
     summaryMap.put("startDate", startDate)
     summaryMap.put("endDate", endDate)

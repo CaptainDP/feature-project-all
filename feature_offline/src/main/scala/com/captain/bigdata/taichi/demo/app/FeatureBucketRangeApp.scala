@@ -143,12 +143,13 @@ object FeatureBucketRangeApp {
 
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
-    dataFrame.cache()
 
-    //将空值转成0.0
+    //将空值转成默认值0.0
+    val defaultValue = -0.00000001
     featuresList.foreach(x => {
-      dataFrame = dataFrame.withColumn(x, when(col(x).isNull, 0.0).when(col(x) === null, 0.0).when(col(x) === "", 0.0).when(upper(col(x)) === "NULL", 0.0).otherwise(col(x)))
+      dataFrame = dataFrame.withColumn(x, when(col(x).isNull, defaultValue).when(col(x) === null, defaultValue).when(col(x) === "", defaultValue).when(upper(col(x)) === "NULL", defaultValue).otherwise(col(x)))
     })
+    dataFrame.cache()
 
     //计算分桶
     val bucketMap = new JSONObject()

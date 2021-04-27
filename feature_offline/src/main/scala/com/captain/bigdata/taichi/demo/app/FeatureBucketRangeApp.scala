@@ -75,7 +75,6 @@ object FeatureBucketRangeApp {
     featureSplitList.toArray
   }
 
-
   def main(args: Array[String]): Unit = {
 
     val options = new Options
@@ -138,7 +137,7 @@ object FeatureBucketRangeApp {
     //      .option("inferSchema", "true")
     //      .load(train_data_path).toDF()
 
-    val startDate = dt
+    val startDate = DateUtil.calcDateByFormat(DateUtil.toDate(dt, "yyyy-MM-dd"), "yyyy-MM-dd(-13D)")
     val endDate = dt
     val sql = s"select * from cmp_tmp.$tableName where dt >= '$startDate' and dt <= '$endDate' and label in ('0', '1') and length(device_id) > 0 and cast(biz_id as long) > 0 and cast(biz_type as int) > 0"
 

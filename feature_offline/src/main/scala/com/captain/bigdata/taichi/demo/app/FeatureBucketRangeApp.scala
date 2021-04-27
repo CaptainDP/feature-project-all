@@ -188,7 +188,7 @@ object FeatureBucketRangeApp {
 
     // 统计label正负样本数量
     val summaryMap = new JSONObject()
-    val label = dataFrame.groupBy("id").count().sort(desc("id"))
+    val label = dataFrame.groupBy("label").count()
     val labelMap = new JSONObject()
     var total = 0L
     label.collect().foreach(x => {

@@ -9,6 +9,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.ml.feature.QuantileDiscretizer
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import org.apache.spark.storage.StorageLevel
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -149,7 +150,7 @@ object FeatureBucketRangeApp {
     featuresList.foreach(x => {
       dataFrame = dataFrame.withColumn(x, when(col(x).isNull, defaultValue).when(col(x) === null, defaultValue).when(col(x) === "", defaultValue).when(upper(col(x)) === "NULL", defaultValue).otherwise(col(x)))
     })
-    dataFrame = dataFrame.cache()
+    dataFrame.persist(StorageLevel.MEMORY_AND_DISK)
 
     //计算分桶
     val bucketMap = new JSONObject()

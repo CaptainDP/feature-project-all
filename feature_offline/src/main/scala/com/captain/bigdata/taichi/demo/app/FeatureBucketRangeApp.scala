@@ -81,6 +81,7 @@ object FeatureBucketRangeApp {
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
     options.addOption("p", true, "path")
+    options.addOption("n", true, "path")
     val parser = new BasicParser
     val cmd = parser.parse(options, args)
     //date
@@ -91,6 +92,11 @@ object FeatureBucketRangeApp {
     var path = ""
     if (cmd.hasOption("p")) {
       path = cmd.getOptionValue("p")
+    }
+
+    var num = 13
+    if (cmd.hasOption("n")) {
+      num = cmd.getOptionValue("n").toInt
     }
 
     //本地测试
@@ -138,7 +144,8 @@ object FeatureBucketRangeApp {
     //      .option("inferSchema", "true")
     //      .load(train_data_path).toDF()
 
-    val startDate = DateUtil.calcDateByFormat(DateUtil.toDate(dt, "yyyy-MM-dd"), "yyyy-MM-dd(-13D)")
+    val dataFormat = "yyyy-MM-dd(-" + num + "D)"
+    val startDate = DateUtil.calcDateByFormat(DateUtil.toDate(dt, "yyyy-MM-dd"), dataFormat)
     val endDate = dt
     val sql = s"select * from cmp_tmp.$tableName where dt >= '$startDate' and dt <= '$endDate' and label in ('0', '1') and length(device_id) > 0 and cast(biz_id as long) > 0 and cast(biz_type as int) > 0"
 
@@ -172,7 +179,7 @@ object FeatureBucketRangeApp {
       val tmpMap = new JSONObject()
       val describe = dataFrame.describe(x).collect()
       describe.foreach(x => {
-        tmpMap.put(x.get(0) + "", x.get(1))
+        tmpMap.put(x.get(0) + "", x.get(1).toString.toDouble)
       })
 
       //计算分位数：25%，50%，75%
@@ -212,8 +219,8 @@ object FeatureBucketRangeApp {
     summaryMap.put("costTime(s)", costTime)
     summaryMap.put("startDate", startDate)
     summaryMap.put("endDate", endDate)
+    summaryMap.put("stat", statMap)
 
-    bucketMap.put("stat", statMap)
     bucketMap.put("summary", summaryMap)
 
     println(s"------------------bucketJson--------$startDate-------------------")

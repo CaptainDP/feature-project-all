@@ -15,6 +15,9 @@ echo "run_online.sh:"$*
 
 if [[ $# -eq 1 ]]; then
     dt=$(date -d "$1" +%Y-%m-%d)
+elif [[ $# -eq 2 ]]; then
+    dt=$(date -d "$1" +%Y-%m-%d)
+    num=$2
 else
     echo "$0 date"
     exit 1
@@ -59,6 +62,7 @@ cmd="$cmd --name feature-offline-$conffile-$dt"
 cmd="$cmd --class $cls $jar"
 cmd="$cmd -d $dt"
 cmd="$cmd -p $APP_HOME"
+cmd="$cmd -n $num"
 
 LOG_FILE=${conffile//\//_}_$dt
 logging "command to execute: $cmd"

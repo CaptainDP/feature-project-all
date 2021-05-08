@@ -126,8 +126,8 @@ object FeatureBucketRangeApp {
 
     //读取特征列转换后列配置
     val featuresList = firstLineList(demo_path)
-    val featureBucketMap = getFeatureBucket(feature_fm_bucket_path)
-    val featureBucketList = getFeatureBucketList(featureBucketMap, featuresList)
+//    val featureBucketMap = getFeatureBucket(feature_fm_bucket_path)
+//    val featureBucketList = getFeatureBucketList(featureBucketMap, featuresList)
 
     //指定输出列名
     val addList = Array("biz_id", "biz_type", "device_id")
@@ -160,11 +160,12 @@ object FeatureBucketRangeApp {
     dataFrame.persist(StorageLevel.MEMORY_AND_DISK)
 
     //计算分桶
-    val bucketMap = new JSONObject()
+    val allMap = new JSONObject()
     val statMap = new JSONObject()
 
     featuresList.foreach(x => {
 
+      val oneMap = new JSONObject()
       //计算分桶区间
       val discretizer = new QuantileDiscretizer()
         .setHandleInvalid("skip")
@@ -173,25 +174,28 @@ object FeatureBucketRangeApp {
         .setNumBuckets(10)
       val result = discretizer.fit(dataFrame).getSplits.toBuffer
       result -= (Double.NegativeInfinity, Double.PositiveInfinity)
-      bucketMap.put(x, result.toArray)
+      oneMap.put("bucket", result.toArray)
 
       //计算统计指标：mean，stddev，min，max
-      val tmpMap = new JSONObject()
+      val analysisMap = new JSONObject()
       val describe = dataFrame.describe(x).collect()
       describe.foreach(x => {
-        tmpMap.put(x.get(0) + "", x.get(1).toString.toDouble)
+        analysisMap.put(x.get(0) + "", x.get(1).toString.toDouble)
       })
 
       //计算分位数：25%，50%，75%
       val list = Array(0.25, 0.5, 0.75)
       val stat = dataFrame.stat.approxQuantile(x, list, 0.05)
       for (i <- list.indices) {
-        tmpMap.put(list(i) + "", stat(i))
+        analysisMap.put(list(i) + "", stat(i))
       }
+      oneMap.put("analysis", analysisMap)
 
-      statMap.put(x + "_analysis", tmpMap)
+      statMap.put(x, oneMap)
 
     })
+
+    allMap.put("stat", statMap)
 
     // 统计label正负样本数量
     val summaryMap = new JSONObject()
@@ -219,12 +223,11 @@ object FeatureBucketRangeApp {
     summaryMap.put("costTime(s)", costTime)
     summaryMap.put("startDate", startDate)
     summaryMap.put("endDate", endDate)
-    summaryMap.put("stat", statMap)
 
-    bucketMap.put("summary", summaryMap)
+    allMap.put("summary", summaryMap)
 
     println(s"------------------bucketJson--------$startDate-------------------")
-    println(bucketMap.toString())
+    println(allMap.toString())
     println(s"------------------bucketJson--------$endDate-------------------")
     println("costTime(s):" + costTime)
 

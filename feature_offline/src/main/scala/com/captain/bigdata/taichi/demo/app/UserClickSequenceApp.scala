@@ -70,7 +70,7 @@ object UserClickSequenceApp {
         val oneSeq = new ArrayBuffer[FeatureBean]()
         val max = Math.min(i, 30)
         val min = i - max
-        for (j <- min until i) {
+        for (j <- (min until i).reverse) {
           val itemJ = sortByTimeBuffer(j)
           oneSeq += itemJ
         }
@@ -86,6 +86,8 @@ object UserClickSequenceApp {
       val tmpList = x.ItemSeqBean.map(x => getString(x)).mkString("#")
       println(tmp + "$" + tmpList)
     })
+
+    spark.stop()
   }
 
 

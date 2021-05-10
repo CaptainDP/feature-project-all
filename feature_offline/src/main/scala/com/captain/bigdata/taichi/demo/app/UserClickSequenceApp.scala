@@ -70,11 +70,13 @@ object UserClickSequenceApp {
         val oneSeq = new ArrayBuffer[FeatureBean]()
         val max = Math.min(i, 30)
         val min = i - max
-        for (j <- min until max) {
+        for (j <- min until i) {
           val itemJ = sortByTimeBuffer(j)
           oneSeq += itemJ
         }
-        itemSeqList.append(FeatureItemSeqBean(sortByTimeBuffer(i), oneSeq.toArray))
+        if (oneSeq.nonEmpty) {
+          itemSeqList.append(FeatureItemSeqBean(sortByTimeBuffer(i), oneSeq.toArray))
+        }
       }
       itemSeqList
     }).flatMap(x => x)

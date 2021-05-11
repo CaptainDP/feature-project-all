@@ -38,7 +38,7 @@ object UserClickSequenceApp {
   }
 
   def getTimeDecay(start: String, end: String): Double = {
-    val diff = DateUtil.getTimeDiff(end, start, "yyyy-MM-dd HH:mm:ss.S")
+    val diff = DateUtil.getTimeDiff(end, start, "yyyy-MM-dd HH:mm:ss.SSS")
     Math.exp(-0.0005 * diff / 600.0)
   }
 
@@ -71,7 +71,7 @@ object UserClickSequenceApp {
 
 
   def getHour(start_time: String): Double = {
-    val time = DateUtil.toDate(start_time, "yyyy-MM-dd HH:mm:ss.S")
+    val time = DateUtil.toDate(start_time, "yyyy-MM-dd HH:mm:ss.SSS")
     val hour = new DateTime(time).getHourOfDay
     Math.log10(hour) / Math.log10(24)
   }

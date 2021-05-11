@@ -44,10 +44,22 @@ object UserClickSequenceApp {
     Math.exp(-0.0005 * diff / 600.0)
   }
 
+  def isNumeric(str: String): Boolean = {
+    var flag = false
+    try {
+      java.lang.Double.parseDouble(str);
+      flag = true
+    } catch {
+      case e: Exception => flag = false
+    }
+    flag
+  }
+
+
   def getNormalized(like_count: String, expectType: String): Double = {
 
     val json = JSON.parseObject(param)
-    if (json.getJSONObject(expectType) == null) {
+    if (json.getJSONObject(expectType) == null || !isNumeric(like_count)) {
       0.0
     } else {
       val max = json.getJSONObject(expectType).getLongValue("max")

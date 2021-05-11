@@ -96,7 +96,7 @@ object UserClickSequenceApp {
       series_ids_list = series_ids.split(",")
     }
 
-    if (series_ids_list.isEmpty) {
+    if (series_ids_list == null || series_ids_list.isEmpty) {
       return 0.0
     }
 
@@ -105,7 +105,7 @@ object UserClickSequenceApp {
       val tmp_series_ids = getFieldValue(fieldName, elem)
       if (tmp_series_ids != null) {
         val tmp_series_ids_list = tmp_series_ids.split(",")
-        if (tmp_series_ids_list.nonEmpty) {
+        if (tmp_series_ids_list != null && tmp_series_ids_list.nonEmpty) {
           count += (tmp_series_ids_list.toSet & series_ids_list.toSet).size
         }
       }
@@ -120,7 +120,7 @@ object UserClickSequenceApp {
       series_ids_list = series_ids.split(",")
     }
 
-    if (series_ids_list.isEmpty) {
+    if (series_ids_list == null || series_ids_list.isEmpty) {
       return 0.0
     }
 
@@ -130,7 +130,7 @@ object UserClickSequenceApp {
       val tmp_series_ids = getFieldValue(fieldName, elem)
       if (tmp_series_ids != null) {
         val tmp_series_ids_list = tmp_series_ids.split(",")
-        if (tmp_series_ids_list.nonEmpty) {
+        if (tmp_series_ids_list != null && tmp_series_ids_list.nonEmpty) {
           val count = (tmp_series_ids_list.toSet & series_ids_list.toSet).size
           if (count > 0) {
             return 1 - i / (itemSeqBean.length + 0.01)

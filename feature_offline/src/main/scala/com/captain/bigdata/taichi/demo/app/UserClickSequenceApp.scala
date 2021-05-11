@@ -38,7 +38,9 @@ object UserClickSequenceApp {
   }
 
   def getTimeDecay(start: String, end: String): Double = {
-    val diff = DateUtil.getTimeDiff(end, start, "yyyy-MM-dd HH:mm:ss.SSS")
+    val startTime = DateUtil.toDate(start, "yyyy-MM-dd HH:mm:ss")
+    val startTimeStr = DateUtil.getDateTime(startTime, "yyyy-MM-dd HH:mm:ss.SSS")
+    val diff = DateUtil.getTimeDiff(end, startTimeStr, "yyyy-MM-dd HH:mm:ss.SSS")
     Math.exp(-0.0005 * diff / 600.0)
   }
 

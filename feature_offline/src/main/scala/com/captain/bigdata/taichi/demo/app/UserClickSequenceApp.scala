@@ -2,10 +2,10 @@ package com.captain.bigdata.taichi.demo.app
 
 import com.alibaba.fastjson.JSON
 import com.captain.bigdata.taichi.util.DateUtil
-import com.google.gson.Gson
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
+import com.google.gson.GsonBuilder
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -86,7 +86,13 @@ object UserClickSequenceApp {
 
   def getHour(start_time: String): Double = {
     val time = DateUtil.toDate(start_time, "yyyy-MM-dd HH:mm:ss.SSS")
-    val hour = new DateTime(time).getHourOfDay
+    var hour = new DateTime(time).getHourOfDay
+    if (hour < 0) {
+      hour = 0
+    } else if (hour > 23) {
+      hour = 23
+    }
+    hour += 1
     Math.log10(hour) / Math.log10(24)
   }
 
@@ -245,7 +251,7 @@ object UserClickSequenceApp {
     })
 
     featureResultRdd.collect().foreach(x => {
-      val gson = new Gson()
+      val gson = new GsonBuilder().serializeSpecialFloatingPointValues().create()
       val tmp = gson.toJson(x)
       println(tmp)
     })

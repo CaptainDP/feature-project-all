@@ -38,10 +38,14 @@ object UserClickSequenceApp {
   }
 
   def getTimeDecay(start: String, end: String): Double = {
-    val startTime = DateUtil.toDate(start, "yyyy-MM-dd HH:mm:ss")
-    val startTimeStr = DateUtil.getDateTime(startTime, "yyyy-MM-dd HH:mm:ss.SSS")
-    val diff = DateUtil.getTimeDiff(end, startTimeStr, "yyyy-MM-dd HH:mm:ss.SSS")
-    Math.exp(-0.0005 * diff / 600.0)
+    if (start == null || start.trim.equals("")) {
+      0
+    } else {
+      val startTime = DateUtil.toDate(start, "yyyy-MM-dd HH:mm:ss")
+      val startTimeStr = DateUtil.getDateTime(startTime, "yyyy-MM-dd HH:mm:ss.SSS")
+      val diff = DateUtil.getTimeDiff(end, startTimeStr, "yyyy-MM-dd HH:mm:ss.SSS")
+      Math.exp(-0.0005 * diff / 600.0)
+    }
   }
 
   def isNumeric(str: String): Boolean = {
@@ -162,6 +166,9 @@ object UserClickSequenceApp {
   def main(args: Array[String]): Unit = {
 
     val currDate = "2021-05-01"
+    val preCount = 0
+    val date = DateUtil.toDate(currDate, "yyyy-MM-dd")
+    val preDate = DateUtil.calcDateByFormat(date, "yyyy-MM-dd(-" + preCount + "D)")
 
     var sql =
       """select
@@ -179,10 +186,11 @@ object UserClickSequenceApp {
         |start_time as start_time,
         |dt
         |from rdm.rdm_app_rcmd_ai_feature_di
-        |where dt='currDate'
+        |where dt<='currDate' and dt >='preDate'
         |and is_click = '1' and object_type > 0 and object_id > 0 and device_id is not null and start_time is not null
         |""".stripMargin
     sql = sql.replaceAll("currDate", currDate)
+    sql = sql.replaceAll("preDate", preDate)
     println("sql:" + sql)
     //        |and device_id = '0059C87C5D95374FD17C00DB2EFAA73D39597B3E'
 

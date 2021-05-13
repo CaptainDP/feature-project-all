@@ -2,10 +2,10 @@ package com.captain.bigdata.taichi.demo.app
 
 import com.alibaba.fastjson.JSON
 import com.captain.bigdata.taichi.util.DateUtil
+import com.google.gson.GsonBuilder
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
-import com.google.gson.GsonBuilder
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -180,11 +180,16 @@ object UserClickSequenceApp {
         |dt
         |from rdm.rdm_app_rcmd_ai_feature_di
         |where dt='currDate'
-        |and is_click = '1'
-        |and device_id = '0059C87C5D95374FD17C00DB2EFAA73D39597B3E'
+        |and is_click = '1' and object_type > 0 and object_id > 0 and device_id is not null and start_time is not null
         |""".stripMargin
     sql = sql.replaceAll("currDate", currDate)
     println("sql:" + sql)
+    //        |and device_id = '0059C87C5D95374FD17C00DB2EFAA73D39597B3E'
+
+
+    val tableName = "cmp_tmp_train_user_click_sequence_v1"
+    val result_path_json = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/" + tableName + "_json/dt=" + currDate
+    val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/" + tableName + "/dt=" + currDate
 
     val sparkConf = new SparkConf();
     //sparkConf.setAppName(this.getClass.getSimpleName)
@@ -250,14 +255,15 @@ object UserClickSequenceApp {
         like_count, reply_count, device_brand_apple, device_brand_huawei, device_brand_other, current_hour)
     })
 
-    featureResultRdd.collect().foreach(x => {
+    groupSeqRdd.map(x => {
       val gson = new GsonBuilder().serializeSpecialFloatingPointValues().create()
-      val tmp = gson.toJson(x)
-      println(tmp)
-    })
+      gson.toJson(x)
+    }).toDF().write.option("header", "true").mode("overwrite").csv(result_path_json)
+
+    val resultDF = featureResultRdd.toDF()
+    resultDF.write.option("header", "true").mode("overwrite").csv(result_path)
 
     spark.stop()
   }
-
 
 }

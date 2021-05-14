@@ -1,5 +1,7 @@
 package com.captain.bigdata.taichi.demo.app
 
+import java.text.DecimalFormat
+
 import com.alibaba.fastjson.JSON
 import com.captain.bigdata.taichi.util.DateUtil
 import com.google.gson.GsonBuilder
@@ -60,7 +62,7 @@ object UserClickSequenceApp {
   }
 
   def double2String(value: Double): String = {
-    value.formatted("%.6f")
+    new DecimalFormat("##.##").format(value)
   }
 
   def getNormalized(like_count: String, expectType: String): Double = {

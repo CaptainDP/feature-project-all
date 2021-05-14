@@ -29,7 +29,7 @@ object UserClickSequenceApp {
 
   case class FeatureBean(device_id: String, biz_id: String, recommend_time: String, series_ids: String, biz_type: String, author_id: String, uniq_category_name: String, brand_ids: String, like_cnt_90d: String, reply_cnt_30d: String, device_brand: String, start_time: String, is_click: String, dt: String)
 
-  case class FeatureResultBean(device_id: String, biz_id: String, biz_type: String, publish_time: Double, match_series_weight: Double, match_series_click_idx_weight: Double, match_rtype_weight: Double, match_rtype_click_idx_weight: Double, match_author_weight: Double, match_author_click_idx_weight: Double, match_category_weight: Double, match_category_click_idx_weight: Double, match_brand_weight: Double, match_brand_click_idx_weight: Double, like_count: Double, reply_count: Double, device_brand_apple: Double, device_brand_huawei: Double, device_brand_other: Double, current_hour: Double, label: Int)
+  case class FeatureResultBean(device_id: String, biz_id: String, biz_type: String, publish_time: String, match_series_weight: String, match_series_click_idx_weight: String, match_rtype_weight: String, match_rtype_click_idx_weight: String, match_author_weight: String, match_author_click_idx_weight: String, match_category_weight: String, match_category_click_idx_weight: String, match_brand_weight: String, match_brand_click_idx_weight: String, like_count: String, reply_count: String, device_brand_apple: String, device_brand_huawei: String, device_brand_other: String, current_hour: String, label: String)
 
   case class FeatureItemSeqBean(featureBean: FeatureBean, ItemSeqBean: Array[FeatureBean])
 
@@ -59,6 +59,9 @@ object UserClickSequenceApp {
     flag
   }
 
+  def double2String(value: Double): String = {
+    value.formatted("%.6f")
+  }
 
   def getNormalized(like_count: String, expectType: String): Double = {
 
@@ -274,10 +277,10 @@ object UserClickSequenceApp {
       val current_hour = getHour(featureBean.start_time)
       val label = featureBean.is_click.toInt
 
-      FeatureResultBean(featureBean.device_id, featureBean.biz_id, featureBean.biz_type, publish_time, match_series_weight,
-        match_series_click_idx_weight, match_rtype_weight, match_rtype_click_idx_weight, match_author_weight, match_author_click_idx_weight,
-        match_category_weight, match_category_click_idx_weight, match_brand_weight, match_brand_click_idx_weight,
-        like_count, reply_count, device_brand_apple, device_brand_huawei, device_brand_other, current_hour, label)
+      FeatureResultBean(featureBean.device_id, featureBean.biz_id, featureBean.biz_type, double2String(publish_time), double2String(match_series_weight),
+        double2String(match_series_click_idx_weight), double2String(match_rtype_weight), double2String(match_rtype_click_idx_weight), double2String(match_author_weight), double2String(match_author_click_idx_weight),
+        double2String(match_category_weight), double2String(match_category_click_idx_weight), double2String(match_brand_weight), double2String(match_brand_click_idx_weight),
+        double2String(like_count), double2String(reply_count), double2String(device_brand_apple), double2String(device_brand_huawei), double2String(device_brand_other), double2String(current_hour), double2String(label))
     })
 
     groupSeqRdd.map(x => {

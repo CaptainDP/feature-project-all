@@ -17,6 +17,8 @@ import scala.collection.mutable.ArrayBuffer
  */
 object UserClickSequenceApp {
 
+  val isDebugJson = false
+
   val SERIES_IDS = "series_ids"
   val BIZ_TYPE = "biz_type"
   val AUTHOR_ID = "author_id"
@@ -285,10 +287,14 @@ object UserClickSequenceApp {
         double2String(like_count), double2String(reply_count), double2String(device_brand_apple), double2String(device_brand_huawei), double2String(device_brand_other), double2String(current_hour), double2String(label))
     })
 
-    groupSeqRdd.map(x => {
-      val gson = new GsonBuilder().serializeSpecialFloatingPointValues().create()
-      gson.toJson(x)
-    }).toDF().write.option("header", "true").mode("overwrite").csv(result_path_json)
+
+    //是否输出json中间数据
+    if (isDebugJson) {
+      groupSeqRdd.map(x => {
+        val gson = new GsonBuilder().serializeSpecialFloatingPointValues().create()
+        gson.toJson(x)
+      }).toDF().write.option("header", "true").mode("overwrite").csv(result_path_json)
+    }
 
     val resultDF = featureResultRdd.toDF()
     val columnList = "biz_id,biz_type,device_id,publish_time,match_series_weight,match_series_click_idx_weight,match_rtype_weight,match_rtype_click_idx_weight,match_author_weight,match_author_click_idx_weight,match_category_weight,match_category_click_idx_weight,match_brand_weight,match_brand_click_idx_weight,like_count,reply_count,device_brand_apple,device_brand_huawei,device_brand_other,current_hour,label"

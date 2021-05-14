@@ -62,7 +62,7 @@ object UserClickSequenceApp {
   }
 
   def double2String(value: Double): String = {
-    new DecimalFormat("##.##").format(value)
+    new DecimalFormat("##.######").format(value)
   }
 
   def getNormalized(like_count: String, expectType: String): Double = {

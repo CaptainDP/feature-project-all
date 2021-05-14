@@ -27,9 +27,9 @@ object UserClickSequenceApp {
   val REPLY_COUNT = "reply_count"
   val param = """{"like_count":{"max":9911},"reply_count":{"max":6655}}""".stripMargin
 
-  case class FeatureBean(device_id: String, biz_id: String, recommend_time: String, series_ids: String, biz_type: String, author_id: String, uniq_category_name: String, brand_ids: String, like_cnt_90d: String, reply_cnt_30d: String, device_brand: String, start_time: String, dt: String)
+  case class FeatureBean(device_id: String, biz_id: String, recommend_time: String, series_ids: String, biz_type: String, author_id: String, uniq_category_name: String, brand_ids: String, like_cnt_90d: String, reply_cnt_30d: String, device_brand: String, start_time: String, is_click: String, dt: String)
 
-  case class FeatureResultBean(device_id: String, biz_id: String, biz_type: String, publish_time: Double, match_series_weight: Double, match_series_click_idx_weight: Double, match_rtype_weight: Double, match_rtype_click_idx_weight: Double, match_author_weight: Double, match_author_click_idx_weight: Double, match_category_weight: Double, match_category_click_idx_weight: Double, match_brand_weight: Double, match_brand_click_idx_weight: Double, like_count: Double, reply_count: Double, device_brand_apple: Double, device_brand_huawei: Double, device_brand_other: Double, current_hour: Double)
+  case class FeatureResultBean(device_id: String, biz_id: String, biz_type: String, publish_time: Double, match_series_weight: Double, match_series_click_idx_weight: Double, match_rtype_weight: Double, match_rtype_click_idx_weight: Double, match_author_weight: Double, match_author_click_idx_weight: Double, match_category_weight: Double, match_category_click_idx_weight: Double, match_brand_weight: Double, match_brand_click_idx_weight: Double, like_count: Double, reply_count: Double, device_brand_apple: Double, device_brand_huawei: Double, device_brand_other: Double, current_hour: Double, label: Int)
 
   case class FeatureItemSeqBean(featureBean: FeatureBean, ItemSeqBean: Array[FeatureBean])
 
@@ -111,6 +111,21 @@ object UserClickSequenceApp {
     }
   }
 
+  def getItemListByLabel(itemSeqBean: Array[FeatureBean], label: String): Array[FeatureBean] = {
+
+    if (label.trim.equals("1")) {
+      val newItemSeqBean = new ArrayBuffer[FeatureBean]()
+      for (elem <- itemSeqBean) {
+        if (elem.is_click.trim.equals("1")) {
+          newItemSeqBean.append(elem)
+        }
+      }
+      newItemSeqBean.toArray
+    } else {
+      itemSeqBean
+    }
+  }
+
   def getMatchSeriesWeight(series_ids: String, itemSeqBean: Array[FeatureBean], fieldName: String): Double = {
 
     var series_ids_list: Array[String] = null
@@ -184,10 +199,11 @@ object UserClickSequenceApp {
         |get_json_object(translate(item_feature,'\\;',''), '$.reply_cnt_30d') as reply_cnt_30d,
         |get_json_object(translate(user_feature,'\\;',''), '$.device_brand') as device_brand,
         |start_time as start_time,
+        |is_click,
         |dt
         |from rdm.rdm_app_rcmd_ai_feature_di
         |where dt<='currDate' and dt >='preDate'
-        |and is_click = '1' and object_type > 0 and object_id > 0 and device_id is not null and start_time is not null
+        |and object_type > 0 and object_id > 0 and device_id is not null and start_time is not null
         |""".stripMargin
     sql = sql.replaceAll("currDate", currDate)
     sql = sql.replaceAll("preDate", preDate)
@@ -238,7 +254,7 @@ object UserClickSequenceApp {
     val featureResultRdd = groupSeqRdd.map(x => {
 
       val featureBean = x.featureBean
-      val itemSeqBean = x.ItemSeqBean
+      val itemSeqBean = getItemListByLabel(x.ItemSeqBean, featureBean.is_click)
       val publish_time = getTimeDecay(featureBean.recommend_time, featureBean.start_time)
       val match_series_weight = getMatchSeriesWeight(featureBean.series_ids, itemSeqBean, SERIES_IDS)
       val match_series_click_idx_weight = getMatchSeriesClickIdxWeight(featureBean.series_ids, itemSeqBean, SERIES_IDS)
@@ -256,11 +272,12 @@ object UserClickSequenceApp {
       val device_brand_huawei = getBrand(featureBean.device_brand, BRAND_HUAWEI)
       val device_brand_other = if (device_brand_apple > 0 || device_brand_huawei > 0) 0 else 1
       val current_hour = getHour(featureBean.start_time)
+      val label = featureBean.is_click.toInt
 
       FeatureResultBean(featureBean.device_id, featureBean.biz_id, featureBean.biz_type, publish_time, match_series_weight,
         match_series_click_idx_weight, match_rtype_weight, match_rtype_click_idx_weight, match_author_weight, match_author_click_idx_weight,
         match_category_weight, match_category_click_idx_weight, match_brand_weight, match_brand_click_idx_weight,
-        like_count, reply_count, device_brand_apple, device_brand_huawei, device_brand_other, current_hour)
+        like_count, reply_count, device_brand_apple, device_brand_huawei, device_brand_other, current_hour, label)
     })
 
     groupSeqRdd.map(x => {
@@ -269,7 +286,7 @@ object UserClickSequenceApp {
     }).toDF().write.option("header", "true").mode("overwrite").csv(result_path_json)
 
     val resultDF = featureResultRdd.toDF()
-    val columnList = "biz_id,biz_type,device_id,publish_time,match_series_weight,match_series_click_idx_weight,match_rtype_weight,match_rtype_click_idx_weight,match_author_weight,match_author_click_idx_weight,match_category_weight,match_category_click_idx_weight,match_brand_weight,match_brand_click_idx_weight,like_count,reply_count,device_brand_apple,device_brand_huawei,device_brand_other,current_hour"
+    val columnList = "biz_id,biz_type,device_id,publish_time,match_series_weight,match_series_click_idx_weight,match_rtype_weight,match_rtype_click_idx_weight,match_author_weight,match_author_click_idx_weight,match_category_weight,match_category_click_idx_weight,match_brand_weight,match_brand_click_idx_weight,like_count,reply_count,device_brand_apple,device_brand_huawei,device_brand_other,current_hour,label"
     val featuresListOutputReal = columnList.split(",")
     resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").mode("overwrite").csv(result_path)
 

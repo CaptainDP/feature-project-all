@@ -185,6 +185,14 @@ object UserClickSequenceApp {
     0
   }
 
+  def getTop2(column: String): String = {
+    if (column != null && !column.equals("") && column.split(",").length > 2) {
+      column.split(",").slice(0, 2).mkString(",")
+    } else {
+      column
+    }
+  }
+
   def main(args: Array[String]): Unit = {
 
     val currDate = "2021-05-01"
@@ -192,16 +200,17 @@ object UserClickSequenceApp {
     val date = DateUtil.toDate(currDate, "yyyy-MM-dd")
     val preDate = DateUtil.calcDateByFormat(date, "yyyy-MM-dd(-" + preCount + "D)")
 
+
     var sql =
       """select
         |device_id,
         |object_id as biz_id,
         |get_json_object(translate(item_feature,'\\;',''), '$.recommend_time') as recommend_time,
-        |get_json_object(translate(item_feature,'\\;',''), '$.series_ids') as series_ids,
+        |getTop2(get_json_object(translate(item_feature,'\\;',''), '$.series_ids')) as series_ids,
         |object_type as biz_type,
         |get_json_object(translate(item_feature,'\\;',''), '$.author_id') as author_id,
-        |get_json_object(translate(item_feature,'\\;',''), '$.uniq_category_name') as uniq_category_name,
-        |get_json_object(translate(item_feature,'\\;',''), '$.brand_ids') as brand_ids,
+        |getTop2(get_json_object(translate(item_feature,'\\;',''), '$.uniq_category_name')) as uniq_category_name,
+        |getTop2(get_json_object(translate(item_feature,'\\;',''), '$.brand_ids')) as brand_ids,
         |get_json_object(translate(item_feature,'\\;',''), '$.like_cnt_90d') as like_cnt_90d,
         |get_json_object(translate(item_feature,'\\;',''), '$.reply_cnt_30d') as reply_cnt_30d,
         |get_json_object(translate(user_feature,'\\;',''), '$.device_brand') as device_brand,
@@ -233,6 +242,7 @@ object UserClickSequenceApp {
       .getOrCreate()
 
     import spark.implicits._
+    spark.udf.register("getTop2", getTop2 _)
 
     val df = spark.sql(sql)
     val rdd = df.as[FeatureBean].rdd.map(x => (x.device_id, x))

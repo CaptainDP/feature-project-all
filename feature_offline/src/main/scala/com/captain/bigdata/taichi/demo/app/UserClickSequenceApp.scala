@@ -17,7 +17,7 @@ import scala.collection.mutable.ArrayBuffer
  */
 object UserClickSequenceApp {
 
-  val isDebugJson = false
+  val isDebugJson = true
 
   val SERIES_IDS = "series_ids"
   val BIZ_TYPE = "biz_type"

@@ -1,10 +1,12 @@
 package com.captain.bigdata.taichi.demo.app
 
 import java.text.DecimalFormat
+import java.util.Date
 
 import com.alibaba.fastjson.JSON
 import com.captain.bigdata.taichi.util.DateUtil
 import com.google.gson.GsonBuilder
+import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
@@ -33,9 +35,11 @@ object UserClickSequenceApp {
 
   case class FeatureBean(device_id: String, biz_id: String, recommend_time: String, series_ids: String, biz_type: String, author_id: String, uniq_category_name: String, brand_ids: String, like_cnt_90d: String, reply_cnt_30d: String, device_brand: String, start_time: String, is_click: String, dt: String)
 
+  case class FeatureProcessBean(itemSize: Int)
+
   case class FeatureResultBean(device_id: String, biz_id: String, biz_type: String, publish_time: String, match_series_weight: String, match_series_click_idx_weight: String, match_rtype_weight: String, match_rtype_click_idx_weight: String, match_author_weight: String, match_author_click_idx_weight: String, match_category_weight: String, match_category_click_idx_weight: String, match_brand_weight: String, match_brand_click_idx_weight: String, like_count: String, reply_count: String, device_brand_apple: String, device_brand_huawei: String, device_brand_other: String, current_hour: String, label: String)
 
-  case class FeatureItemSeqBean(featureBean: FeatureBean, ItemSeqBean: Array[FeatureBean])
+  case class FeatureItemSeqBean(featureBean: FeatureBean, featureProcessBean: FeatureProcessBean, ItemSeqBean: Array[FeatureBean])
 
   def getString(x: FeatureBean): String = {
     x.dt + "," + x.device_id + "," + x.start_time + "," + x.biz_type + "," + x.biz_id + ","
@@ -195,11 +199,26 @@ object UserClickSequenceApp {
 
   def main(args: Array[String]): Unit = {
 
-    val currDate = "2021-05-01"
-    val preCount = 0
+    val options = new Options
+    options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    options.addOption("n", false, "preDateNum")
+    val parser = new BasicParser
+    val cmd = parser.parse(options, args)
+    //date
+    var dt = DateUtil.getDate(new Date(), "yyyy-MM-dd")
+    if (cmd.hasOption("d")) {
+      dt = cmd.getOptionValue("d")
+    }
+
+    var num = 0
+    if (cmd.hasOption("n")) {
+      num = cmd.getOptionValue("n").toInt
+    }
+
+    val currDate = dt
+    val preCount = num
     val date = DateUtil.toDate(currDate, "yyyy-MM-dd")
     val preDate = DateUtil.calcDateByFormat(date, "yyyy-MM-dd(-" + preCount + "D)")
-
 
     var sql =
       """select
@@ -261,7 +280,8 @@ object UserClickSequenceApp {
           oneSeq += itemJ
         }
         if (oneSeq.nonEmpty) {
-          itemSeqList.append(FeatureItemSeqBean(sortByTimeBuffer(i), oneSeq.toArray))
+          val featureProcessBean = FeatureProcessBean(oneSeq.size)
+          itemSeqList.append(FeatureItemSeqBean(sortByTimeBuffer(i), featureProcessBean, oneSeq.toArray))
         }
       }
       itemSeqList

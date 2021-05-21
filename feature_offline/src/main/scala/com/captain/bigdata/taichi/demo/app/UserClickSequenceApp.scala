@@ -199,9 +199,11 @@ object UserClickSequenceApp {
 
   def main(args: Array[String]): Unit = {
 
+    println("args:" + args.mkString(","))
+
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
-    options.addOption("n", false, "preDateNum")
+    options.addOption("n", true, "preDateNum")
     val parser = new BasicParser
     val cmd = parser.parse(options, args)
     //date

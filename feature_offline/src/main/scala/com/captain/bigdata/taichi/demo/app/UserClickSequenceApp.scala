@@ -326,12 +326,14 @@ object UserClickSequenceApp {
         val gson = new GsonBuilder().serializeSpecialFloatingPointValues().create()
         gson.toJson(x)
       }).toDF().write.option("header", "true").mode("overwrite").csv(result_path_json)
+      println("result_path_json:" + result_path_json)
     }
 
     val resultDF = featureResultRdd.toDF()
     val columnList = "biz_id,biz_type,device_id,publish_time,match_series_weight,match_series_click_idx_weight,match_rtype_weight,match_rtype_click_idx_weight,match_author_weight,match_author_click_idx_weight,match_category_weight,match_category_click_idx_weight,match_brand_weight,match_brand_click_idx_weight,like_count,reply_count,device_brand_apple,device_brand_huawei,device_brand_other,current_hour,label"
     val featuresListOutputReal = columnList.split(",")
     resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").mode("overwrite").csv(result_path)
+    println("result_path:" + result_path)
 
     spark.stop()
   }

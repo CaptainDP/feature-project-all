@@ -33,6 +33,28 @@ object UserClickSequenceApp {
   val REPLY_COUNT = "reply_count"
   val param = """{"like_count":{"max":9911},"reply_count":{"max":6655}}""".stripMargin
 
+  //like_count和reply_count计算逻辑
+  """select
+    |device_id,
+    |object_type,
+    |object_id,
+    |start_time,
+    |like_cnt_90d,
+    |reply_cnt_30d
+    |from (
+    |select
+    |device_id,
+    |object_type,
+    |object_id,
+    |start_time,
+    |cast(get_json_object(translate(item_feature,'\\;',''), '$.like_cnt_90d') as int) as like_cnt_90d,
+    |cast(get_json_object(translate(item_feature,'\\;',''), '$.reply_cnt_30d') as int) as reply_cnt_30d
+    |from rdm.rdm_app_rcmd_ai_feature_di
+    |where dt<='2021-05-25' and dt >='2021-05-25'
+    |and object_type > 0 and object_id > 0 and device_id is not null and start_time is not null
+    |) t
+    |order by reply_cnt_30d desc limit 10;""".stripMargin
+
   case class FeatureBean(device_id: String, biz_id: String, recommend_time: String, series_ids: String, biz_type: String, author_id: String, uniq_category_name: String, brand_ids: String, like_cnt_90d: String, reply_cnt_30d: String, device_brand: String, start_time: String, is_click: String, dt: String)
 
   case class FeatureProcessBean(itemSize: Int)

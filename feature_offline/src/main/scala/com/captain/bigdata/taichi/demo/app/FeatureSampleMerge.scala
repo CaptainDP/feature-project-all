@@ -63,7 +63,7 @@ object FeatureSampleMerge {
     pathList.foreach(x => {
       val df = spark.read.format("csv")
         .option("header", "true")
-        .option("delimiter", "\t")
+        .option("delimiter", ",")
         .load(x)
 
       if (dataFrame == null) {
@@ -74,7 +74,7 @@ object FeatureSampleMerge {
     })
 
     dataFrame = dataFrame.repartition(100)
-    dataFrame.write.option("header", "true").option("delimiter", "\t").mode("overwrite").csv(result_path)
+    dataFrame.write.option("header", "true").option("delimiter", ",").mode("overwrite").csv(result_path)
 
   }
 

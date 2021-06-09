@@ -76,7 +76,7 @@ object FeatureSampleMerge {
     val columnList = "biz_id,biz_type,device_id,publish_time,match_series_weight,match_series_click_idx_weight,match_rtype_weight,match_rtype_click_idx_weight,match_author_weight,match_author_click_idx_weight,match_category_weight,match_category_click_idx_weight,match_brand_weight,match_brand_click_idx_weight,device_brand_apple,device_brand_huawei,device_brand_other,current_hour,label"
     val featuresListOutputReal = columnList.split(",")
     dataFrame = dataFrame.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
-    dataFrame = dataFrame.repartition(100)
+    dataFrame = dataFrame.repartition(200)
     dataFrame.write.option("header", "true").option("delimiter", ",").mode("overwrite").csv(result_path)
 
   }

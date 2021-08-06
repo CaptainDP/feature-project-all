@@ -13,9 +13,59 @@ import org.apache.spark.sql.SparkSession
  * 用户排序特征
  */
 
-case class FeatureBean(device_id: String, biz_type: String, biz_id: String, pvid: String, posid: String, user_uniq_keywords_pref: String, user_uniq_series_pref: String, user_fp_click_series_seq: String, label: String, dt: String)
+case class FeatureBean(device_id: String,
+                       biz_type: String,
+                       biz_id: String,
+                       pvid: String,
+                       posid: String,
+                       user_uniq_keywords_pref: String,
+                       user_uniq_series_pref: String,
+                       user_fp_click_series_seq: String,
+                       item_uniq_series_ids: String,
+                       item_uniq_keywords_name: String,
+                       user_rt_fp_click_series_seq: String,
+                       user_uniq_category_pref: String,
+                       item_uniq_category_name: String,
+                       user_rt_category_list: String,
+                       item_author_id: String,
+                       user_rt_click_author_list_pre: String,
+                       user_rt_click_tag_pref: String,
+                       user_device_model: String,
+                       user_energy_pref_top1: String,
+                       recall_way: String,
+                       gc_type: String,
+                       rt_item_lst_list: String,
+                       item_lst_list: String,
+                       item_key: String,
+                       label: String,
+                       dt: String)
 
-case class FeatureResultBean(device_id: String, biz_type: String, biz_id: String, pvid: String, posid: String, user_uniq_keywords_pref: String, user_uniq_series_pref: String, user_fp_click_series_seq: String, label: String, dt: String)
+case class FeatureResultBean(device_id: String,
+                             biz_type: String,
+                             biz_id: String,
+                             pvid: String,
+                             posid: String,
+                             user_uniq_keywords_pref: String,
+                             user_uniq_series_pref: String,
+                             user_fp_click_series_seq: String,
+                             item_uniq_series_ids: String,
+                             item_uniq_keywords_name: String,
+                             user_rt_fp_click_series_seq: String,
+                             user_uniq_category_pref: String,
+                             item_uniq_category_name: String,
+                             user_rt_category_list: String,
+                             item_author_id: String,
+                             user_rt_click_author_list_pre: String,
+                             user_rt_click_tag_pref: String,
+                             user_device_model: String,
+                             user_energy_pref_top1: String,
+                             recall_way: String,
+                             gc_type: String,
+                             rt_item_lst_list: String,
+                             item_lst_list: String,
+                             item_key: String,
+                             label: String,
+                             dt: String)
 
 object VideoFeatureColumnApp {
 
@@ -106,11 +156,27 @@ object VideoFeatureColumnApp {
         |get_json_object(msg, '$.userFeature.uniq_keywords_pref') as user_uniq_keywords_pref,
         |get_json_object(msg, '$.userFeature.uniq_series_pref') as user_uniq_series_pref,
         |get_json_object(msg, '$.userFeature.fp_click_series_seq') as user_fp_click_series_seq,
+        |get_json_object(msg, '$.itemFeature.uniq_series_ids') as item_uniq_series_ids,
+        |get_json_object(msg, '$.itemFeature.uniq_keywords_name') as item_uniq_keywords_name,
+        |get_json_object(msg, '$.userFeature.rt_fp_click_series_seq') as user_rt_fp_click_series_seq,
+        |get_json_object(msg, '$.userFeature.uniq_category_pref') as user_uniq_category_pref,
+        |get_json_object(msg, '$.itemFeature.uniq_category_name') as item_uniq_category_name,
+        |get_json_object(msg, '$.userFeature.rt_category_list') as user_rt_category_list,
+        |get_json_object(msg, '$.itemFeature.author_id') as item_author_id,
+        |get_json_object(msg, '$.userFeature.rt_click_author_list_pre') as user_rt_click_author_list_pre,
+        |get_json_object(msg, '$.userFeature.rt_click_tag_pref') as user_rt_click_tag_pref,
+        |get_json_object(msg, '$.userFeature.device_model') as user_device_model,
+        |get_json_object(msg, '$.userFeature.energy_pref') as user_energy_pref_top1,
+        |get_json_object(msg, '$.itemFeature.recall_way') as recall_way,
+        |get_json_object(msg, '$.itemFeature.gc_type') as gc_type,
+        |get_json_object(msg, '$.itemFeature.rt_item_lst_list') as rt_item_lst_list,
+        |get_json_object(msg, '$.itemFeature.item_lst_list') as item_lst_list,
+        |concat(biz_type,'-',biz_id) as item_key
         |label,
         |dt
         |from dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user
         |where dt<='currDate' and dt >='preDate'
-        |and biz_type > 0 and biz_id > 0 and device_id is not null and biz_type in ('3','14','66') limit 10
+        |and biz_type > 0 and biz_id > 0 and device_id is not null and biz_type in ('3','14','66') limit 10000
         |""".stripMargin
     sql = sql.replaceAll("currDate", currDate)
     sql = sql.replaceAll("preDate", preDate)
@@ -143,8 +209,44 @@ object VideoFeatureColumnApp {
       val user_uniq_keywords_pref = getKeysFromSemicolonList(x.user_uniq_keywords_pref)
       val user_uniq_series_pref = getKeysFromSemicolonList(x.user_uniq_series_pref)
       val user_fp_click_series_seq = replaceComma2Semicolon(x.user_fp_click_series_seq)
+      val item_uniq_series_ids = replaceComma2Semicolon(x.item_uniq_series_ids)
+      val item_uniq_keywords_name = replaceComma2Semicolon(x.item_uniq_keywords_name)
+      val user_rt_fp_click_series_seq = x.user_rt_fp_click_series_seq
+      val user_uniq_category_pref = getKeysFromSemicolonList(x.user_uniq_category_pref)
+      val item_uniq_category_name = x.item_uniq_category_name
+      val user_rt_category_list = x.user_rt_category_list
+      val item_author_id = x.item_author_id
+      val user_rt_click_author_list_pre = x.user_rt_click_author_list_pre
+      val user_rt_click_tag_pref = x.user_rt_click_tag_pref
+      val user_device_model = x.user_device_model
+      val user_energy_pref_top1 = x.user_energy_pref_top1
+      val recall_way = x.recall_way
+      val gc_type = x.gc_type
+      val rt_item_lst_list = replaceComma2Semicolon(x.rt_item_lst_list)
+      val item_lst_list = replaceComma2Semicolon(x.item_lst_list)
+      val item_key = replaceComma2Semicolon(x.item_key)
 
-      FeatureResultBean(x.device_id, x.biz_type, x.biz_id, x.pvid, x.posid, user_uniq_keywords_pref, user_uniq_series_pref, user_fp_click_series_seq, x.label, x.dt)
+      FeatureResultBean(x.device_id, x.biz_type, x.biz_id, x.pvid, x.posid, user_uniq_keywords_pref,
+        user_uniq_series_pref,
+        user_fp_click_series_seq,
+        item_uniq_series_ids,
+        item_uniq_keywords_name,
+        user_rt_fp_click_series_seq,
+        user_uniq_category_pref,
+        item_uniq_category_name,
+        user_rt_category_list,
+        item_author_id,
+        user_rt_click_author_list_pre,
+        user_rt_click_tag_pref,
+        user_device_model,
+        user_energy_pref_top1,
+        recall_way,
+        gc_type,
+        rt_item_lst_list,
+        item_lst_list,
+        item_key,
+        x.label,
+        x.dt)
 
     })
 

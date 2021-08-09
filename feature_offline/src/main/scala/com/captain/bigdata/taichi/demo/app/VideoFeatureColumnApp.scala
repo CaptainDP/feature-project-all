@@ -120,6 +120,15 @@ object VideoFeatureColumnApp {
     }
   }
 
+  //source: "78,496,2246"
+  //target: 78,496,2246
+  def replaceQuotes(column: String): String = {
+    if (column != null && !column.equals("")) {
+      column.replaceAll("\"", "")
+    } else {
+      column
+    }
+  }
 
   def main(args: Array[String]): Unit = {
 
@@ -171,7 +180,7 @@ object VideoFeatureColumnApp {
         |get_json_object(msg, '$.itemFeature.gc_type') as gc_type,
         |get_json_object(msg, '$.itemFeature.rt_item_lst_list') as rt_item_lst_list,
         |get_json_object(msg, '$.itemFeature.item_lst_list') as item_lst_list,
-        |concat(biz_type,'-',biz_id) as item_key
+        |concat(biz_type,'-',biz_id) as item_key,
         |label,
         |dt
         |from dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user
@@ -211,15 +220,15 @@ object VideoFeatureColumnApp {
       val user_fp_click_series_seq = replaceComma2Semicolon(x.user_fp_click_series_seq)
       val item_uniq_series_ids = replaceComma2Semicolon(x.item_uniq_series_ids)
       val item_uniq_keywords_name = replaceComma2Semicolon(x.item_uniq_keywords_name)
-      val user_rt_fp_click_series_seq = x.user_rt_fp_click_series_seq
+      val user_rt_fp_click_series_seq = replaceComma2Semicolon(x.user_rt_fp_click_series_seq)
       val user_uniq_category_pref = getKeysFromSemicolonList(x.user_uniq_category_pref)
-      val item_uniq_category_name = x.item_uniq_category_name
-      val user_rt_category_list = x.user_rt_category_list
+      val item_uniq_category_name = replaceComma2Semicolon(x.item_uniq_category_name)
+      val user_rt_category_list = replaceComma2Semicolon(x.user_rt_category_list)
       val item_author_id = x.item_author_id
-      val user_rt_click_author_list_pre = x.user_rt_click_author_list_pre
-      val user_rt_click_tag_pref = x.user_rt_click_tag_pref
-      val user_device_model = x.user_device_model
-      val user_energy_pref_top1 = x.user_energy_pref_top1
+      val user_rt_click_author_list_pre = replaceComma2Semicolon(x.user_rt_click_author_list_pre)
+      val user_rt_click_tag_pref = replaceComma2Semicolon(x.user_rt_click_tag_pref)
+      val user_device_model = replaceComma2Semicolon(x.user_device_model)
+      val user_energy_pref_top1 = getKeysFromSemicolonList(x.user_energy_pref_top1)
       val recall_way = x.recall_way
       val gc_type = x.gc_type
       val rt_item_lst_list = replaceComma2Semicolon(x.rt_item_lst_list)
@@ -261,9 +270,10 @@ object VideoFeatureColumnApp {
     }
 
     val resultDF = featureResultRdd.toDF()
-    val columnList = "biz_id,biz_type,device_id,posid,user_uniq_keywords_pref,user_uniq_series_pref,user_fp_click_series_seq,label"
+    val columnList = "biz_id,biz_type,device_id,posid,user_uniq_keywords_pref,user_uniq_series_pref,user_fp_click_series_seq,item_uniq_series_ids,item_uniq_keywords_name,user_rt_fp_click_series_seq,user_uniq_category_pref,item_uniq_category_name,user_rt_category_list,item_author_id,user_rt_click_author_list_pre,user_rt_click_tag_pref,user_device_model,user_energy_pref_top1,recall_way,gc_type,rt_item_lst_list,item_lst_list,item_key,label"
     val featuresListOutputReal = columnList.split(",")
-    resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").mode("overwrite").csv(result_path)
+    resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").option("emptyValue", "").mode("overwrite").csv(result_path)
+
     println("result_path:" + result_path)
 
     spark.stop()

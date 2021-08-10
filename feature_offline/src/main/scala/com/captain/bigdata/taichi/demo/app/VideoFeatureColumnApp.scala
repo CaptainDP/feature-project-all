@@ -276,6 +276,10 @@ object VideoFeatureColumnApp {
 
     println("result_path:" + result_path)
 
+    val sqlStr = "alter table " + tableName + " add if not exists partition(dt='" + dt + "');"
+    println("sqlStr: " + sqlStr)
+    spark.sql(sqlStr)
+
     spark.stop()
   }
 

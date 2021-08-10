@@ -185,7 +185,7 @@ object VideoFeatureColumnApp {
         |dt
         |from dm_rca.dm_rca_train_sample_all_shucang_v2_filter_by_user
         |where dt<='currDate' and dt >='preDate'
-        |and biz_type > 0 and biz_id > 0 and device_id is not null and biz_type in ('3','14','66') limit 10000
+        |and biz_type > 0 and biz_id > 0 and device_id is not null and biz_type in ('3','14','66')
         |""".stripMargin
     sql = sql.replaceAll("currDate", currDate)
     sql = sql.replaceAll("preDate", preDate)

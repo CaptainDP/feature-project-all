@@ -110,11 +110,12 @@ object VideoFeatureColumnApp {
     }
   }
 
+  //替换逗号为分号，并去重
   //source: 5772,2061,5395,5772,4232,2893,5239,166
   //target: 5772;2061;5395;5772;4232;2893;5239;166
-  def replaceComma2Semicolon(column: String): String = {
+  def replaceComma2SemicolonDistinct(column: String): String = {
     if (column != null && !column.equals("")) {
-      column.replaceAll(",", ";")
+      column.split(",").distinct.mkString(";")
     } else {
       column
     }
@@ -217,23 +218,23 @@ object VideoFeatureColumnApp {
 
       val user_uniq_keywords_pref = getKeysFromSemicolonList(x.user_uniq_keywords_pref)
       val user_uniq_series_pref = getKeysFromSemicolonList(x.user_uniq_series_pref)
-      val user_fp_click_series_seq = replaceComma2Semicolon(x.user_fp_click_series_seq)
-      val item_uniq_series_ids = replaceComma2Semicolon(x.item_uniq_series_ids)
-      val item_uniq_keywords_name = replaceComma2Semicolon(x.item_uniq_keywords_name)
-      val user_rt_fp_click_series_seq = replaceComma2Semicolon(x.user_rt_fp_click_series_seq)
+      val user_fp_click_series_seq = replaceComma2SemicolonDistinct(x.user_fp_click_series_seq)
+      val item_uniq_series_ids = replaceComma2SemicolonDistinct(x.item_uniq_series_ids)
+      val item_uniq_keywords_name = replaceComma2SemicolonDistinct(x.item_uniq_keywords_name)
+      val user_rt_fp_click_series_seq = replaceComma2SemicolonDistinct(x.user_rt_fp_click_series_seq)
       val user_uniq_category_pref = getKeysFromSemicolonList(x.user_uniq_category_pref)
-      val item_uniq_category_name = replaceComma2Semicolon(x.item_uniq_category_name)
-      val user_rt_category_list = replaceComma2Semicolon(x.user_rt_category_list)
+      val item_uniq_category_name = replaceComma2SemicolonDistinct(x.item_uniq_category_name)
+      val user_rt_category_list = replaceComma2SemicolonDistinct(x.user_rt_category_list)
       val item_author_id = x.item_author_id
-      val user_rt_click_author_list_pre = replaceComma2Semicolon(x.user_rt_click_author_list_pre)
-      val user_rt_click_tag_pref = replaceComma2Semicolon(x.user_rt_click_tag_pref)
-      val user_device_model = replaceComma2Semicolon(x.user_device_model)
+      val user_rt_click_author_list_pre = replaceComma2SemicolonDistinct(x.user_rt_click_author_list_pre)
+      val user_rt_click_tag_pref = replaceComma2SemicolonDistinct(x.user_rt_click_tag_pref)
+      val user_device_model = replaceComma2SemicolonDistinct(x.user_device_model)
       val user_energy_pref_top1 = getKeysFromSemicolonList(x.user_energy_pref_top1)
       val recall_way = x.recall_way
       val gc_type = x.gc_type
-      val rt_item_lst_list = replaceComma2Semicolon(x.rt_item_lst_list)
-      val item_lst_list = replaceComma2Semicolon(x.item_lst_list)
-      val item_key = replaceComma2Semicolon(x.item_key)
+      val rt_item_lst_list = replaceComma2SemicolonDistinct(x.rt_item_lst_list)
+      val item_lst_list = replaceComma2SemicolonDistinct(x.item_lst_list)
+      val item_key = replaceComma2SemicolonDistinct(x.item_key)
 
       FeatureResultBean(x.device_id, x.biz_type, x.biz_id, x.pvid, x.posid, user_uniq_keywords_pref,
         user_uniq_series_pref,

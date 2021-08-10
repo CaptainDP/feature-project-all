@@ -270,7 +270,7 @@ object VideoFeatureColumnApp {
     }
 
     val resultDF = featureResultRdd.toDF()
-    val columnList = "biz_id,biz_type,device_id,posid,user_uniq_keywords_pref,user_uniq_series_pref,user_fp_click_series_seq,item_uniq_series_ids,item_uniq_keywords_name,user_rt_fp_click_series_seq,user_uniq_category_pref,item_uniq_category_name,user_rt_category_list,item_author_id,user_rt_click_author_list_pre,user_rt_click_tag_pref,user_device_model,user_energy_pref_top1,recall_way,gc_type,rt_item_lst_list,item_lst_list,item_key,label"
+    val columnList = "biz_id,biz_type,pvid,device_id,posid,user_uniq_keywords_pref,user_uniq_series_pref,user_fp_click_series_seq,item_uniq_series_ids,item_uniq_keywords_name,user_rt_fp_click_series_seq,user_uniq_category_pref,item_uniq_category_name,user_rt_category_list,item_author_id,user_rt_click_author_list_pre,user_rt_click_tag_pref,user_device_model,user_energy_pref_top1,recall_way,gc_type,rt_item_lst_list,item_lst_list,item_key,label"
     val featuresListOutputReal = columnList.split(",")
     resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").option("emptyValue", "").mode("overwrite").csv(result_path)
 

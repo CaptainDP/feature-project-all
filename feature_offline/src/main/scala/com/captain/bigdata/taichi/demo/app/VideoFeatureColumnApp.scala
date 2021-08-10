@@ -277,7 +277,7 @@ object VideoFeatureColumnApp {
 
     println("result_path:" + result_path)
 
-    val sqlStr = "alter table " + tableName + " add if not exists partition(dt='" + dt + "');"
+    val sqlStr = "alter table dm_rca." + tableName + " add if not exists partition(dt='" + dt + "')"
     println("sqlStr: " + sqlStr)
     spark.sql(sqlStr)
 

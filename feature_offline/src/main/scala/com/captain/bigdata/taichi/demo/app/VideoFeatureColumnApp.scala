@@ -37,6 +37,38 @@ case class FeatureBean(device_id: String,
                        rt_item_lst_list: String,
                        item_lst_list: String,
                        item_key: String,
+
+                       duration: String,
+                       duration_7d: String,
+                       duration_15d: String,
+                       duration_30d: String,
+                       rtype_duration_7d: String,
+                       rtype_duration_15d: String,
+                       category_duration_7d: String,
+                       category_duration_15d: String,
+                       category_duration_30d: String,
+                       per_person_stay_duration_1d: String,
+                       per_person_stay_duration_3d: String,
+                       per_person_stay_duration_7d: String,
+                       per_person_stay_duration_15d: String,
+                       per_person_stay_duration_30d: String,
+                       stay_duration_7d: String,
+                       stay_duration_15d: String,
+                       stay_duration_30d: String,
+                       rtype_stay_duration_7d: String,
+                       rtype_stay_duration_15d: String,
+                       rtype_stay_duration_30d: String,
+                       video_stay_duration_1d: String,
+                       video_stay_duration_3d: String,
+                       video_stay_duration_7d: String,
+                       video_stay_duration_15d: String,
+                       video_stay_duration_30d: String,
+                       video_stay_duration_ratio_1d: String,
+                       video_stay_duration_ratio_3d: String,
+                       video_stay_duration_ratio_7d: String,
+                       video_stay_duration_ratio_15d: String,
+                       video_stay_duration_ratio_30d: String,
+
                        label: String,
                        dt: String)
 
@@ -64,6 +96,38 @@ case class FeatureResultBean(device_id: String,
                              rt_item_lst_list: String,
                              item_lst_list: String,
                              item_key: String,
+
+                             duration: String,
+                             duration_7d: String,
+                             duration_15d: String,
+                             duration_30d: String,
+                             rtype_duration_7d: String,
+                             rtype_duration_15d: String,
+                             category_duration_7d: String,
+                             category_duration_15d: String,
+                             category_duration_30d: String,
+                             per_person_stay_duration_1d: String,
+                             per_person_stay_duration_3d: String,
+                             per_person_stay_duration_7d: String,
+                             per_person_stay_duration_15d: String,
+                             per_person_stay_duration_30d: String,
+                             stay_duration_7d: String,
+                             stay_duration_15d: String,
+                             stay_duration_30d: String,
+                             rtype_stay_duration_7d: String,
+                             rtype_stay_duration_15d: String,
+                             rtype_stay_duration_30d: String,
+                             video_stay_duration_1d: String,
+                             video_stay_duration_3d: String,
+                             video_stay_duration_7d: String,
+                             video_stay_duration_15d: String,
+                             video_stay_duration_30d: String,
+                             video_stay_duration_ratio_1d: String,
+                             video_stay_duration_ratio_3d: String,
+                             video_stay_duration_ratio_7d: String,
+                             video_stay_duration_ratio_15d: String,
+                             video_stay_duration_ratio_30d: String,
+
                              label: String,
                              dt: String)
 
@@ -111,7 +175,7 @@ object VideoFeatureColumnApp {
   }
 
   //替换逗号为分号，并去重
-  //source: 5772,2061,5395,5772,4232,2893,5239,166
+  //source: 5772,5772,2061,5395,5772,4232,2893,5239,166
   //target: 5772;2061;5395;5772;4232;2893;5239;166
   def replaceComma2SemicolonDistinct(column: String): String = {
     if (column != null && !column.equals("")) {
@@ -181,6 +245,40 @@ object VideoFeatureColumnApp {
         |get_json_object(msg, '$.itemFeature.gc_type') as gc_type,
         |get_json_object(msg, '$.itemFeature.rt_item_lst_list') as rt_item_lst_list,
         |get_json_object(msg, '$.itemFeature.item_lst_list') as item_lst_list,
+        |
+        |
+        |get_json_object(msg,'$.itemFeature.duration') as duration,
+        |get_json_object(msg,'$.userFeature.duration_7d') as duration_7d,
+        |get_json_object(msg,'$.userFeature.duration_15d') as duration_15d,
+        |get_json_object(msg,'$.userFeature.duration_30d') as duration_30d,
+        |get_json_object(msg,'$.userFeature.rtype_duration_7d') as rtype_duration_7d,
+        |get_json_object(msg,'$.userFeature.rtype_duration_15d') as rtype_duration_15d,
+        |get_json_object(msg,'$.userFeature.category_duration_7d') as category_duration_7d,
+        |get_json_object(msg,'$.userFeature.category_duration_15d') as category_duration_15d,
+        |get_json_object(msg,'$.userFeature.category_duration_30d') as category_duration_30d,
+        |get_json_object(msg,'$.itemFeature.per_person_stay_duration_1d') as per_person_stay_duration_1d,
+        |get_json_object(msg,'$.itemFeature.per_person_stay_duration_3d') as per_person_stay_duration_3d,
+        |get_json_object(msg,'$.itemFeature.per_person_stay_duration_7d') as per_person_stay_duration_7d,
+        |get_json_object(msg,'$.itemFeature.per_person_stay_duration_15d') as per_person_stay_duration_15d,
+        |get_json_object(msg,'$.itemFeature.per_person_stay_duration_30d') as per_person_stay_duration_30d,
+        |get_json_object(msg,'$.itemFeature.stay_duration_7d') as stay_duration_7d,
+        |get_json_object(msg,'$.itemFeature.stay_duration_15d') as stay_duration_15d,
+        |get_json_object(msg,'$.itemFeature.stay_duration_30d') as stay_duration_30d,
+        |get_json_object(msg,'$.itemFeature.rtype_stay_duration_7d') as rtype_stay_duration_7d,
+        |get_json_object(msg,'$.itemFeature.rtype_stay_duration_15d') as rtype_stay_duration_15d,
+        |get_json_object(msg,'$.itemFeature.rtype_stay_duration_30d') as rtype_stay_duration_30d,
+        |get_json_object(msg,'$.itemFeature.video_stay_duration_1d') as video_stay_duration_1d,
+        |get_json_object(msg,'$.itemFeature.video_stay_duration_3d') as video_stay_duration_3d,
+        |get_json_object(msg,'$.itemFeature.video_stay_duration_7d') as video_stay_duration_7d,
+        |get_json_object(msg,'$.itemFeature.video_stay_duration_15d') as video_stay_duration_15d,
+        |get_json_object(msg,'$.itemFeature.video_stay_duration_30d') as video_stay_duration_30d,
+        |get_json_object(msg,'$.userFeature.video_stay_duration_ratio_1d') as video_stay_duration_ratio_1d,
+        |get_json_object(msg,'$.userFeature.video_stay_duration_ratio_3d') as video_stay_duration_ratio_3d,
+        |get_json_object(msg,'$.userFeature.video_stay_duration_ratio_7d') as video_stay_duration_ratio_7d,
+        |get_json_object(msg,'$.userFeature.video_stay_duration_ratio_15d') as video_stay_duration_ratio_15d,
+        |get_json_object(msg,'$.userFeature.video_stay_duration_ratio_30d') as video_stay_duration_ratio_30d,
+        |
+        |
         |concat(biz_type,'-',biz_id) as item_key,
         |label,
         |dt
@@ -256,6 +354,38 @@ object VideoFeatureColumnApp {
         item_lst_list,
         item_key,
         x.label,
+
+        x.duration,
+        x.duration_7d,
+        x.duration_15d,
+        x.duration_30d,
+        x.rtype_duration_7d,
+        x.rtype_duration_15d,
+        x.category_duration_7d,
+        x.category_duration_15d,
+        x.category_duration_30d,
+        x.per_person_stay_duration_1d,
+        x.per_person_stay_duration_3d,
+        x.per_person_stay_duration_7d,
+        x.per_person_stay_duration_15d,
+        x.per_person_stay_duration_30d,
+        x.stay_duration_7d,
+        x.stay_duration_15d,
+        x.stay_duration_30d,
+        x.rtype_stay_duration_7d,
+        x.rtype_stay_duration_15d,
+        x.rtype_stay_duration_30d,
+        x.video_stay_duration_1d,
+        x.video_stay_duration_3d,
+        x.video_stay_duration_7d,
+        x.video_stay_duration_15d,
+        x.video_stay_duration_30d,
+        x.video_stay_duration_ratio_1d,
+        x.video_stay_duration_ratio_3d,
+        x.video_stay_duration_ratio_7d,
+        x.video_stay_duration_ratio_15d,
+        x.video_stay_duration_ratio_30d,
+
         x.dt)
 
     })
@@ -270,16 +400,24 @@ object VideoFeatureColumnApp {
       println("result_path_json:" + result_path_json)
     }
 
+    spark.sql("set hive.exec.dynamic.partition.mode=nonstrict")
+
     val resultDF = featureResultRdd.toDF()
-    val columnList = "biz_id,biz_type,pvid,device_id,posid,user_uniq_keywords_pref,user_uniq_series_pref,user_fp_click_series_seq,item_uniq_series_ids,item_uniq_keywords_name,user_rt_fp_click_series_seq,user_uniq_category_pref,item_uniq_category_name,user_rt_category_list,item_author_id,user_rt_click_author_list_pre,user_rt_click_tag_pref,user_device_model,user_energy_pref_top1,recall_way,gc_type,rt_item_lst_list,item_lst_list,item_key,label"
-    val featuresListOutputReal = columnList.split(",")
-    resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").option("emptyValue", "").mode("overwrite").csv(result_path)
+    resultDF.createOrReplaceTempView("TMP_TBL_01")
 
-    println("result_path:" + result_path)
-
-    val sqlStr = "alter table dm_rca." + tableName + " add if not exists partition(dt='" + dt + "')"
-    println("sqlStr: " + sqlStr)
+    val columnList = "biz_id,biz_type,pvid,device_id,posid,user_uniq_keywords_pref,user_uniq_series_pref,user_fp_click_series_seq,item_uniq_series_ids,item_uniq_keywords_name,user_rt_fp_click_series_seq,user_uniq_category_pref,item_uniq_category_name,user_rt_category_list,item_author_id,user_rt_click_author_list_pre,user_rt_click_tag_pref,user_device_model,user_energy_pref_top1,recall_way,gc_type,rt_item_lst_list,item_lst_list,item_key,duration,duration_7d,duration_15d,duration_30d,rtype_duration_7d,rtype_duration_15d,category_duration_7d,category_duration_15d,category_duration_30d,per_person_stay_duration_1d,per_person_stay_duration_3d,per_person_stay_duration_7d,per_person_stay_duration_15d,per_person_stay_duration_30d,stay_duration_7d,stay_duration_15d,stay_duration_30d,rtype_stay_duration_7d,rtype_stay_duration_15d,rtype_stay_duration_30d,video_stay_duration_1d,video_stay_duration_3d,video_stay_duration_7d,video_stay_duration_15d,video_stay_duration_30d,video_stay_duration_ratio_1d,video_stay_duration_ratio_3d,video_stay_duration_ratio_7d,video_stay_duration_ratio_15d,video_stay_duration_ratio_30d,label"
+    val sqlStr = "insert overwrite table dm_rca." + tableName + " PARTITION(dt='" + dt + "')  select " + columnList + " from TMP_TBL_01"
+    println(sqlStr)
     spark.sql(sqlStr)
+
+    //    val featuresListOutputReal = columnList.split(",")
+    //    resultDF.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*).write.option("header", "true").option("emptyValue", "").mode("overwrite").csv(result_path)
+    //
+    //    println("result_path:" + result_path)
+    //
+    //    val sqlStr = "alter table dm_rca." + tableName + " add if not exists partition(dt='" + dt + "')"
+    //    println("sqlStr: " + sqlStr)
+    //    spark.sql(sqlStr)
 
     spark.stop()
   }

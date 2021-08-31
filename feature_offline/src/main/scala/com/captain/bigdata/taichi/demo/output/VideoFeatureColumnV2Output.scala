@@ -2,6 +2,7 @@ package com.captain.bigdata.taichi.demo.output
 
 object VideoFeatureColumnV2Output {
 
+  //顺序要与表字段顺序一致
   val featuresListOutputReal = Array(
 
     //base

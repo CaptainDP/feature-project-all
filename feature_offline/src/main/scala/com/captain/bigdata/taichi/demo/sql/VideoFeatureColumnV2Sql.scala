@@ -53,6 +53,41 @@ object VideoFeatureColumnV2Sql {
       |get_json_object(msg, '$.itemFeature.click_uv_30d') as click_uv_30d,
       |
       |
+      |--like
+      |get_json_object(msg, '$.itemFeature.like_cnt_1d') as like_cnt_1d,
+      |get_json_object(msg, '$.itemFeature.like_cnt_3d') as like_cnt_3d,
+      |get_json_object(msg, '$.itemFeature.like_cnt_7d') as like_cnt_7d,
+      |get_json_object(msg, '$.itemFeature.like_cnt_15d') as like_cnt_15d,
+      |get_json_object(msg, '$.itemFeature.like_cnt_30d') as like_cnt_30d,
+      |
+      |
+      |--prop_author
+      |get_json_object(msg, '$.itemFeature.fans_num') as fans_num,
+      |get_json_object(msg, '$.itemFeature.works_num') as works_num,
+      |get_json_object(msg, '$.itemFeature.comment_cnt_90d') as comment_cnt_90d,
+      |get_json_object(msg, '$.itemFeature.favorites_cnt_90d') as favorites_cnt_90d,
+      |get_json_object(msg, '$.itemFeature.share_cnt_90d') as share_cnt_90d,
+      |get_json_object(msg, '$.itemFeature.like_cnt_90d') as like_cnt_90d,
+      |
+      |
+      |--time
+      |get_json_object(msg, '$.startTime') as start_time,
+      |get_json_object(msg, '$.itemFeature.startTime') as recommend_time,
+      |
+      |--quality feature
+      |get_json_object(msg, '$.itemFeature.cover_score') as cover_score,
+      |get_json_object(msg, '$.itemFeature.effect_score') as effect_score,
+      |get_json_object(msg, '$.itemFeature.rare_score') as rare_score,
+      |get_json_object(msg, '$.itemFeature.time_score') as time_score,
+      |
+      |--reply_cnt
+      |get_json_object(msg, '$.itemFeature.reply_cnt_1d') as reply_cnt_1d,
+      |get_json_object(msg, '$.itemFeature.reply_cnt_3d') as reply_cnt_3d,
+      |get_json_object(msg, '$.itemFeature.reply_cnt_7d') as reply_cnt_7d,
+      |get_json_object(msg, '$.itemFeature.reply_cnt_15d') as reply_cnt_15d,
+      |get_json_object(msg, '$.itemFeature.reply_cnt_30d') as reply_cnt_30d,
+      |
+      |
       |--deal_click_dur_log
       |get_json_object(msg, '$.userFeature.click_num_15d') as user_click_num_15d,
       |get_json_object(msg, '$.userFeature.click_num_30d') as user_click_num_30d,

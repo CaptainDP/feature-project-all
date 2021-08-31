@@ -200,6 +200,7 @@
                     <jvmArgs>
                         <jvmArg>-Xms64m</jvmArg>
                         <jvmArg>-Xmx2048m</jvmArg>
+                        <jvmArg>-Xss4096k</jvmArg>
                     </jvmArgs>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <args>

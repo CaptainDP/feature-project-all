@@ -10,15 +10,20 @@ import scala.collection.mutable.ArrayBuffer
 object VideoFeatureColumnV2Utils {
 
 
-  def getTimeDecay(start: String, end: String): Double = {
+  def getTimeDecaySecond(start: String, end: String): String = {
     if (start == null || start.trim.equals("")) {
-      0
+      "99999999"
     } else {
       val startTime = DateUtil.toDate(start, "yyyy-MM-dd HH:mm:ss")
       val startTimeStr = DateUtil.getDateTime(startTime, "yyyy-MM-dd HH:mm:ss.SSS")
       val diff = DateUtil.getTimeDiff(end, startTimeStr, "yyyy-MM-dd HH:mm:ss.SSS")
-      Math.exp(-0.0005 * diff / 600.0)
+      double2String(diff / 600.0, 6)
     }
+  }
+
+  def getTimeDecayExp(start: String, end: String): String = {
+    val diff = getTimeDecaySecond(start, end).toDouble
+    double2String(Math.exp(-0.0005 * diff), 3)
   }
 
   def isNumeric(str: String): Boolean = {
@@ -32,17 +37,15 @@ object VideoFeatureColumnV2Utils {
     flag
   }
 
-  def double2String6(value: Double): String = {
-    new DecimalFormat("##.######").format(value)
+  def double2String(value: Double, decimalDigits: Int): String = {
+
+    var format = "##."
+    for (_ <- 0 until decimalDigits) {
+      format += "#"
+    }
+    new DecimalFormat(format).format(value)
   }
 
-  def double2String5(value: Double): String = {
-    new DecimalFormat("##.#####").format(value)
-  }
-
-  def double2String3(value: Double): String = {
-    new DecimalFormat("##.###").format(value)
-  }
 
   def getMaxMin(list: ArrayBuffer[Float], min: Float, max: Float): ArrayBuffer[Float] = {
     val diff = max - min + 1.0
@@ -180,7 +183,7 @@ object VideoFeatureColumnV2Utils {
   def callback_ratio(pv: String, uv: String): String = {
     if (pv != null && !pv.equals("") && isNumeric(pv) && uv != null && !uv.equals("") && isNumeric(uv)) {
       val ratio = (pv.toDouble + 1.0) / (uv.toDouble + 1.0)
-      double2String3(ratio)
+      double2String(ratio, 3)
     } else {
       "0.0"
     }
@@ -189,14 +192,14 @@ object VideoFeatureColumnV2Utils {
   //https://juejin.cn/post/6844903494135054350
   //source:
   //target:
-  def wilson_score(pos: String, total: String, p_z: Double = 5.0): String = {
+  def wilson_score(pos: String, total: String, totalAdd: Double = 1, p_z: Double = 5.0): String = {
     if (pos != null && !pos.equals("") && isNumeric(pos) && total != null && !total.equals("") && isNumeric(total)) {
       val posDouble = pos.toDouble
-      val totalDouble = total.toDouble + 1
+      val totalDouble = total.toDouble + totalAdd
       val pos_rat = posDouble / totalDouble
 
       val score = ((pos_rat + (p_z * p_z) / (2 * totalDouble)) - ((p_z / (2 * totalDouble)) * Math.sqrt(4 * totalDouble * (1 - pos_rat) * pos_rat + p_z * p_z))) / (1 + p_z * p_z / totalDouble)
-      double2String5(score)
+      double2String(score, 5)
     } else {
       "0.0"
     }
@@ -207,7 +210,7 @@ object VideoFeatureColumnV2Utils {
       val posDouble = pos.toDouble
       val totalDouble = total.toDouble + 1
       val score = (posDouble + pos_z) / (totalDouble + total_z)
-      double2String5(score)
+      double2String(score, 5)
     } else {
       "0.0"
     }
@@ -216,9 +219,19 @@ object VideoFeatureColumnV2Utils {
 
   //source:
   //target:
-  def log(column: String): String = {
+  def log(column: String, add: Double = 1, decimalDigits: Int): String = {
     if (column != null && !column.equals("") && isNumeric(column)) {
-      double2String6(math.log(column.toDouble + 1))
+      double2String(math.log(column.toDouble + add), decimalDigits)
+    } else {
+      "0.0"
+    }
+  }
+
+  //source:
+  //target:
+  def log10(column: String, add: Double = 1, decimalDigits: Int): String = {
+    if (column != null && !column.equals("") && isNumeric(column)) {
+      double2String(math.log10(column.toDouble + add), decimalDigits)
     } else {
       "0.0"
     }

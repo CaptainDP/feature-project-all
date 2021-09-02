@@ -174,7 +174,7 @@ object FeatureBucketRangeApp {
     //将空值转成默认值0.0
     val defaultValue = -0.00000001
     featuresList.foreach(x => {
-      dataFrame = dataFrame.withColumn(x, when(col(x).isNull, defaultValue).when(col(x) === null, defaultValue).when(col(x) === "", defaultValue).when(upper(col(x)) === "NULL", defaultValue).otherwise(col(x)))
+      dataFrame = dataFrame.withColumn(x, when(col(x).isNull, defaultValue).when(col(x) === null, defaultValue).when(col(x) === "", defaultValue).when(upper(col(x)) === "NULL", defaultValue).when(length(col(x)) === null, defaultValue).otherwise(col(x)))
     })
     dataFrame.persist(StorageLevel.MEMORY_AND_DISK)
 

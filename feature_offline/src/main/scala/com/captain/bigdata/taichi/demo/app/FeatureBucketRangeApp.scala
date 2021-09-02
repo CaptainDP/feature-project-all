@@ -3,12 +3,12 @@ package com.captain.bigdata.taichi.demo.app
 import java.util.Date
 
 import com.alibaba.fastjson.{JSON, JSONObject}
-import com.captain.bigdata.taichi.util.{DateUtil, UrlUtil}
+import com.captain.bigdata.taichi.util.DateUtil
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.ml.feature.QuantileDiscretizer
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{Column, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
 import scala.collection.JavaConversions._
@@ -76,8 +76,19 @@ object FeatureBucketRangeApp {
     featureSplitList.toArray
   }
 
+  //agg的expr使用
+  trait AggregationOp {
+    def expr: Column
+  }
+
+  case class StringAggregationOp(c: String, func: String, alias: String
+                                ) extends AggregationOp {
+    def expr = org.apache.spark.sql.functions.expr(s"${func}(`${c}`)").alias(alias)
+  }
+
   def main(args: Array[String]): Unit = {
 
+    val startTime = DateUtil.getDateTime()
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
     options.addOption("p", true, "path")
@@ -99,23 +110,17 @@ object FeatureBucketRangeApp {
       num = cmd.getOptionValue("n").toInt
     }
 
-    //本地测试
-    //    val train_data_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\data\\demo.csv"
-    //    val result_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\data_out"
-    //    val demo_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\demo.csv"
-    //    val feature_fm_bucket_path = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\resources\\conf\\feature_fm_bucket.json"
     //线上环境
-    val tableName = "cmp_tmp_train_sample_all_shucang_multi_v6_sample"
-    val result_path = "viewfs://AutoLfCluster/team/cmp/hive_db/tmp/" + tableName + "_cdp_bucket/dt=" + dt
-    println("result_path:" + result_path)
-    val basePath = path
-    println("basePath:" + basePath)
-    val demo_path = UrlUtil.get("./conf/conf/demo.csv", basePath).getPath
-    val feature_fm_bucket_path = UrlUtil.get("./conf/conf/feature_fm_bucket.json", basePath).getPath
-    val startTime = DateUtil.getDateTime()
+    val tableName = "cmp_gdm.cmp_gdm_rcmd_train_rank_sample_new_di"
+    val addColumnNames = "label,dt"
+    val columnNames = "match_category_dur_maxmin_7d, match_category_dur_maxmin_15d, match_category_dur_maxmin_30d, match_category_dur_weight_7d, match_category_dur_weight_15d, match_category_dur_weight_30d, match_rtype_dur_maxmin_7d, match_rtype_dur_maxmin_15d, match_rtype_dur_maxmin_30d, match_rtype_dur_weight_7d, match_rtype_dur_weight_15d, match_rtype_dur_weight_30d, item_uv_duration_15d, item_uv_duration_30d"
+    val allColumnNames = columnNames + "," + addColumnNames
+    val numBuckets = 100
 
+    //spark
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
+    //    sparkConf.setMaster("local[*]")
 
     val spark = SparkSession
       .builder
@@ -124,32 +129,46 @@ object FeatureBucketRangeApp {
       .getOrCreate()
 
 
-    //读取特征列转换后列配置
-    val featuresList = firstLineList(demo_path)
-//    val featureBucketMap = getFeatureBucket(feature_fm_bucket_path)
-//    val featureBucketList = getFeatureBucketList(featureBucketMap, featuresList)
-
-    //指定输出列名
-    val addList = Array("biz_id", "biz_type", "device_id")
-    val featuresListOutput = featuresList.map(x => x + "_out")
-    val featuresListOutputReal = addList ++ featuresListOutput
-    val featuresListOutputName = featuresListOutputReal.mkString(",")
-
-    //读入数据-此处可以改成sql
-    //    val dataFrame = spark.read.format("csv")
-    //      .option("delimiter", ",")
-    //      .option("header", "true")
-    //      .option("quote", "'")
-    //      .option("nullValue", "\\N")
-    //      .option("inferSchema", "true")
-    //      .load(train_data_path).toDF()
-
     val dataFormat = "yyyy-MM-dd(-" + num + "D)"
     val startDate = DateUtil.calcDateByFormat(DateUtil.toDate(dt, "yyyy-MM-dd"), dataFormat)
     val endDate = dt
-    val sql = s"select * from cmp_tmp.$tableName where dt >= '$startDate' and dt <= '$endDate' and label in ('0', '1') and length(device_id) > 0 and cast(biz_id as long) > 0 and cast(biz_type as int) > 0"
+
+    //本地计算demo使用
+    //    import spark.implicits._
+    //
+    //    val path2 = "D:\\workspace\\autohome_workspace\\feature-project-all\\feature_offline\\src\\main\\scala\\com\\captain\\bigdata\\taichi\\demo\\app\\demo.json"
+    //    val peopleDS = spark.read.json(path2)
+    //    var ss = peopleDS.as[Person2]
+    //    ss.createOrReplaceTempView("cmp_gdm_rcmd_train_rank_sample_new_di")
+
+    val sql = s"select $allColumnNames from $tableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') "
 
     println("sql:" + sql)
+    var dataFrame0 = spark.sql(sql)
+
+    //读取特征列转换后列配置
+    val featuresList = columnNames.replaceAll(" ", "").split(",")
+
+    //计算特征覆盖度
+    val totalNum = dataFrame0.count()
+    featuresList.foreach(x => {
+      dataFrame0 = dataFrame0.withColumn(x + "_notnull", when(col(x).isNull, 0).when(col(x) === null, 0).when(col(x) === "", 0).when(upper(col(x)) === "NULL", 0).when(length(col(x)) === null, 0).when(col(x) === "0", 0).otherwise(1))
+    })
+
+    val exprs = featuresList.map(x => StringAggregationOp(x + "_notnull", "sum", x + "_sum")).map(_.expr)
+    dataFrame0 = dataFrame0.agg(exprs.head, exprs.tail: _*)
+
+    val coverageMap = new JSONObject()
+    val dd = dataFrame0.collect()
+    for (i <- 0 until featuresList.size) {
+      val oneMap = new JSONObject()
+      oneMap.put("notnull_count", dd(0)(i))
+      oneMap.put("notnull_coverage", dd(0)(i).toString.toDouble / totalNum)
+      coverageMap.put(featuresList(i), oneMap)
+    }
+
+
+    //
     var dataFrame = spark.sql(sql)
 
     //将空值转成默认值0.0
@@ -171,7 +190,7 @@ object FeatureBucketRangeApp {
         .setHandleInvalid("skip")
         .setInputCol(x)
         .setOutputCol(x + "_out")
-        .setNumBuckets(10)
+        .setNumBuckets(numBuckets)
       val result = discretizer.fit(dataFrame).getSplits.toBuffer
       result -= (Double.NegativeInfinity, Double.PositiveInfinity)
       oneMap.put("bucket", result.toArray)
@@ -190,6 +209,7 @@ object FeatureBucketRangeApp {
         analysisMap.put(list(i) + "", stat(i))
       }
       oneMap.put("analysis", analysisMap)
+      oneMap.put("coverage", coverageMap.get(x))
 
       statMap.put(x, oneMap)
 
@@ -201,13 +221,11 @@ object FeatureBucketRangeApp {
     val summaryMap = new JSONObject()
     val label = dataFrame.groupBy("label").count()
     val labelMap = new JSONObject()
-    var total = 0L
     label.collect().foreach(x => {
       labelMap.put(x.get(0) + "", x.get(1))
-      total += x.get(1).toString.toLong
     })
     summaryMap.put("label", labelMap)
-    summaryMap.put("total", total)
+    summaryMap.put("total", totalNum)
 
     //统计每天数量量
     val dtColumn = dataFrame.groupBy("dt").count().sort(asc("dt"))

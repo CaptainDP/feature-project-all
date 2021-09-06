@@ -65,7 +65,7 @@ object FeatureSampleMergeGeneral {
       .getOrCreate()
 
 
-    val sql = s"select $columnList from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') "
+    val sql = s"select $columnList from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') and flag_data = 'shouye'"
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
 

@@ -68,6 +68,11 @@ object FeatureSampleMergeGeneral {
     val sql = s"select $columnList from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') and flag_data = 'shouye'"
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
+    dataFrame.createOrReplaceTempView("TMP_TBL_01")
+
+    //过滤低质用户无效的曝光样本（当日点击次数为0的）
+    val filterSql = "select a.* from TMP_TBL_01 a join dm_rca.dm_rca_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num >1"
+    dataFrame = spark.sql(filterSql)
 
     val featuresListOutputReal = columnList.split(",")
     dataFrame = dataFrame.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)

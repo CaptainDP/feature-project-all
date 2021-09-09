@@ -71,7 +71,8 @@ object FeatureSampleMergeGeneral {
     dataFrame.createOrReplaceTempView("TMP_TBL_01")
 
     //过滤低质用户无效的曝光样本（当日点击次数为0的）
-    val filterSql = "select a.* from TMP_TBL_01 a join dm_rca.dm_rca_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num >1"
+    val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num >0"
+    println("filterSql:" + sql)
     dataFrame = spark.sql(filterSql)
 
     val featuresListOutputReal = columnList.split(",")

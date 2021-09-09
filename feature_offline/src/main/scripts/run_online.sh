@@ -52,8 +52,8 @@ cmd="$cmd --num-executors 2 --executor-cores 2 --executor-memory 1GB"
 cmd="$cmd --conf spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 cmd="$cmd --conf spark.executor.extraJavaOptions=-Dfile.encoding=utf-8"
 
-cmd="$cmd --master local[*]"
-#cmd="$cmd --master yarn"
+#cmd="$cmd --master local[*]"
+cmd="$cmd --master yarn"
 
 cmd="$cmd --deploy-mode client"
 #cmd="$cmd --deploy-mode cluster"

@@ -49,6 +49,9 @@ object FeatureSampleMergeGeneral {
       System.exit(-1)
     }
 
+    val filterCondition = jsonObj.getString("filterCondition")
+
+
     val currDate = dt
     val date = DateUtil.toDate(currDate, "yyyy-MM-dd")
     val endDate = DateUtil.getDate(date, "yyyy-MM-dd")
@@ -65,7 +68,7 @@ object FeatureSampleMergeGeneral {
       .getOrCreate()
 
 
-    val sql = s"select $columnList from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') and flag_data = 'shouye'"
+    val sql = s"select $columnList from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' $filterCondition"
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")

@@ -50,6 +50,7 @@ object FeatureSampleMergeGeneral {
     }
 
     val filterCondition = jsonObj.getString("filterCondition")
+    val filterSql = jsonObj.getString("filterSql")
 
 
     val currDate = dt
@@ -73,6 +74,11 @@ object FeatureSampleMergeGeneral {
     var dataFrame = spark.sql(sql)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")
 
+    println("filterSql:" + filterSql)
+    if (filterSql != null && !filterSql.trim.equals("")) {
+      dataFrame = spark.sql(filterSql)
+    }
+
     //过滤低质用户无效的曝光样本（当日点击次数为0的）
     //    val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num >0"
     //    println("filterSql:" + filterSql)
@@ -82,6 +88,7 @@ object FeatureSampleMergeGeneral {
     dataFrame = dataFrame.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
     dataFrame = dataFrame.repartition(200)
     dataFrame.write.option("header", "true").option("delimiter", ",").mode("overwrite").csv(targetHdfsPath)
+    println("targetHdfsPath:" + targetHdfsPath)
 
     spark.stop()
   }

@@ -19,6 +19,7 @@ if [[ $# -eq 1 ]]; then
 elif [[ $# -eq 2 ]]; then
     dt=$(date -d "$1" +%Y-%m-%d)
     json=$2
+    echo "json:"$jsonStr
 else
     echo "$0 date"
     exit 1

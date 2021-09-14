@@ -8,6 +8,8 @@ import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
+import scala.collection.mutable.ArrayBuffer
+
 
 object FeatureSampleMergeGeneral {
 
@@ -31,6 +33,8 @@ object FeatureSampleMergeGeneral {
       jsonStr = cmd.getOptionValue("j")
     }
 
+    println("jsonStr:" + jsonStr)
+
     val jsonObj = JSON.parseObject(jsonStr)
     val preCount = jsonObj.getInteger("preDateNum")
     val sourceTableName = jsonObj.getString("sourceTableName")
@@ -51,6 +55,7 @@ object FeatureSampleMergeGeneral {
 
     val filterCondition = jsonObj.getString("filterCondition")
     val filterSql = jsonObj.getString("filterSql")
+    val castTypeList = jsonObj.getString("castTypeList")
 
 
     val currDate = dt
@@ -68,8 +73,24 @@ object FeatureSampleMergeGeneral {
       .enableHiveSupport()
       .getOrCreate()
 
+    //    val castTypeList = "item_videosound,item_video_subtitle,item_video_stability,item_video_coverimage_blackborder,item_video_blackborder,item_cms_quality,user_video_score"
 
-    val sql = s"select $columnList from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' $filterCondition"
+    val castTypeSet = castTypeList.replaceAll(" ", "").split(",").toSet
+
+    val columnListNew = ArrayBuffer[String]()
+    columnList.split(",").foreach(x => {
+      if (castTypeSet(x)) {
+        val xx = "cast(if(" + x + " is null,'-1'," + x + ") as double) as " + x
+        columnListNew.append(xx)
+      } else {
+        columnListNew.append(x)
+      }
+    })
+
+    val columnStr = columnListNew.mkString(",")
+    println("columnStr:" + columnStr)
+
+    val sql = s"select $columnStr from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') $filterCondition"
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")

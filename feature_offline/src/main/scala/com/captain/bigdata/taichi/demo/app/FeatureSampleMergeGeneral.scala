@@ -80,7 +80,7 @@ object FeatureSampleMergeGeneral {
     val columnListNew = ArrayBuffer[String]()
     columnList.split(",").foreach(x => {
       if (castTypeSet(x)) {
-        val xx = "cast(if(" + x + " is null,'-1'," + x + ") as double) as " + x
+        val xx = "cast(if(" + x + " = '','-1'," + x + ") as double) as " + x
         columnListNew.append(xx)
       } else {
         columnListNew.append(x)

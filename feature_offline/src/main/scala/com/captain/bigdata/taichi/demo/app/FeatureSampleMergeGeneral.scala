@@ -53,6 +53,11 @@ object FeatureSampleMergeGeneral {
       System.exit(-1)
     }
 
+    var filterLowUser = jsonObj.getBoolean("filterLowUser")
+    if (filterLowUser == null) {
+      filterLowUser = false
+    }
+
     val filterCondition = jsonObj.getString("filterCondition")
     val filterSql = jsonObj.getString("filterSql")
     val castTypeList = jsonObj.getString("castTypeList")
@@ -76,6 +81,9 @@ object FeatureSampleMergeGeneral {
     //    val castTypeList = "item_videosound,item_video_subtitle,item_video_stability,item_video_coverimage_blackborder,item_video_blackborder,item_cms_quality,user_video_score"
 
     val castTypeSet = castTypeList.replaceAll(" ", "").split(",").toSet
+    //类别特征异常值处理
+    val filterColumnStr = "item_author_id,item_r_type,gc_type,recall_way,user_device_brand,user_device_model,item_uniq_series_ids,item_uniq_brands_ids,item_uniq_category_name,item_uniq_keywords_name,user_fp_click_series_seq,user_rt_fp_click_series_seq,rt_item_lst_list,item_lst_list,user_rt_click_brand_pref,user_rt_click_author_list_pre,user_rt_click_tag_pref,user_rtype_pref,user_uniq_keywords_pref,user_uniq_category_pref,user_uniq_series_pref,user_uniq_brand_pref,user_rt_category_list,user_fp_click_rtype_list,user_series_search_cnt_7d"
+    val filterColumnSet = filterColumnStr.replaceAll(" ", "").split(",").toSet
 
     val columnListNew = ArrayBuffer[String]()
     columnList.split(",").foreach(x => {
@@ -83,7 +91,12 @@ object FeatureSampleMergeGeneral {
         val xx = "cast(if(" + x + " = '','-1'," + x + ") as double) as " + x
         columnListNew.append(xx)
       } else {
-        columnListNew.append(x)
+        if (filterColumnSet(x)) {
+          val xx = "case when dt <= '2021-09-12' then '' else " + x + " end as " + x
+          columnListNew.append(xx)
+        } else {
+          columnListNew.append(x)
+        }
       }
     })
 
@@ -101,9 +114,11 @@ object FeatureSampleMergeGeneral {
     }
 
     //过滤低质用户无效的曝光样本（当日点击次数为0的）
-    //    val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num >0"
-    //    println("filterSql:" + filterSql)
-    //    dataFrame = spark.sql(filterSql)
+    if (filterLowUser) {
+      val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num > 0"
+      println("filterSql:" + filterSql)
+      dataFrame = spark.sql(filterSql)
+    }
 
     val featuresListOutputReal = columnList.split(",")
     dataFrame = dataFrame.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)

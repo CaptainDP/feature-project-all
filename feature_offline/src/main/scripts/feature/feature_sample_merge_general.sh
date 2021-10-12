@@ -19,11 +19,14 @@ if [[ $# -eq 1 ]]; then
 elif [[ $# -eq 2 ]]; then
     dt=$(date -d "$1" +%Y-%m-%d)
     json=$2
-    echo "json:"$jsonStr
+    echo "json:"$json
 else
     echo "$0 date"
     exit 1
 fi
+
+json=`echo $json|base64 -w 0`
+echo "json base64:"$json
 
 export LOG_FILE=$conffile
 export LOG_DATE=$dt
@@ -63,6 +66,7 @@ cmd="$cmd --conf spark.speculation=true"
 cmd="$cmd --name feature-offline-merge-$conffile-$dt"
 cmd="$cmd --class $cls $jar"
 cmd="$cmd -d $dt"
+cmd="$cmd -b true"
 cmd="$cmd -j $json"
 
 LOG_FILE=${conffile//\//_}_$dt

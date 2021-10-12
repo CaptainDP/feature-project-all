@@ -7,6 +7,7 @@ import com.captain.bigdata.taichi.util.DateUtil
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import sun.misc.BASE64Decoder
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -19,6 +20,7 @@ object FeatureSampleMergeGeneral {
 
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    options.addOption("b", true, "base64")
     options.addOption("j", true, "json:preDateNum,sourceTableName,targetHdfsPath,columnList")
     val parser = new BasicParser
     val cmd = parser.parse(options, args)
@@ -28,12 +30,20 @@ object FeatureSampleMergeGeneral {
       dt = cmd.getOptionValue("d")
     }
 
+    val decoder = new BASE64Decoder
+
     var jsonStr = "{}"
     if (cmd.hasOption("j")) {
       jsonStr = cmd.getOptionValue("j")
     }
 
-    println("jsonStr:" + jsonStr)
+    val base64 = cmd.getOptionValue("b")
+    if (base64 != null && base64.equals("true")) {
+      println("jsonStr:" + jsonStr)
+      jsonStr = new String(decoder.decodeBuffer(jsonStr))
+      println("jsonStr base64:" + jsonStr)
+    }
+
 
     val jsonObj = JSON.parseObject(jsonStr)
     val preCount = jsonObj.getInteger("preDateNum")

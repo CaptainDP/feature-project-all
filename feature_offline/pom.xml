@@ -66,6 +66,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>chill_2.11</artifactId>
             <version>0.8.4</version>

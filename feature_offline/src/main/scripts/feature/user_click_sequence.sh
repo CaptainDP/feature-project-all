@@ -11,7 +11,8 @@ set -a
 source "$APP_HOME/etc/run_online.env"
 set +a
 
-echo "run_online.sh:"$*
+sh_name=$0
+echo "$sh_name:"$*
 
 if [[ $# -eq 1 ]]; then
     dt=$(date -d "$1" +%Y-%m-%d)
@@ -41,12 +42,14 @@ export SPARK_CLASSPATH=$SPARK_CLASSPATH":$APP_HOME/conf:$APP_HOME/etc:$APP_HOME/
 cls="com.captain.bigdata.taichi.demo.app.UserClickSequenceApp"
 jar="$APP_HOME/libs/$APP_JAR"
 
+app_name="feature-offline-$sh_name-$conffile-$dt"
+
 cmd="spark-submit"
 cmd="$cmd --conf spark.sql.warehouse.dir=file://$(pwd)/sparksql/warehouse"
-cmd="$cmd --conf spark.app.name=feature-offline-$conffile-$dt"
+cmd="$cmd --conf spark.app.name=$app_name"
 cmd="$cmd --conf spark.yarn.submit.waitAppCompletion=true"
 cmd="$cmd --files ${filelist}"
-cmd="$cmd --num-executors 30 --executor-cores 5 --executor-memory 15GB"
+cmd="$cmd --num-executors 100 --executor-cores 5 --executor-memory 15GB"
 
 cmd="$cmd --conf spark.driver.extraJavaOptions=-Dfile.encoding=utf-8"
 cmd="$cmd --conf spark.executor.extraJavaOptions=-Dfile.encoding=utf-8"
@@ -60,7 +63,7 @@ cmd="$cmd --deploy-mode client"
 cmd="$cmd --conf spark.port.maxRetries=30"
 cmd="$cmd --conf spark.speculation=true"
 cmd="$cmd --conf spark.default.parallelism=100"
-cmd="$cmd --name feature-offline-$conffile-$dt"
+cmd="$cmd --name $app_name"
 cmd="$cmd --class $cls $jar"
 cmd="$cmd -d $dt"
 cmd="$cmd -n $num"

@@ -6,8 +6,9 @@ import com.captain.bigdata.taichi.util.DateUtil
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import taichi.utils.AutoMessage
+import taichi.utils.{AutoMessage, SendHTMLEmail}
 
+import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -107,18 +108,63 @@ object BeidouExperimentReport {
       i += 1
     })
 
-    var msg = "ctr和时长：\n实验\t日期\t对照桶ctr\t实验桶ctr\tctr涨幅\t对照桶时长\t实验桶时长\t时长涨幅\n"
 
+    val dataList = new ArrayBuffer[List[String]]()
     list.foreach(x => {
-      val line = x.title + "\t\t" + x.dt + "\t\t" + x.duizhaoCtr + "\t\t" + x.shiyanCtr + "\t\t" + x.diffCtr + "\t\t" + x.duizhaoDuration + "\t\t" + x.shiyanDuration + "\t\t" + x.diffDuration + "\n"
-      msg += line
-    })
+      val oneList = new ArrayBuffer[String]()
+      oneList.append(x.title)
+      oneList.append(x.dt)
+      oneList.append(x.duizhaoCtr)
+      oneList.append(x.shiyanCtr)
+      oneList.append(x.duizhaoDuration)
+      oneList.append(x.shiyanDuration)
+      oneList.append(x.diffCtr)
+      oneList.append(x.diffDuration)
+      dataList.append(oneList.toList)
+    }
+    )
 
-    val users = "13830,11592,14325,14810,15333"
-    AutoMessage.send("北斗实验ctr和时长效果数据", msg, users, "email")
+    val host: String = "114.251.201.21"
+    val from: String = "chendapeng@autohome.com.cn"
+    val toList = new ArrayBuffer[String]()
+    toList.append("chendapeng@autohome.com.cn")
+    val title = "北斗实验ctr和时长效果数据"
+    val titleList = ArrayBuffer("实验", "日期", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅")
+
+
+    val htmlContent = getDemo(titleList.toList, dataList.toList)
+    val flag = SendHTMLEmail.SendMail(host, from, toList.asJava, title, htmlContent)
+    if (!flag) {
+      println("send msg error!!!")
+      System.exit(1)
+    }
+
+    //    val users = "13830,11592,14325,14810,15333"
+    val users = "13830"
     AutoMessage.send("北斗实验ctr和时长效果数据", "邮件已发送请查收", users, "ding")
 
     spark.stop()
+  }
+
+  def getDemo(titleList: List[String], list: List[List[String]]): String = {
+    val content = new StringBuilder("<html><head></head><body>")
+    content.append("<table border=\"1\" style=\"width:1000px; height:150px;border:solid 1px #E8F2F9;font-size=11px;font-size:11px;\">")
+    var titleTmp = "<tr>"
+    for (str <- titleList) {
+      titleTmp += "<td>" + str + "</td>"
+    }
+    titleTmp += "</tr>"
+    content.append(titleTmp)
+    for (line <- list) {
+      var tmp = ""
+      for (str <- line) {
+        tmp += "<td><span>" + str + "</span></td>"
+      }
+      content.append("<tr>" + tmp + "</tr>")
+    }
+    content.append("</table>")
+    content.append("</body></html>")
+    content.toString
   }
 
 }

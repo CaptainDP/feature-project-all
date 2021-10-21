@@ -120,6 +120,11 @@ object BeidouExperimentReport {
       oneList.append(x.shiyanDuration)
       oneList.append(x.diffCtr)
       oneList.append(x.diffDuration)
+      if (x.diffCtr.contains("-") || x.diffDuration.contains("-")) {
+        oneList.append("--")
+      } else {
+        oneList.append("双正向")
+      }
       dataList.append(oneList.toList)
     }
     )
@@ -128,8 +133,13 @@ object BeidouExperimentReport {
     val from: String = "chendapeng@autohome.com.cn"
     val toList = new ArrayBuffer[String]()
     toList.append("chendapeng@autohome.com.cn")
+    toList.append("zhanglina11592@autohome.com.cn")
+    toList.append("lianshuailong@autohome.com.cn")
+    toList.append("liuyuxing@autohome.com.cn")
+    toList.append("liuyizhuang@autohome.com.cn")
+
     val title = "北斗实验ctr和时长效果数据"
-    val titleList = ArrayBuffer("实验", "日期", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅")
+    val titleList = ArrayBuffer("实验", "日期", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "效果")
 
 
     val htmlContent = getDemo(titleList.toList, dataList.toList)
@@ -139,8 +149,8 @@ object BeidouExperimentReport {
       System.exit(1)
     }
 
-    //    val users = "13830,11592,14325,14810,15333"
-    val users = "13830"
+    val users = "13830,11592,14325,14810,15333"
+    //    val users = "13830"
     AutoMessage.send("北斗实验ctr和时长效果数据", "邮件已发送请查收", users, "ding")
 
     spark.stop()
@@ -155,13 +165,31 @@ object BeidouExperimentReport {
     }
     titleTmp += "</tr>"
     content.append(titleTmp)
+    var i = 0
+
     for (line <- list) {
       var tmp = ""
+      var j = 0
       for (str <- line) {
-        tmp += "<td><span>" + str + "</span></td>"
+        if (j == 8) {
+          if (str.contains("双正向")) {
+            tmp += "<td><font color=\"#FF0000\"><span>" + str + "</span></td>"
+          } else {
+            tmp += "<td><span>" + str + "</span></td>"
+          }
+        } else {
+          if (i % 6 < 3) {
+            tmp += "<td><font color=\"#000000\"><span>" + str + "</span></td>"
+          } else {
+            tmp += "<td><font color=\"#0000FF\"><span>" + str + "</span></td>"
+          }
+        }
+        j += 1
       }
       content.append("<tr>" + tmp + "</tr>")
+      i += 1
     }
+
     content.append("</table>")
     content.append("</body></html>")
     content.toString

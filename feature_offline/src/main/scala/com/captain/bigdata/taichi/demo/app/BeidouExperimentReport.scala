@@ -52,6 +52,19 @@ object BeidouExperimentReport {
     val exps = jsonObj.getString("exps")
     //    val exps = "'视频模型_v7_1_增加特征调整参数','视频模型_v0001_增加特征','video_multi_model_improve_v0101','视频实验_v180扩量','user_perfer_video_score_list','视频精排分分时段调权'"
 
+    val email = jsonObj.getString("email")
+    val toList = email.split(",").toBuffer
+    //    val toList = new ArrayBuffer[String]()
+    //    toList.append("chendapeng@autohome.com.cn")
+    //    toList.append("zhanglina11592@autohome.com.cn")
+    //    toList.append("lianshuailong@autohome.com.cn")
+    //    toList.append("liuyuxing@autohome.com.cn")
+    //    toList.append("liuyizhuang@autohome.com.cn")
+    //
+    val users = jsonObj.getString("ding")
+    //    var users = "13830"
+    //    users += ",11592,14325,14810,15333"
+
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
@@ -153,12 +166,7 @@ object BeidouExperimentReport {
 
     val host: String = "114.251.201.21"
     val from: String = "chendapeng@autohome.com.cn"
-    val toList = new ArrayBuffer[String]()
-    toList.append("chendapeng@autohome.com.cn")
-    toList.append("zhanglina11592@autohome.com.cn")
-    toList.append("lianshuailong@autohome.com.cn")
-    toList.append("liuyuxing@autohome.com.cn")
-    toList.append("liuyizhuang@autohome.com.cn")
+
 
     val title = "北斗实验ctr和时长效果数据"
     val titleList = ArrayBuffer("实验", "日期", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "效果")
@@ -171,8 +179,7 @@ object BeidouExperimentReport {
       System.exit(1)
     }
 
-    var users = "13830"
-    users += ",11592,14325,14810,15333"
+
     AutoMessage.send("北斗实验ctr和时长效果数据", "邮件已发送请查收", users, "ding")
 
     spark.stop()

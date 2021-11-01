@@ -25,7 +25,7 @@ else
     exit 1
 fi
 
-json=`echo $json|base64 -w 0`
+#json=`echo $json|base64 -w 0`
 echo "json base64:"$json
 
 export LOG_FILE=$conffile
@@ -66,6 +66,8 @@ cmd="$cmd --conf spark.speculation=true"
 cmd="$cmd --name BeidouExperimentReport-$conffile-$dt"
 cmd="$cmd --class $cls $jar"
 cmd="$cmd -d $dt"
+#cmd="$cmd -b true"
+cmd="$cmd -j $json"
 
 LOG_FILE=${conffile//\//_}_$dt
 logging "command to execute: $cmd"

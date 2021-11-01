@@ -2,10 +2,12 @@ package com.captain.bigdata.taichi.demo.app
 
 import java.util.Date
 
+import com.alibaba.fastjson.JSON
 import com.captain.bigdata.taichi.util.DateUtil
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import sun.misc.BASE64Decoder
 import taichi.utils.{AutoMessage, SendHTMLEmail}
 
 import scala.collection.JavaConverters._
@@ -22,6 +24,8 @@ object BeidouExperimentReport {
 
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    options.addOption("j", true, "json:preDateNum,sourceTableName,targetHdfsPath,columnList")
+
     val parser = new BasicParser
     val cmd = parser.parse(options, args)
     //date
@@ -29,6 +33,25 @@ object BeidouExperimentReport {
     if (cmd.hasOption("d")) {
       dt = cmd.getOptionValue("d")
     }
+
+    val decoder = new BASE64Decoder
+
+    var jsonStr = "{}"
+    if (cmd.hasOption("j")) {
+      jsonStr = cmd.getOptionValue("j")
+    }
+
+    val base64 = cmd.getOptionValue("b")
+    if (base64 != null && base64.equals("true")) {
+      println("jsonStr:" + jsonStr)
+      jsonStr = new String(decoder.decodeBuffer(jsonStr))
+      println("jsonStr base64:" + jsonStr)
+    }
+
+    val jsonObj = JSON.parseObject(jsonStr)
+    val exps = jsonObj.getString("exps")
+    //    val exps = "'视频模型_v7_1_增加特征调整参数','视频模型_v0001_增加特征','video_multi_model_improve_v0101','视频实验_v180扩量','user_perfer_video_score_list','视频精排分分时段调权'"
+
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
@@ -40,7 +63,6 @@ object BeidouExperimentReport {
       .enableHiveSupport()
       .getOrCreate()
 
-    val exps = "'视频模型_v7_1_增加特征调整参数','视频模型_v0001_增加特征','video_multi_model_improve_v0101','视频实验_v180扩量','user_perfer_video_score_list','视频精排分分时段调权'"
 
     var ctr_query_sql =
       """
@@ -149,8 +171,8 @@ object BeidouExperimentReport {
       System.exit(1)
     }
 
-    val users = "13830,11592,14325,14810,15333"
-    //    val users = "13830"
+    var users = "13830"
+    users += ",11592,14325,14810,15333"
     AutoMessage.send("北斗实验ctr和时长效果数据", "邮件已发送请查收", users, "ding")
 
     spark.stop()

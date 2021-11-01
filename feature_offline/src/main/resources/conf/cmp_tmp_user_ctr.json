@@ -56,7 +56,7 @@
       "annotation": "1.计算每天用户对应CTR",
       "tableName": "TMP_TBL_01",
       "partitionNum": "10",
-      "sql": "select dt, device_id, sum(click_num) as click_num_sum, sum(sight_show_num) as sight_show_num_sum, sum(click_num) / sum(sight_show_num) as ctr from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
+      "sql": "select dt, device_id, sum(click_num) as click_num_sum, sum(sight_show_num) as sight_show_num_sum, sum(click_num) / sum(sight_show_num) as ctr, sum(if(object_type in (3,14,66),click_num,0)) as video_click_num_sum,sum(if(object_type in (3,14,66),sight_show_num,0)) as video_sight_show_num_sum, sum(if(object_type in (3,14,66),click_num,0)) / sum(if(object_type in (3,14,66),sight_show_num,0)) as video_ctr from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
     },
     {
       "clazz": "${SqlTransfer}",
@@ -64,7 +64,7 @@
       "annotation": "2.计算每天用户对应刷次",
       "tableName": "TMP_TBL_02",
       "partitionNum": "10",
-      "sql": "select dt, device_id, count(distinct pvid) as brush_num from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
+      "sql": "select dt, device_id, count(distinct pvid) as brush_num, count(distinct if(object_type in (3,14,66), pvid, null)) as video_brush_num from gdm.gdm_04_app_rcmd_di where dt='${BASE_DATE_10}' group by dt, device_id"
     },
     {
       "clazz": "${SqlTransfer}",
@@ -72,14 +72,14 @@
       "annotation": "3.补全字段",
       "tableName": "TMP_TBL_03",
       "partitionNum": "10",
-      "sql": "select a.dt, a.device_id, click_num_sum, sight_show_num_sum, ctr, brush_num from TMP_TBL_01 a join TMP_TBL_02 b on a.dt = b.dt and a.device_id = b.device_id"
+      "sql": "select a.dt, a.device_id, click_num_sum, sight_show_num_sum, ctr, brush_num, video_click_num_sum, video_sight_show_num_sum, video_ctr, video_brush_num from TMP_TBL_01 a join TMP_TBL_02 b on a.dt = b.dt and a.device_id = b.device_id"
     },
     {
       "clazz": "${SqlTransfer}",
       "flag": "true",
       "annotation": "2.插入数据到hive表",
       "tableName": "TMP_TBL_04",
-      "sql": "insert overwrite table cmp_tmp.cmp_tmp_user_ctr PARTITION(dt)  select device_id,ctr,click_num_sum as click_num,sight_show_num_sum as sight_show_num,brush_num,dt from TMP_TBL_03"
+      "sql": "insert overwrite table cmp_tmp.cmp_tmp_user_ctr PARTITION(dt)  select device_id,ctr,click_num_sum as click_num,sight_show_num_sum as sight_show_num,brush_num,video_ctr,video_click_num_sum as video_click_num,video_sight_show_num_sum as video_sight_show_num,video_brush_num,dt from TMP_TBL_03"
     }
   ]
 }

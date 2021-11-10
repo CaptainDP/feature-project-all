@@ -133,7 +133,7 @@ object FeatureSampleMergeGeneral {
 
     val featuresListOutputReal = columnList.split(",")
     dataFrame = dataFrame.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
-    dataFrame = dataFrame.repartition(200)
+    dataFrame = dataFrame.repartition(2000)
     dataFrame.write.option("header", "true").option("delimiter", ",").mode("overwrite").csv(targetHdfsPath)
     println("targetHdfsPath:" + targetHdfsPath)
 

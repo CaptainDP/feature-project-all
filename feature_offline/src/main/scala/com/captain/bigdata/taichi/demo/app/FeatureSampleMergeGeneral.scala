@@ -107,10 +107,10 @@ object FeatureSampleMergeGeneral {
         columnListNew.append(xx)
       } else {
         if (filterColumnSet(x)) {
-          val xx = "case when dt <= '2021-09-12' then '' else " + x + " end as " + x
+          val xx = "case when a.dt <= '2021-09-12' then '' else " + x + " end as " + x
           columnListNew.append(xx)
         } else {
-          columnListNew.append(x)
+          columnListNew.append("a." + x)
         }
       }
     })
@@ -118,7 +118,7 @@ object FeatureSampleMergeGeneral {
     val columnStr = columnListNew.mkString(",")
     println("columnStr:" + columnStr)
 
-    val sql = s"select $columnStr from $sourceTableName where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') $filterCondition"
+    val sql = s"select $columnStr from $sourceTableName a where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') $filterCondition"
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")
@@ -138,7 +138,7 @@ object FeatureSampleMergeGeneral {
 
     //增加正样本：点击图文，但未点击视频
     if (addPosSample) {
-      val addSql = s"select $columnStr from $sourceTableName a join cmp_tmp.cmp_tmp_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where dt >= '$startDate' and dt <= '$endDate' and a.label = 1 and b.click_num > 0 and b.ctr is not null and b.video_click_num = 0 and rand() < 0.1"
+      val addSql = s"select $columnStr from $sourceTableName a join cmp_tmp.cmp_tmp_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where a.dt >= '$startDate' and a.dt <= '$endDate' and a.label = 1 and b.click_num > 0 and b.ctr is not null and b.video_click_num = 0 and rand() < 0.1"
       println("addSql:" + addSql)
       val addDataFrame = spark.sql(addSql)
       dataFrame = dataFrame.union(addDataFrame)

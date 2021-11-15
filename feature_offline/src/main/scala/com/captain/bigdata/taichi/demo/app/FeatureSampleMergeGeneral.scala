@@ -125,10 +125,18 @@ object FeatureSampleMergeGeneral {
 
     //过滤低质用户无效的曝光样本（当日点击次数为0的）
     if (filterLowUser) {
-      val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num > 0 "
+      val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num > 0 and b.ctr is not null "
       //      val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num > 0 and b.click_num < b.sight_show_num"
       println("filterSql:" + filterSql)
       dataFrame = spark.sql(filterSql)
+    }
+
+    //增加正样本：点击图文，但未点击视频
+    if (filterLowUser) {
+      val addSql = s"select $columnStr from $sourceTableName a join cmp_tmp.cmp_tmp_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where dt >= '$startDate' and dt <= '$endDate' and a.label = 1 and b.click_num > 0 and b.ctr is not null and b.video_click_num = 0 and rand() < 0.1"
+      println("addSql:" + addSql)
+      val addDataFrame = spark.sql(addSql)
+      dataFrame = dataFrame.union(addDataFrame)
     }
 
     val featuresListOutputReal = columnList.split(",")

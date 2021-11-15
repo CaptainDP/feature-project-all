@@ -68,6 +68,11 @@ object FeatureSampleMergeGeneral {
       filterLowUser = false
     }
 
+    var addPosSample = jsonObj.getBoolean("addPosSample")
+    if (addPosSample == null) {
+      addPosSample = false
+    }
+
     val filterCondition = jsonObj.getString("filterCondition")
     val filterSql = jsonObj.getString("filterSql")
     val castTypeList = jsonObj.getString("castTypeList")
@@ -132,7 +137,7 @@ object FeatureSampleMergeGeneral {
     }
 
     //增加正样本：点击图文，但未点击视频
-    if (filterLowUser) {
+    if (addPosSample) {
       val addSql = s"select $columnStr from $sourceTableName a join cmp_tmp.cmp_tmp_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where dt >= '$startDate' and dt <= '$endDate' and a.label = 1 and b.click_num > 0 and b.ctr is not null and b.video_click_num = 0 and rand() < 0.1"
       println("addSql:" + addSql)
       val addDataFrame = spark.sql(addSql)

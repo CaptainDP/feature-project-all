@@ -42,6 +42,7 @@ object BeidouExperimentReport {
 
     val options = new Options
     options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    options.addOption("b", true, "base64")
     options.addOption("j", true, "json:preDateNum,sourceTableName,targetHdfsPath,columnList")
 
     val parser = new BasicParser
@@ -67,8 +68,10 @@ object BeidouExperimentReport {
     }
 
     val jsonObj = JSON.parseObject(jsonStr)
-    val exps = jsonObj.getString("exps")
+    val expsStr = jsonObj.getString("exps")
     //    val exps = "'视频模型_v7_1_增加特征调整参数','视频模型_v0001_增加特征','video_multi_model_improve_v0101','视频实验_v180扩量','user_perfer_video_score_list','视频精排分分时段调权'"
+    val exps = expsStr.replaceAll(" ", "").split(",").map(x => "'" + x + "'").mkString(",")
+
 
     val email = jsonObj.getString("email")
     val toList = email.split(",").toBuffer
@@ -83,6 +86,10 @@ object BeidouExperimentReport {
     //    var users = "13830"
     //    users += ",11592,14325,14810,15333"
 
+    var days = jsonObj.getString("days")
+    if (days == null || days.equals("")) {
+      days = "3"
+    }
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
@@ -104,12 +111,14 @@ object BeidouExperimentReport {
         |where
         |    title in (exps)
         |    and trial_id like 'is%'
-        |    and dt >= date_sub(from_unixtime(unix_timestamp(), 'yyyy-MM-dd'),3)
+        |    and dt > date_sub(to_date('curr_dt'),days) and dt <= to_date('curr_dt')
         |order by
         |    title,dt,trial_id
         |""".stripMargin
 
     ctr_query_sql = ctr_query_sql.replaceAll("exps", exps)
+    ctr_query_sql = ctr_query_sql.replaceAll("curr_dt", dt)
+    ctr_query_sql = ctr_query_sql.replaceAll("days", days)
     var df = spark.sql(ctr_query_sql)
 
     var i = 0
@@ -137,12 +146,15 @@ object BeidouExperimentReport {
         |where
         |    title in (exps)
         |    and trial_id like 'is%'
-        |    and dt >= date_sub(from_unixtime(unix_timestamp(), 'yyyy-MM-dd'),3)
+        |    and dt > date_sub(to_date('curr_dt'),days) and dt <= to_date('curr_dt')
         |order by
         |    title,dt,trial_id
         |""".stripMargin
 
     duration_query_sql = duration_query_sql.replaceAll("exps", exps)
+    duration_query_sql = duration_query_sql.replaceAll("curr_dt", dt)
+    duration_query_sql = duration_query_sql.replaceAll("days", days)
+
     df = spark.sql(duration_query_sql)
     var durationtmp = 0.0
     i = 0
@@ -171,12 +183,15 @@ object BeidouExperimentReport {
         |where
         |    title in (exps)
         |    and trial_id like 'is%' and biztype_id ='14'
-        |    and dt >= date_sub(from_unixtime(unix_timestamp(), 'yyyy-MM-dd'),3)
+        |    and dt > date_sub(to_date('curr_dt'),days) and dt <= to_date('curr_dt')
         |order by
         |    title,dt,trial_id
         |""".stripMargin
 
     chejiahao_ctr_query_sql = chejiahao_ctr_query_sql.replaceAll("exps", exps)
+    chejiahao_ctr_query_sql = chejiahao_ctr_query_sql.replaceAll("curr_dt", dt)
+    chejiahao_ctr_query_sql = chejiahao_ctr_query_sql.replaceAll("days", days)
+
     df = spark.sql(chejiahao_ctr_query_sql)
     var chejiahaovideo_ctrtmp = 0.0
     i = 0
@@ -205,12 +220,15 @@ object BeidouExperimentReport {
         |where
         |    title in (exps)
         |    and trial_id like 'is%' and biz_type ='14'
-        |    and dt >= date_sub(from_unixtime(unix_timestamp(), 'yyyy-MM-dd'),3)
+        |    and dt > date_sub(to_date('curr_dt'),days) and dt <= to_date('curr_dt')
         |order by
         |    title,dt,trial_id
         |""".stripMargin
 
     chejiahao_duration_query_sql = chejiahao_duration_query_sql.replaceAll("exps", exps)
+    chejiahao_duration_query_sql = chejiahao_duration_query_sql.replaceAll("curr_dt", dt)
+    chejiahao_duration_query_sql = chejiahao_duration_query_sql.replaceAll("days", days)
+
     df = spark.sql(chejiahao_duration_query_sql)
     var chejiahaovideo_durationtmp = 0.0
     i = 0
@@ -273,7 +291,7 @@ object BeidouExperimentReport {
     val titleList = ArrayBuffer("实验名称", "数据日期", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果", "车家号视频对照桶ctr", "车家号视频实验桶ctr", "车家号视频对照桶时长", "车家号视频实验桶时长", "车家号视频ctr涨幅", "车家号视频时长涨幅", "车家号视频效果")
 
 
-    val htmlContent = getDemo(titleList.toList, dataList.toList)
+    val htmlContent = getDemo(titleList.toList, dataList.toList, days)
     val flag = SendHTMLEmail.SendMail(host, from, toList.asJava, title, htmlContent)
     if (!flag) {
       println("send msg error!!!")
@@ -286,7 +304,7 @@ object BeidouExperimentReport {
     spark.stop()
   }
 
-  def getDemo(titleList: List[String], list: List[List[String]]): String = {
+  def getDemo(titleList: List[String], list: List[List[String]], days: String): String = {
     val content = new StringBuilder("<html><head></head><body>")
     content.append("<table border=\"1\" style=\"width:1000px; height:150px;border:solid 1px #E8F2F9;font-size=11px;font-size:11px;\">")
     var titleTmp = "<tr>"
@@ -308,7 +326,7 @@ object BeidouExperimentReport {
             tmp += "<td><span>" + str + "</span></td>"
           }
         } else {
-          if (i % 6 < 3) {
+          if (i % (days.toInt * 2) < days.toInt) {
             tmp += "<td><font color=\"#000000\"><span>" + str + "</span></td>"
           } else {
             tmp += "<td><font color=\"#0000FF\"><span>" + str + "</span></td>"

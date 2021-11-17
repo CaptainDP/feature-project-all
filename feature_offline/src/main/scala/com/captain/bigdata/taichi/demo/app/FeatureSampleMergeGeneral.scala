@@ -68,6 +68,11 @@ object FeatureSampleMergeGeneral {
       filterLowUser = false
     }
 
+    var filterLastNegativeSample = jsonObj.getBoolean("filterLastNegativeSample")
+    if (filterLastNegativeSample == null) {
+      filterLastNegativeSample = false
+    }
+
     var addPosSample = jsonObj.getBoolean("addPosSample")
     if (addPosSample == null) {
       addPosSample = false
@@ -134,6 +139,18 @@ object FeatureSampleMergeGeneral {
       //      val filterSql = "select a.* from TMP_TBL_01 a join cmp_tmp.cmp_tmp_user_ctr b on a.dt = b.dt and upper(a.device_id) = upper(b.device_id) and b.click_num > 0 and b.click_num < b.sight_show_num"
       println("filterSql:" + filterSql)
       dataFrame = spark.sql(filterSql)
+      dataFrame.createOrReplaceTempView("TMP_TBL_01")
+    }
+
+    //过滤最后一条未点击样本
+    if (filterLastNegativeSample) {
+      val filterLastSql = s"select * from (select dt,device_id,pvid,biz_id,biz_type,posid,label,ROW_NUMBER() over(partition by dt,device_id,pvid order by posid desc) as rn from $sourceTableName a where a.dt >= '$startDate' and a.dt <= '$endDate' ) tmp where label=0 and rn = 1 and biz_type in (3,14,66)"
+      println("filterLastSql:" + filterLastSql)
+      dataFrame = spark.sql(filterLastSql)
+      dataFrame.createOrReplaceTempView("TMP_TBL_02")
+      val filterLastSql2 = s"select a.* from TMP_TBL_01 a left join TMP_TBL_02 b on a.dt=b.dt and upper(a.device_id)=upper(b.device_id) and a.pvid=b.pvid and a.biz_id=b.biz_id and a.biz_type=b.biz_type and a.label=b.label where b.device_id is null"
+      dataFrame = spark.sql(filterLastSql2)
+      dataFrame.createOrReplaceTempView("TMP_TBL_01")
     }
 
     //增加正样本：点击图文，但未点击视频
@@ -141,9 +158,12 @@ object FeatureSampleMergeGeneral {
       val addSql = s"select $columnStr from $sourceTableName a join cmp_tmp.cmp_tmp_user_ctr b on upper(a.device_id) = upper(b.device_id) and a.dt = b.dt where a.dt >= '$startDate' and a.dt <= '$endDate' and a.label = 1 and b.click_num > 0 and b.ctr is not null and b.video_click_num = 0 and rand() < 0.1"
       println("addSql:" + addSql)
       val addDataFrame = spark.sql(addSql)
+      dataFrame = spark.sql("select * from TMP_TBL_01")
       dataFrame = dataFrame.union(addDataFrame)
+      dataFrame.createOrReplaceTempView("TMP_TBL_01")
     }
 
+    dataFrame = spark.sql("select * from TMP_TBL_01")
     val featuresListOutputReal = columnList.split(",")
     dataFrame = dataFrame.select(featuresListOutputReal.head, featuresListOutputReal.tail: _*)
     dataFrame = dataFrame.repartition(2000)

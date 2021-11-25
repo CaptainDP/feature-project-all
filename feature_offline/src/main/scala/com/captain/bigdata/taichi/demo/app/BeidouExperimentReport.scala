@@ -72,8 +72,12 @@ object BeidouExperimentReport {
     //    val exps = "'视频模型_v7_1_增加特征调整参数','视频模型_v0001_增加特征','video_multi_model_improve_v0101','视频实验_v180扩量','user_perfer_video_score_list','视频精排分分时段调权'"
     val exps = expsStr.replaceAll(" ", "").split(",").map(x => "'" + x + "'").mkString(",")
 
+    val debug = jsonObj.getBooleanValue("debug")
 
-    val email = jsonObj.getString("email")
+    var email = jsonObj.getString("email")
+    if (debug) {
+      email = "chendapeng@autohome.com.cn"
+    }
     val toList = email.split(",").toBuffer
     //    val toList = new ArrayBuffer[String]()
     //    toList.append("chendapeng@autohome.com.cn")
@@ -82,7 +86,10 @@ object BeidouExperimentReport {
     //    toList.append("liuyuxing@autohome.com.cn")
     //    toList.append("liuyizhuang@autohome.com.cn")
     //
-    val users = jsonObj.getString("ding")
+    var users = jsonObj.getString("ding")
+    if (debug) {
+      users = "13830"
+    }
     //    var users = "13830"
     //    users += ",11592,14325,14810,15333"
 

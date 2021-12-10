@@ -218,7 +218,7 @@ object BeidouExperimentReport {
     i = 0
     df.collect().foreach(x => {
       if (i % 2 == 1) {
-        val diff = (x.get(3).toString.toDouble - ctrtmp).formatted("%.2f")
+        val diff = (x.get(4).toString.toDouble - chejiahaovideo_ctrtmp).formatted("%.2f")
         val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, x.get(3).toString, chejiahaovideo_ctrtmp + "%", x.get(4) + "%", diff + "%", "", "", "")
         chejiahaovideo_list.append(result)
       } else {

@@ -19,22 +19,35 @@ object BeidouExperimentReport {
   case class Result(title: String,
                     dt: String,
                     trial_id: String,
+                    biz_type: String,
 
                     duizhaoCtr: String,
                     shiyanCtr: String,
                     diffCtr: String,
                     var duizhaoDuration: String,
                     var shiyanDuration: String,
-                    var diffDuration: String,
-
-                    var chejiahaovideo_duizhaoCtr: String,
-                    var chejiahaovideo_shiyanCtr: String,
-                    var chejiahaovideo_diffCtr: String,
-                    var chejiahaovideo_duizhaoDuration: String,
-                    var chejiahaovideo_shiyanDuration: String,
-                    var chejiahaovideo_diffDuration: String
-
-                   )
+                    var diffDuration: String
+                   ) extends java.lang.Comparable[Result] {
+    override def compareTo(that: Result): Int = {
+      if (this.title == that.title) {
+        if (this.dt == that.dt) {
+          if (this.trial_id == that.trial_id) {
+            if (this.biz_type == that.biz_type) {
+              0
+            } else {
+              this.biz_type.compareToIgnoreCase(that.biz_type)
+            }
+          } else {
+            this.trial_id.compareToIgnoreCase(that.trial_id)
+          }
+        } else {
+          this.dt.compareToIgnoreCase(that.dt)
+        }
+      } else {
+        this.title.compareToIgnoreCase(that.title)
+      }
+    }
+  }
 
   def main(args: Array[String]): Unit = {
 
@@ -108,7 +121,7 @@ object BeidouExperimentReport {
       .enableHiveSupport()
       .getOrCreate()
 
-
+    //------------------------------------------实验整体ctr--------------------------------------------------
     var ctr_query_sql =
       """
         |select
@@ -130,11 +143,11 @@ object BeidouExperimentReport {
 
     var i = 0
     var ctrtmp = 0.0
-    val list = ArrayBuffer[Result]()
+    var list = ArrayBuffer[Result]()
     df.collect().foreach(x => {
       if (i % 2 == 1) {
         val diff = (x.get(3).toString.toDouble - ctrtmp).formatted("%.2f")
-        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, ctrtmp + "%", x.get(3) + "%", diff + "%", "", "", "", "", "", "", "", "", "")
+        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, "all", ctrtmp + "%", x.get(3) + "%", diff + "%", "", "", "")
         list.append(result)
       } else {
         ctrtmp = x.get(3).toString.toDouble
@@ -143,7 +156,7 @@ object BeidouExperimentReport {
     })
 
 
-    //--------------------------------------------------------------------------------------------
+    //--------------------------------------------实验整体时长------------------------------------------------
     var duration_query_sql =
       """
         |select
@@ -180,19 +193,19 @@ object BeidouExperimentReport {
       i += 1
     })
 
-    //----------------------------------------车家号视频ctr----------------------------------------------------
+    //----------------------------------------业务类型ctr----------------------------------------------------
     var chejiahao_ctr_query_sql =
       """
         |select
-        |    title,dt,trial_id,round(click_pv/sight_show_pv*100,2)
+        |    title,dt,trial_id,biztype_id,round(click_pv/sight_show_pv*100,2)
         |from
         |    rdm.rdm_app_rcmd_title_biztype_clear_di
         |where
         |    title in (exps)
-        |    and trial_id like 'is%' and biztype_id ='14'
+        |    and trial_id like 'is%' and biztype_id in (3,14,66)
         |    and dt > date_sub(to_date('curr_dt'),days) and dt <= to_date('curr_dt')
         |order by
-        |    title,dt,trial_id
+        |    title,dt,biztype_id,trial_id
         |""".stripMargin
 
     chejiahao_ctr_query_sql = chejiahao_ctr_query_sql.replaceAll("exps", exps)
@@ -200,36 +213,33 @@ object BeidouExperimentReport {
     chejiahao_ctr_query_sql = chejiahao_ctr_query_sql.replaceAll("days", days)
 
     df = spark.sql(chejiahao_ctr_query_sql)
+    val chejiahaovideo_list = ArrayBuffer[Result]()
     var chejiahaovideo_ctrtmp = 0.0
     i = 0
     df.collect().foreach(x => {
       if (i % 2 == 1) {
-        val diff = (x.get(3).toString.toDouble - chejiahaovideo_ctrtmp).formatted("%.2f")
-        val result = list((i - 1) / 2)
-        if (result.title.equals(x.get(0).toString) && result.dt.equals(x.get(1).toString) && result.trial_id.equals(x.get(2))) {
-          result.chejiahaovideo_duizhaoCtr = chejiahaovideo_ctrtmp + "%"
-          result.chejiahaovideo_shiyanCtr = x.get(3).toString + "%"
-          result.chejiahaovideo_diffCtr = diff + "%"
-        }
+        val diff = (x.get(3).toString.toDouble - ctrtmp).formatted("%.2f")
+        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, x.get(3).toString, chejiahaovideo_ctrtmp + "%", x.get(4) + "%", diff + "%", "", "", "")
+        chejiahaovideo_list.append(result)
       } else {
-        chejiahaovideo_ctrtmp = x.get(3).toString.toDouble
+        chejiahaovideo_ctrtmp = x.get(4).toString.toDouble
       }
       i += 1
     })
 
-    //----------------------------------------车家号视频时长----------------------------------------------------
+    //----------------------------------------业务类型时长----------------------------------------------------
     var chejiahao_duration_query_sql =
       """
         |select
-        |    title,dt,trial_id,round(duration/duration_uv,2)
+        |    title,dt,trial_id,biz_type,round(duration/duration_uv,2)
         |from
         |    rdm.rdm_app_rcmd_trial_rtype_nocache_finishread_duration_di
         |where
         |    title in (exps)
-        |    and trial_id like 'is%' and biz_type ='14'
+        |    and trial_id like 'is%' and biz_type in (3,14,66)
         |    and dt > date_sub(to_date('curr_dt'),days) and dt <= to_date('curr_dt')
         |order by
-        |    title,dt,trial_id
+        |    title,dt,biz_type,trial_id
         |""".stripMargin
 
     chejiahao_duration_query_sql = chejiahao_duration_query_sql.replaceAll("exps", exps)
@@ -241,24 +251,28 @@ object BeidouExperimentReport {
     i = 0
     df.collect().foreach(x => {
       if (i % 2 == 1) {
-        val diff = (x.get(3).toString.toDouble - chejiahaovideo_durationtmp).formatted("%.2f")
-        val result = list((i - 1) / 2)
-        if (result.title.equals(x.get(0).toString) && result.dt.equals(x.get(1).toString) && result.trial_id.equals(x.get(2))) {
-          result.chejiahaovideo_duizhaoDuration = chejiahaovideo_durationtmp + ""
-          result.chejiahaovideo_shiyanDuration = x.get(3).toString
-          result.chejiahaovideo_diffDuration = diff
+        val diff = (x.get(4).toString.toDouble - chejiahaovideo_durationtmp).formatted("%.2f")
+        val result = chejiahaovideo_list((i - 1) / 2)
+        if (result.title.equals(x.get(0).toString) && result.dt.equals(x.get(1).toString) && result.trial_id.equals(x.get(2)) && result.biz_type.equals(x.get(3))) {
+          result.duizhaoDuration = chejiahaovideo_durationtmp + ""
+          result.shiyanDuration = x.get(4).toString
+          result.diffDuration = diff
         }
       } else {
-        chejiahaovideo_durationtmp = x.get(3).toString.toDouble
+        chejiahaovideo_durationtmp = x.get(4).toString.toDouble
       }
       i += 1
     })
+
+    list.appendAll(chejiahaovideo_list)
+    list = list.sorted
 
     val dataList = new ArrayBuffer[List[String]]()
     list.foreach(x => {
       val oneList = new ArrayBuffer[String]()
       oneList.append(x.title)
       oneList.append(x.dt)
+      oneList.append(x.biz_type)
 
       //-----------实验大盘--------------
       oneList.append(x.duizhaoCtr)
@@ -267,20 +281,7 @@ object BeidouExperimentReport {
       oneList.append(x.shiyanDuration)
       oneList.append(x.diffCtr)
       oneList.append(x.diffDuration)
-      if (x.diffCtr.contains("-") || x.diffDuration.contains("-")) {
-        oneList.append("--")
-      } else {
-        oneList.append("双正向")
-      }
-
-      //-----------车家号视频大盘--------------
-      oneList.append(x.chejiahaovideo_duizhaoCtr)
-      oneList.append(x.chejiahaovideo_shiyanCtr)
-      oneList.append(x.chejiahaovideo_duizhaoDuration)
-      oneList.append(x.chejiahaovideo_shiyanDuration)
-      oneList.append(x.chejiahaovideo_diffCtr)
-      oneList.append(x.chejiahaovideo_diffDuration)
-      if (x.chejiahaovideo_diffCtr.contains("-") || x.chejiahaovideo_diffDuration.contains("-")) {
+      if (x.diffCtr.replaceAll("%", "").toDouble <= 0 || x.diffDuration.toDouble <= 0) {
         oneList.append("--")
       } else {
         oneList.append("双正向")
@@ -295,7 +296,7 @@ object BeidouExperimentReport {
 
 
     val title = "北斗实验ctr和时长效果数据"
-    val titleList = ArrayBuffer("实验名称", "数据日期", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果", "车家号视频对照桶ctr", "车家号视频实验桶ctr", "车家号视频对照桶时长", "车家号视频实验桶时长", "车家号视频ctr涨幅", "车家号视频时长涨幅", "车家号视频效果")
+    val titleList = ArrayBuffer("实验名称", "数据日期", "业务类型", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果")
 
 
     val htmlContent = getDemo(titleList.toList, dataList.toList, days)
@@ -326,14 +327,14 @@ object BeidouExperimentReport {
       var tmp = ""
       var j = 0
       for (str <- line) {
-        if (j == 8 || j == 15) {
+        if (j == 9) {
           if (str.contains("双正向")) {
             tmp += "<td><font color=\"#FF0000\"><span>" + str + "</span></td>"
           } else {
             tmp += "<td><span>" + str + "</span></td>"
           }
         } else {
-          if (i % (days.toInt * 2) < days.toInt) {
+          if (!line.contains("all")) {
             tmp += "<td><font color=\"#000000\"><span>" + str + "</span></td>"
           } else {
             tmp += "<td><font color=\"#0000FF\"><span>" + str + "</span></td>"

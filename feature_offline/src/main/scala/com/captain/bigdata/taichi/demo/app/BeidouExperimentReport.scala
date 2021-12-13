@@ -302,7 +302,7 @@ object BeidouExperimentReport {
 
 
     val title = "北斗实验ctr和时长效果数据"
-    val titleList = ArrayBuffer("实验名称", "数据日期", "业务类型", "实验桶曝光占比", "对照桶曝光占比", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果")
+    val titleList = ArrayBuffer("实验名称", "数据日期", "业务类型", "对照桶曝光占比", "实验桶曝光占比", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果")
 
 
     val htmlContent = getDemo(titleList.toList, dataList.toList, days)

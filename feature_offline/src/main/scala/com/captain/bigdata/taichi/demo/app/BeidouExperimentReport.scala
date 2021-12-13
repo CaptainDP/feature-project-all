@@ -20,6 +20,8 @@ object BeidouExperimentReport {
                     dt: String,
                     trial_id: String,
                     biz_type: String,
+                    duizhao_biz_type_per: String,
+                    shiyan_biz_type_per: String,
 
                     duizhaoCtr: String,
                     shiyanCtr: String,
@@ -147,7 +149,7 @@ object BeidouExperimentReport {
     df.collect().foreach(x => {
       if (i % 2 == 1) {
         val diff = (x.get(3).toString.toDouble - ctrtmp).formatted("%.2f")
-        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, "all", ctrtmp + "%", x.get(3) + "%", diff + "%", "", "", "")
+        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, "all", "-", "-", ctrtmp + "%", x.get(3) + "%", diff + "%", "", "", "")
         list.append(result)
       } else {
         ctrtmp = x.get(3).toString.toDouble
@@ -197,7 +199,7 @@ object BeidouExperimentReport {
     var chejiahao_ctr_query_sql =
       """
         |select
-        |    title,dt,trial_id,biztype_id,round(click_pv/sight_show_pv*100,2)
+        |    title,dt,trial_id,biztype_id,round(sight_show_pv/d_biztype_sight_show_pv*100,2),round(click_pv/sight_show_pv*100,2)
         |from
         |    rdm.rdm_app_rcmd_title_biztype_clear_di
         |where
@@ -214,15 +216,17 @@ object BeidouExperimentReport {
 
     df = spark.sql(chejiahao_ctr_query_sql)
     val chejiahaovideo_list = ArrayBuffer[Result]()
+    var chejiahaovideo_biztype_per = ""
     var chejiahaovideo_ctrtmp = 0.0
     i = 0
     df.collect().foreach(x => {
       if (i % 2 == 1) {
-        val diff = (x.get(4).toString.toDouble - chejiahaovideo_ctrtmp).formatted("%.2f")
-        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, x.get(3).toString, chejiahaovideo_ctrtmp + "%", x.get(4) + "%", diff + "%", "", "", "")
+        val diff = (x.get(5).toString.toDouble - chejiahaovideo_ctrtmp).formatted("%.2f")
+        val result = Result(x.get(0).toString, x.get(1).toString, x.get(2).toString, x.get(3).toString, chejiahaovideo_biztype_per + "%", x.get(4).toString + "%", chejiahaovideo_ctrtmp + "%", x.get(5) + "%", diff + "%", "", "", "")
         chejiahaovideo_list.append(result)
       } else {
-        chejiahaovideo_ctrtmp = x.get(4).toString.toDouble
+        chejiahaovideo_biztype_per = x.get(4).toString
+        chejiahaovideo_ctrtmp = x.get(5).toString.toDouble
       }
       i += 1
     })
@@ -273,6 +277,8 @@ object BeidouExperimentReport {
       oneList.append(x.title)
       oneList.append(x.dt)
       oneList.append(x.biz_type)
+      oneList.append(x.duizhao_biz_type_per)
+      oneList.append(x.shiyan_biz_type_per)
 
       //-----------实验大盘--------------
       oneList.append(x.duizhaoCtr)
@@ -296,7 +302,7 @@ object BeidouExperimentReport {
 
 
     val title = "北斗实验ctr和时长效果数据"
-    val titleList = ArrayBuffer("实验名称", "数据日期", "业务类型", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果")
+    val titleList = ArrayBuffer("实验名称", "数据日期", "业务类型", "实验桶曝光占比", "对照桶曝光占比", "对照桶ctr", "实验桶ctr", "对照桶时长", "实验桶时长", "ctr涨幅", "时长涨幅", "实验效果")
 
 
     val htmlContent = getDemo(titleList.toList, dataList.toList, days)
@@ -327,7 +333,7 @@ object BeidouExperimentReport {
       var tmp = ""
       var j = 0
       for (str <- line) {
-        if (j == 9) {
+        if (j == 11) {
           if (str.contains("双正向")) {
             tmp += "<td><font color=\"#FF0000\"><span>" + str + "</span></td>"
           } else {

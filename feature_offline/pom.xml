@@ -18,8 +18,8 @@
         <scala.version.major>2.11</scala.version.major>
         <scala.version>${scala.version.major}.8</scala.version>
         <spark.version>2.3.0</spark.version>
-        <pom.scope>compile</pom.scope>
-<!--        <pom.scope>provided</pom.scope>-->
+<!--        <pom.scope>compile</pom.scope>-->
+        <pom.scope>provided</pom.scope>
     </properties>
 
     <dependencies>

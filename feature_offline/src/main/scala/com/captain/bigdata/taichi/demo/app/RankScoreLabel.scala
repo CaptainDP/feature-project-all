@@ -52,7 +52,8 @@ object RankScoreLabel {
 
     val currDate = dt
     val date = DateUtil.toDate(currDate, "yyyy-MM-dd")
-    val date2 = DateUtil.toDate(currDate, "yyyyMMdd")
+    val date1 = DateUtil.getDate(date, "yyyy-MM-dd")
+    val date2 = DateUtil.getDate(date, "yyyyMMdd")
 
     val targetHdfsPathNew = targetHdfsPath + "/" + date
 
@@ -73,7 +74,7 @@ object RankScoreLabel {
     var dataFrame = spark.sql(sql1)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")
 
-    val sql2 = s"select dt,device_id,pvid,rtype,biz_id,label,dur_label,duration,posid,biz_type from cmp_gdm.cmp_gdm_rcmd_train_rank_sample_new_di a where dt = '$date' and biz_type in ('14','3','66') "
+    val sql2 = s"select dt,device_id,pvid,rtype,biz_id,label,dur_label,duration,posid,biz_type from cmp_gdm.cmp_gdm_rcmd_train_rank_sample_new_di a where dt = '$date1' and biz_type in ('14','3','66') "
     println("sql2:" + sql2)
     dataFrame = spark.sql(sql2)
     dataFrame.createOrReplaceTempView("TMP_TBL_02")

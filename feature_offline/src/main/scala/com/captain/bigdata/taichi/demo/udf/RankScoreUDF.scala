@@ -64,6 +64,7 @@ class RankScoreUDF extends GenericUDTF {
     fieldOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector)
     fieldOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector)
     fieldOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector)
+    fieldOIs.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector)
 
     ObjectInspectorFactory.getStandardStructObjectInspector(fieldNames, fieldOIs)
 

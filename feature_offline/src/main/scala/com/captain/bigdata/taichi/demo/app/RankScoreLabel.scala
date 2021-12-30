@@ -79,7 +79,7 @@ object RankScoreLabel {
     dataFrame = spark.sql(sql2)
     dataFrame.createOrReplaceTempView("TMP_TBL_02")
 
-    val sql3 = s"select b.dt,b.device_id,b.pvid,b.rtype,b.biz_id,b.biz_type,b.label,b.dur_label,b.posid,a.score,a.model_name,a.push_time from TMP_TBL_01 a join TMP_TBL_02 b on a.dtNew=b.dt and a.device_id=b.device_id and a.pvid=b.pvid and a.rtype=b.rtype and a.biz_id=b.biz_id"
+    val sql3 = s"select b.dt,b.device_id,b.pvid,b.rtype,b.biz_id,b.biz_type,b.label,b.dur_label,b.posid,a.score,a.model_name,a.push_time from TMP_TBL_01 a join TMP_TBL_02 b on a.dtNew=b.dt and upper(a.device_id)=upper(b.device_id) and a.pvid=b.pvid and a.rtype=b.rtype and a.biz_id=b.biz_id"
     println("sql3:" + sql3)
     dataFrame = spark.sql(sql3)
     dataFrame.createOrReplaceTempView("TMP_TBL_03")

@@ -69,7 +69,7 @@ object RankScoreLabel {
 
     spark.sql("create temporary function RankScoreUDF as 'com.captain.bigdata.taichi.demo.udf.RankScoreUDF'")
 
-    val sql1 = s"select dtNew,device_id,pvid,rtype,biz_id,score,model_name,push_time from dc_pds.dc_rcm_feature_deep_info_tb LATERAL where dt = '$date2' VIEW RankScoreUDF(dt,value) as dtNew,device_id,pvid,rtype,biz_id,score,model_name,push_time"
+    val sql1 = s"select dtNew,device_id,pvid,rtype,biz_id,score,model_name,push_time from dc_pds.dc_rcm_feature_deep_info_tb where dt = '$date2' LATERAL VIEW RankScoreUDF(dt,value) as dtNew,device_id,pvid,rtype,biz_id,score,model_name,push_time"
     println("sql1:" + sql1)
     var dataFrame = spark.sql(sql1)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")

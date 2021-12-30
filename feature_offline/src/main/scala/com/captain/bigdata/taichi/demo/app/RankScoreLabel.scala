@@ -55,7 +55,7 @@ object RankScoreLabel {
     val date1 = DateUtil.getDate(date, "yyyy-MM-dd")
     val date2 = DateUtil.getDate(date, "yyyyMMdd")
 
-    val targetHdfsPathNew = targetHdfsPath + "/" + date
+    val targetHdfsPathNew = targetHdfsPath + "/" + date1
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)

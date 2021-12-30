@@ -89,7 +89,7 @@ object RankScoreLabel {
     dataFrame = spark.sql(sql4)
 
     println("targetHdfsPath:" + targetHdfsPathNew)
-    dataFrame.write.option("header", "true").mode("overwrite").json(targetHdfsPathNew)
+    dataFrame.write.mode("overwrite").json(targetHdfsPathNew)
 
     spark.stop()
   }

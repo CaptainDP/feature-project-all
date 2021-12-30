@@ -84,9 +84,9 @@ object RankScoreLabel {
     dataFrame = spark.sql(sql3)
     dataFrame.createOrReplaceTempView("TMP_TBL_03")
 
-    //    val sql4 = "insert overwrite table xxx PARTITION(dt) select dt,device_id,pvid,rtype,biz_id,biz_type,label,dur_label,posid,score,model_name,push_time from TMP_TBL_03"
-    //    println("sql4:" + sql4)
-    //    dataFrame = spark.sql(sql4)
+    val sql4 = "select dt,device_id,pvid,rtype,biz_id,biz_type,label,dur_label,posid,score,model_name,push_time from TMP_TBL_03"
+    println("sql4:" + sql4)
+    dataFrame = spark.sql(sql4)
 
     println("targetHdfsPath:" + targetHdfsPathNew)
     dataFrame.write.option("header", "true").mode("overwrite").json(targetHdfsPathNew)

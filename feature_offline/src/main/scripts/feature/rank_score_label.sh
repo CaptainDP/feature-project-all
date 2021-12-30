@@ -40,7 +40,7 @@ fi
 
 logging "base date $dt to process: $conffile"
 
-filelist="$APP_HOME/conf/taichi.json,$APP_HOME/conf/log4j.properties,$APP_HOME/conf/conf/demo.csv,$APP_HOME/conf/conf/feature_fm_bucket.json"
+filelist="$APP_HOME/conf/taichi.json,$APP_HOME/conf/log4j.properties"
 
 export SPARK_CLASSPATH=$SPARK_CLASSPATH":$APP_HOME/conf:$APP_HOME/etc:$APP_HOME/libs/*"
 

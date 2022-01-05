@@ -29,7 +29,7 @@ object EvelGAUC {
     df = spark.sql("select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by device_id")
     df.createOrReplaceTempView("tmp2")
 
-    spark.sql("select sum(split(device_id_auc,',')[0]) as auc_sum,sum(split(device_id_auc,',')[1]) as count_num,sum(split(device_id_auc,',')[0]) / sum(split(device_id_auc,',')[1]) as gauc from tmp2").show()
+    spark.sql("select sum(split(device_id_auc,',')[0]) as auc_sum,sum(split(device_id_auc,',')[1]) as auc_count_num,sum(split(device_id_auc,',')[0]) / sum(split(device_id_auc,',')[1]) as gauc, sum(split(device_id_auc,',')[2]) as count_sum, count(1) as device_id_count from tmp2").show()
 
     spark.stop()
   }

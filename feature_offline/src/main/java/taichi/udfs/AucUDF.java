@@ -31,11 +31,11 @@ public class AucUDF extends UDF {
             }
         }
         if (count == 0 || count == label.size()) {
-            return "0.0,0";
+            return "0.0,0," + label.size();
         }
 
         Roc roc = new Roc(ss, dd);
-        return roc.computeAUC() * label.size() + "," + label.size();
+        return roc.computeAUC() * label.size() + "," + label.size() + "," + label.size();
     }
 
 }

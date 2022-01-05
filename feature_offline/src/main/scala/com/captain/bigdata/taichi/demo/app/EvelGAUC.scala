@@ -50,6 +50,16 @@ object EvelGAUC {
       System.exit(-1)
     }
 
+    var isGAucByDeviceid = jsonObj.getBoolean("isGAucByDeviceid")
+    if (isGAucByDeviceid == null) {
+      isGAucByDeviceid = true
+    }
+
+    var isProb = jsonObj.getBoolean("isProb")
+    if (isProb == null) {
+      isProb = true
+    }
+
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
     //    sparkConf.setMaster("local[*]")
@@ -69,10 +79,33 @@ object EvelGAUC {
 
     spark.sql("create temporary function AucUDF as 'taichi.udfs.AucUDF'")
 
-    df = spark.sql("select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by device_id")
+    var sql1 = ""
+    if (isGAucByDeviceid) {
+      //采用deviceid计算auc
+      if (isProb) {
+        //采用预测的prob计算auc
+        sql1 = "select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
+      } else {
+        //采用位置posid计算auc
+        sql1 = "select AucUDF(collect_list(1000-posid) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
+      }
+    } else {
+      //采用pvid计算auc
+      if (isProb) {
+        //采用预测的prob计算auc
+        sql1 = "select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
+      } else {
+        //采用位置posid计算auc
+        sql1 = "select AucUDF(collect_list(1000-posid) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
+      }
+    }
+
+    println("sql1:" + sql1)
+    df = spark.sql(sql1)
     df.createOrReplaceTempView("tmp2")
 
-    spark.sql("select sum(split(device_id_auc,',')[0]) as auc_sum,sum(split(device_id_auc,',')[1]) as auc_count_num,sum(split(device_id_auc,',')[0]) / sum(split(device_id_auc,',')[1]) as gauc, sum(split(device_id_auc,',')[2]) as count_sum, count(1) as device_id_count from tmp2").show()
+    val sql2 = "select sum(split(device_id_auc,',')[0]) as auc_sum,sum(split(device_id_auc,',')[1]) as auc_count_num,sum(split(device_id_auc,',')[0]) / sum(split(device_id_auc,',')[1]) as gauc, sum(split(device_id_auc,',')[2]) as count_sum, count(1) as device_id_count from tmp2"
+    spark.sql(sql2).show()
 
     spark.stop()
   }

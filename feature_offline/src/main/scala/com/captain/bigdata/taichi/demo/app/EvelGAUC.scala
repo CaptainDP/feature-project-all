@@ -60,6 +60,12 @@ object EvelGAUC {
       isProb = true
     }
 
+    val model_name = jsonObj.getString("model_name")
+    var model_condition = "1=1"
+    if (model_name != null && !model_name.toString.trim.equals("")) {
+      model_condition = "in (" + model_name + ")"
+    }
+
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
     //    sparkConf.setMaster("local[*]")
@@ -84,19 +90,19 @@ object EvelGAUC {
       //采用deviceid计算auc
       if (isProb) {
         //采用预测的prob计算auc
-        sql1 = "select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
+        sql1 = s"select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 where $model_condition group by device_id"
       } else {
         //采用位置posid计算auc
-        sql1 = "select AucUDF(collect_list(1-posid/1000) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
+        sql1 = s"select AucUDF(collect_list(1-posid/1000) ,collect_list(label)) as device_id_auc from tmp1 where $model_condition group by device_id"
       }
     } else {
       //采用pvid计算auc
       if (isProb) {
         //采用预测的prob计算auc
-        sql1 = "select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
+        sql1 = s"select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 where $model_condition group by pvid"
       } else {
         //采用位置posid计算auc
-        sql1 = "select AucUDF(collect_list(1-posid/1000) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
+        sql1 = s"select AucUDF(collect_list(1-posid/1000) ,collect_list(label)) as device_id_auc from tmp1 where $model_condition group by pvid"
       }
     }
 

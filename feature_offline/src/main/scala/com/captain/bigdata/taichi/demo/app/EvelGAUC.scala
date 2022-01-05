@@ -1,12 +1,54 @@
 package com.captain.bigdata.taichi.demo.app
 
+import java.util.Date
+
+import com.alibaba.fastjson.JSON
+import com.captain.bigdata.taichi.util.DateUtil
+import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import sun.misc.BASE64Decoder
 
 
 object EvelGAUC {
 
   def main(args: Array[String]): Unit = {
+
+
+    println("args:" + args.mkString(","))
+
+    val options = new Options
+    options.addOption("d", true, "date yyyy-MM-dd [default yesterday]")
+    options.addOption("b", true, "base64")
+    options.addOption("j", true, "json:preDateNum,sourceTableName,targetHdfsPath,columnList")
+    val parser = new BasicParser
+    val cmd = parser.parse(options, args)
+    //date
+    var dt = DateUtil.getDate(new Date(), "yyyy-MM-dd")
+    if (cmd.hasOption("d")) {
+      dt = cmd.getOptionValue("d")
+    }
+
+    val decoder = new BASE64Decoder
+
+    var jsonStr = "{}"
+    if (cmd.hasOption("j")) {
+      jsonStr = cmd.getOptionValue("j")
+    }
+
+    val base64 = cmd.getOptionValue("b")
+    if (base64 != null && base64.equals("true")) {
+      println("jsonStr:" + jsonStr)
+      jsonStr = new String(decoder.decodeBuffer(jsonStr))
+      println("jsonStr base64:" + jsonStr)
+    }
+
+    val jsonObj = JSON.parseObject(jsonStr)
+    val sourceHdfsPath = jsonObj.getString("sourceHdfsPath")
+    if (sourceHdfsPath == null || sourceHdfsPath.toString.trim.equals("")) {
+      println("sourceHdfsPath is null")
+      System.exit(-1)
+    }
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
@@ -19,7 +61,8 @@ object EvelGAUC {
       .getOrCreate()
 
     //    val data_path = "D:\\workspace\\py_workspace\\edge_model\\deepfm_edge\\train_data_v0102_result2"
-    val data_path = "hdfs://AutoRouter/team/cmp/hive_db/tmp/evel_result/esmm_model_video_v0102/2022-01-04_10-08-42_result"
+    //    val data_path = "hdfs://AutoRouter/team/cmp/hive_db/tmp/evel_result/esmm_model_video_v0102/2022-01-04_10-08-42_result"
+    val data_path = sourceHdfsPath
 
     var df = spark.read.format("json").load(data_path)
     df.createOrReplaceTempView("tmp1")

@@ -35,6 +35,7 @@ public class AucUDF extends UDF {
         }
 
         Roc roc = new Roc(ss, dd);
+        //返回：auc*权重, 有效个数，总个数
         return roc.computeAUC() * label.size() + "," + label.size() + "," + label.size();
     }
 

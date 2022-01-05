@@ -87,7 +87,7 @@ object EvelGAUC {
         sql1 = "select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
       } else {
         //采用位置posid计算auc
-        sql1 = "select AucUDF(collect_list(1000-posid) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
+        sql1 = "select AucUDF(collect_list(1-posid/1000) ,collect_list(label)) as device_id_auc from tmp1 group by device_id"
       }
     } else {
       //采用pvid计算auc
@@ -96,7 +96,7 @@ object EvelGAUC {
         sql1 = "select AucUDF(collect_list(prob) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
       } else {
         //采用位置posid计算auc
-        sql1 = "select AucUDF(collect_list(1000-posid) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
+        sql1 = "select AucUDF(collect_list(1-posid/1000) ,collect_list(label)) as device_id_auc from tmp1 group by pvid"
       }
     }
 

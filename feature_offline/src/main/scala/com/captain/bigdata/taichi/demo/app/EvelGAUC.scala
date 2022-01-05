@@ -63,8 +63,10 @@ object EvelGAUC {
     val model_name = jsonObj.getString("model_name")
     var model_condition = "1=1"
     if (model_name != null && !model_name.toString.trim.equals("")) {
-      model_condition = "model_name in (" + model_name + ")"
+      val tmp = model_name.split(",").map(x => x.trim).mkString("','")
+      model_condition = "model_name in ('" + tmp + "')"
     }
+    println("model_condition:" + model_condition)
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)

@@ -73,8 +73,8 @@ class RankScoreUDF extends GenericUDTF {
 
   override def process(record: Array[AnyRef]): Unit = {
 
-    var dt = stringOI.getPrimitiveJavaObject(record(0)).toString
-    var json = stringOI2.getPrimitiveJavaObject(record(1)).toString
+    val dt = stringOI.getPrimitiveJavaObject(record(0)).toString
+    val json = stringOI2.getPrimitiveJavaObject(record(1)).toString
 
     val results = processInputRecord(dt, json)
     val it = results.iterator
@@ -90,6 +90,12 @@ class RankScoreUDF extends GenericUDTF {
   }
 
   def processInputRecord(dt: String, jsonStr: String): util.ArrayList[Array[AnyRef]] = {
+
+
+    val rtype_set = new util.HashSet[String]()
+    rtype_set.add("010180020010092") //3
+    rtype_set.add("010250020020004") //14
+    rtype_set.add("010240020030008") //66
 
     val result = new util.ArrayList[Array[AnyRef]]
 
@@ -108,15 +114,19 @@ class RankScoreUDF extends GenericUDTF {
     val deep_model_score = jsonObj.getJSONArray("deep_model_score")
 
 
-    var list = ArrayBuffer[String]()
     for (i <- 0 until item_list.size()) {
       val item_id = item_list.getString(i)
+      val rtype = item_id.split("-")(0)
+      val biz_id = item_id.split("-")(1)
+
       val score = deep_model_score.getBigDecimal(i)
+      var list = ArrayBuffer[String]()
+
       list += newDt
       list += device_id
       list += pvid
-      list += item_id.split("-")(0)
-      list += item_id.split("-")(1)
+      list += rtype
+      list += biz_id
       list += score.toString
       list += model_name
       list += push_time
@@ -134,7 +144,9 @@ class RankScoreUDF extends GenericUDTF {
       //      newJsonObj.put("score", score)
       //      newJsonObj.put("prob", score)
 
-      result.add(list.toArray)
+      if (rtype_set.contains(rtype)) {
+        result.add(list.toArray)
+      }
     }
 
     result
@@ -176,7 +188,7 @@ object RankScoreUDF {
         |  ],
         |  "device_id": "83C1A8663B60A3F43AA9A4F75F555449B250B016",
         |  "item_list": [
-        |    "010250020020004-10090180",
+        |    "010250020020001-10090180",
         |    "010250020020004-10049643",
         |    "010250020020004-10065592",
         |    "010250020020004-10083270",

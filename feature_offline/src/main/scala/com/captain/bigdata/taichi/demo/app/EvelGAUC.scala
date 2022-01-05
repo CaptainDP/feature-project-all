@@ -19,7 +19,7 @@ object EvelGAUC {
       .getOrCreate()
 
     //    val data_path = "D:\\workspace\\py_workspace\\edge_model\\deepfm_edge\\train_data_v0102_result2"
-    val data_path = "hdfs://AutoRouter/team/cmp/hive_db/tmp/evel_result/esmm_model_video_v0102/2022-01-05_09-34-55_result"
+    val data_path = "hdfs://AutoRouter/team/cmp/hive_db/tmp/evel_result/esmm_model_video_v0102/2022-01-04_10-08-42_result"
 
     var df = spark.read.format("json").load(data_path)
     df.createOrReplaceTempView("tmp1")

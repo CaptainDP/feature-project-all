@@ -60,8 +60,8 @@ cmd="$cmd --conf spark.executor.extraJavaOptions=-Dfile.encoding=utf-8"
 #cmd="$cmd --master local[*]"
 cmd="$cmd --master yarn"
 
-#cmd="$cmd --deploy-mode client"
-cmd="$cmd --deploy-mode cluster"
+cmd="$cmd --deploy-mode client"
+#cmd="$cmd --deploy-mode cluster"
 
 cmd="$cmd --conf spark.port.maxRetries=30"
 cmd="$cmd --conf spark.speculation=true"

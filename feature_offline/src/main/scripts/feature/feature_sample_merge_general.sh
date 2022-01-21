@@ -5,7 +5,10 @@
 set -e
 umask 0000
 
-APP_HOME="$(cd $(dirname $0)/../..; pwd -P)"
+APP_HOME="$(
+  cd $(dirname $0)/../..
+  pwd -P
+)"
 
 set -a
 source "$APP_HOME/etc/run_online.env"
@@ -14,26 +17,25 @@ set +a
 echo "run_online.sh:"$*
 
 if [[ $# -eq 1 ]]; then
-    dt=$(date -d "$1" +%Y-%m-%d)
-    json=""
+  dt=$(date -d "$1" +%Y-%m-%d)
+  json=""
 elif [[ $# -eq 2 ]]; then
-    dt=$(date -d "$1" +%Y-%m-%d)
-    json=$2
-    echo "json:"$json
+  dt=$(date -d "$1" +%Y-%m-%d)
+  json=$2
+  echo "json:"$json
 else
-    echo "$0 date"
-    exit 1
+  echo "$0 date"
+  exit 1
 fi
 
-json=`echo $json|base64 -w 0`
+json=$(echo $json | base64 -w 0)
 echo "json base64:"$json
 
 export LOG_FILE=$conffile
 export LOG_DATE=$dt
 
-if [ ${conffile:0:1} != "/" ]
-then
-    conffile="$APP_HOME/conf/$conffile"
+if [ ${conffile:0:1} != "/" ]; then
+  conffile="$APP_HOME/conf/$conffile"
 fi
 
 logging "base date $dt to process: $conffile"
@@ -58,8 +60,8 @@ cmd="$cmd --conf spark.executor.extraJavaOptions=-Dfile.encoding=utf-8"
 #cmd="$cmd --master local[*]"
 cmd="$cmd --master yarn"
 
-cmd="$cmd --deploy-mode client"
-#cmd="$cmd --deploy-mode cluster"
+#cmd="$cmd --deploy-mode client"
+cmd="$cmd --deploy-mode cluster"
 
 cmd="$cmd --conf spark.port.maxRetries=30"
 cmd="$cmd --conf spark.speculation=true"
@@ -76,4 +78,3 @@ LOG_DIR=$LOG_HOME/$dt
 $cmd
 
 logging 'all OK'
-

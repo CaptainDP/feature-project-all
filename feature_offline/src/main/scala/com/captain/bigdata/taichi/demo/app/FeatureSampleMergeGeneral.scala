@@ -54,8 +54,8 @@ object FeatureSampleMergeGeneral {
       System.exit(-1)
     }
     val targetHdfsPath = jsonObj.getString("targetHdfsPath")
-    if (sourceTableName == null || sourceTableName.toString.trim.equals("")) {
-      println("sourceTableName is null")
+    if (targetHdfsPath == null || targetHdfsPath.toString.trim.equals("")) {
+      println("targetHdfsPath is null")
       System.exit(-1)
     }
     val columnList = jsonObj.getString("columnList").replaceAll(" ", "")
@@ -84,7 +84,11 @@ object FeatureSampleMergeGeneral {
       isHour = false
     }
 
-    val filterCondition = jsonObj.getString("filterCondition")
+    var filterCondition = jsonObj.getString("filterCondition")
+    if (filterCondition == null) {
+      filterCondition = ""
+    }
+
     val filterSql = jsonObj.getString("filterSql")
     val castTypeList = jsonObj.getString("castTypeList")
 

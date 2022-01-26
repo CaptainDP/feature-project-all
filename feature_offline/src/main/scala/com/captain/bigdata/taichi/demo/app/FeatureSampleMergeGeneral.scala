@@ -7,6 +7,7 @@ import com.captain.bigdata.taichi.util.DateUtil
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import org.joda.time.DateTime
 import sun.misc.BASE64Decoder
 
 import scala.collection.mutable.ArrayBuffer
@@ -78,6 +79,11 @@ object FeatureSampleMergeGeneral {
       addPosSample = false
     }
 
+    var isHour = jsonObj.getBoolean("isHour")
+    if (isHour == null) {
+      isHour = false
+    }
+
     val filterCondition = jsonObj.getString("filterCondition")
     val filterSql = jsonObj.getString("filterSql")
     val castTypeList = jsonObj.getString("castTypeList")
@@ -85,8 +91,16 @@ object FeatureSampleMergeGeneral {
 
     val currDate = dt
     val date = DateUtil.toDate(currDate, "yyyy-MM-dd")
-    val endDate = DateUtil.getDate(date, "yyyy-MM-dd")
-    val startDate = DateUtil.calcDateByFormat(date, "yyyy-MM-dd(-" + preCount + "D)")
+    var endDate = DateUtil.getDate(date, "yyyy-MM-dd")
+    var startDate = DateUtil.calcDateByFormat(date, "yyyy-MM-dd(-" + preCount + "D)")
+    var hour = "00"
+
+    if (isHour) {
+      val preDate = getPreDateHour(diffHour = 4)
+      startDate = DateUtil.calcDateByFormat(preDate, "yyyy-MM-dd")
+      endDate = startDate
+      hour = DateUtil.calcDateByFormat(preDate, "HH")
+    }
 
     val sparkConf = new SparkConf();
     sparkConf.setAppName(this.getClass.getSimpleName)
@@ -116,6 +130,12 @@ object FeatureSampleMergeGeneral {
           columnListNew.append(xx)
         } else {
           columnListNew.append("a." + x)
+          //重新划分dur_label
+          //          if ("dur_label".equals(x)) {
+          //            columnListNew.append("case when a.biz_type=3 and a.duration>=10 then 1 when a.biz_type=14 and a.duration>=11 then 1 when a.biz_type=66 and a.duration>=9 then 1 else 0 end as dur_label")
+          //          } else {
+          //            columnListNew.append("a." + x)
+          //          }
         }
       }
     })
@@ -123,7 +143,10 @@ object FeatureSampleMergeGeneral {
     val columnStr = columnListNew.mkString(",")
     println("columnStr:" + columnStr)
 
-    val sql = s"select $columnStr from $sourceTableName a where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') $filterCondition"
+    var sql = s"select $columnStr from $sourceTableName a where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') $filterCondition"
+    if (isHour) {
+      sql = sql + " and hour = " + hour
+    }
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)
     dataFrame.createOrReplaceTempView("TMP_TBL_01")
@@ -171,6 +194,12 @@ object FeatureSampleMergeGeneral {
     println("targetHdfsPath:" + targetHdfsPath)
 
     spark.stop()
+  }
+
+  def getPreDateHour(date: Date = new Date(), diffHour: Int = 0): Date = {
+    val now = new DateTime(date)
+    val dateTime = now.minusHours(diffHour).toDate
+    dateTime
   }
 
 }

@@ -149,7 +149,8 @@ object FeatureSampleMergeGeneral {
 
     var sql = s"select $columnStr from $sourceTableName a where dt >= '$startDate' and dt <= '$endDate' and biz_type in ('14','3','66') $filterCondition"
     if (isHour) {
-      sql = sql + " and hour = " + hour
+      //TODO:测试临时注掉
+      //sql = sql + " and hour = " + hour
     }
     println("sql:" + sql)
     var dataFrame = spark.sql(sql)

@@ -60,8 +60,8 @@ object ItemCFApp {
 
     // 商品共现矩阵
     val df_sales2 = df_sales1.flatMap { row =>
-      val itemlist = row.getAs[scala.collection.mutable.WrappedArray[Int]](1).toArray.sorted
-      val result = new ArrayBuffer[(Int, Int, Double)]()
+      val itemlist = row.getAs[scala.collection.mutable.WrappedArray[String]](1).toArray.sorted
+      val result = new ArrayBuffer[(String, String, Double)]()
       for (i <- 0 to itemlist.length - 2) {
         for (j <- i + 1 until itemlist.length) {
           result += ((itemlist(i), itemlist(j), 1.0 / math.log(1 + itemlist.length))) // 热门user惩罚
@@ -83,8 +83,8 @@ object ItemCFApp {
     // itme1和item2交换
     val df_sales8 = df_sales6.select("item_idI", "item_idJ", "sumJ", "result").union(df_sales6.select($"item_idJ".as("item_idI"), $"item_idI".as("item_idJ"), $"sumI".as("sumJ"), $"result")).withColumnRenamed("result", "similar").cache()
     val itemcf_similar = df_sales8.map { row =>
-      val item_idI = row.getInt(0)
-      val item_idJ_similar = (row.getInt(1).toString, row.getDouble(3))
+      val item_idI = row.getString(0)
+      val item_idJ_similar = (row.getString(1).toString, row.getDouble(3))
       (item_idI, item_idJ_similar)
     }.toDF("item_id", "similar_items").groupBy("item_id").agg(collect_list("similar_items").as("similar_items"))
 

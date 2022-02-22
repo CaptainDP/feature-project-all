@@ -1,6 +1,8 @@
 package com.captain.bigdata.taichi.demo.app_recall
 
-import com.captain.bigdata.taichi.demo.utils.RecallUtils.{getDiffDatetime, getProPerties, saveHbase}
+import java.util.Properties
+
+import com.captain.bigdata.taichi.demo.utils.RecallUtils.{getDiffDatetime, saveHbase}
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.expressions.Window
@@ -34,7 +36,8 @@ object ItemCFApp {
      * recommend_num:  推荐商品数量
      */
 
-    val properties = getProPerties(args(0))
+    //    val properties = getProPerties(args(0))
+    val properties = new Properties()
     val window_days = properties.getProperty("window_days", "3").toInt
     val similar_item_num = properties.getProperty("similar_item_num", "10").toInt
     val hot_item_regular = properties.getProperty("hot_item_regular", "0.5").toDouble

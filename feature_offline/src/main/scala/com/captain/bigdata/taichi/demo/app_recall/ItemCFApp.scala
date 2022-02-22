@@ -103,11 +103,11 @@ object ItemCFApp {
     val itemcf_recommend = df_user_prefer4.select($"user_id", $"item_id".cast("String"), $"score").withColumn("rank", row_number().over(Window.partitionBy("user_id").orderBy($"score".desc))).filter(s"rank <= ${recommend_num}").groupBy("user_id").agg(collect_list("item_id").as("recommend"))
 
 
-    itemcf_similar.show()
+    itemcf_similar.show(false)
     // 保存商品共现相似度数据
     saveHbase(itemcf_similar, "ITEMCF_SIMILAR")
 
-    itemcf_recommend.show()
+    itemcf_recommend.show(false)
     // 保存用户偏好推荐数据
     saveHbase(itemcf_recommend, "ITEMCF_RECOMMEND")
 
